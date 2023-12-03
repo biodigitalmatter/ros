@@ -1,0 +1,17 @@
+<launch>
+    <arg name="width" default="3072" />
+    <arg name="height" default="1728" />
+
+    <include file="$(find axis_camera)/launch/axis.launch">
+        <arg name="camera_name" value="axis-p1367-d212" />
+        <arg name="hostname" value="axis-p1367-d212" />
+        <arg name="width" value="$(arg width)" />
+        <arg name="height" value="$(arg height)" />
+    </include>
+    <include file="$(find axis_camera)/launch/axis.launch">
+        <arg name="camera_name" value="axis-p1378-xxxx" />
+        <arg name="hostname" value="axis-p1378-xxxx" />
+        <arg name="width" value="$(arg width)" />
+        <arg name="height" value="$(arg height)" />
+    </include>
+</launch>

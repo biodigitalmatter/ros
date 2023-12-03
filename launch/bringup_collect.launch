@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+    <arg name="robot_ip" default="127.0.0.1" />
+    <param name="robot_description"
+        textfile="$(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.urdf" />
+
+    <arg name="luxonis_parent_frame" default="oak-d-base-frame" />
+    <arg name="luxonis_cam_pos_x" default="0.0" />
+    <arg name="luxonis_cam_pos_y" default="0.0" />
+    <arg name="luxonis_cam_pos_z" default="0.0" />
+    <arg name="luxonis_cam_roll" default="0.0" />
+    <arg name="luxonis_cam_pitch" default="0.0" />
+    <arg name="luxonis_cam_yaw" default="0.0" />
+
+    <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)" />
+    </include>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
+
+    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch">
+        <arg name="parent_frame" value="$(arg luxonis_parent_frame)" />
+        <arg name="cam_pos_x" value="$(arg luxonis_cam_pos_x)" />
+        <arg name="cam_pos_y" value="$(arg luxonis_cam_pos_y)" />
+        <arg name="cam_pos_z" value="$(arg luxonis_cam_pos_z)" />
+        <arg name="cam_roll" value="$(arg luxonis_cam_roll)" />
+        <arg name="cam_pitch" value="$(arg luxonis_cam_pitch)" />
+        <arg name="cam_yaw" value="$(arg luxonis_cam_yaw)" />
+    </include>
+
+    <node pkg="aruco_detect" type="aruco_detect" />
+
+</launch>

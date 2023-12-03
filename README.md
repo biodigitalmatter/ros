@@ -11,6 +11,8 @@ cd ~/ws_stone_clay/src
 git clone https://github.com/biodigitalmatter/stone_clay_ros.git
 cd ..
 vcs import src < src/stone_clay_ros/dependencies.repos
+vcs import src --input https://raw.githubusercontent.com/ros-industrial/abb_robot_driver/0f0424ea4a857adffa99c6fccafa9ef5329772e8/pkgs.repos
+rosdep update
 rosdep install --from-paths src --ignore-src
 catkin build
 ```

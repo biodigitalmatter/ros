@@ -1,0 +1,59 @@
+---
+# PRE
+# sudo apt update
+# sudo apt install software-properties-common
+# sudo add-apt-repository --yes --update ppa:ansible/ansible
+# sudo apt install ansible
+# ansible-galaxy install git+https://github.com/rarrais/ansible-role-ros
+
+- hosts: localhost
+  connection: local
+  become: true
+  vars:
+    ros_configuration: desktop-full
+  roles:
+    - rarrais.ros
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create ws dir
+      ansible.builtin.file:
+        path: "{{ catkin_ws }}/src"
+        state: directory
+        mode: 0755
+
+    - name: Git checkout
+      ansible.builtin.git:
+        repo: "https://github.com/biodigitalmatter/stone_clay_ros"
+        dest: "{{ catkin_ws }}/src/stone_clay_ros"
+
+    - name: Install the latest version of Apache and MariaDB
+      ansible.builtin.package:
+        name:
+          - python3-vcstool
+          - python3-catkin-tools
+        state: latest
+
+    - name: Setup repos
+      ansible.builtin.command:
+        chdir: "{{ catkin_ws }}"
+        cmd: "vcs import src < src/stone_clay_ros/dependencies.repos"
+
+    - name: Setup repos
+      ansible.builtin.command:
+        chdir: "{{ catkin_ws }}"
+        cmd: "vcs import src --input https://raw.githubusercontent.com/ros-industrial/abb_robot_driver/0f0424ea4a857adffa99c6fccafa9ef5329772e8/pkgs.repos"
+
+    - name: Install deps
+      ansible.builtin.command:
+        chdir: "{{ catkin_ws }}"
+        cmd: "rosdep install --from-paths src --ignore-src"
+
+    - name: Build
+      ansible.builtin.command:
+        chdir: "{{ catkin_ws }}"
+        cmd: "catkin build"
+
+  vars:
+    catkin_ws: "{{ ansible_user_dir }}/catkin_ws"
