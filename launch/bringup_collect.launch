@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<launch>
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
   <arg name="robot_ip" default="127.0.0.1" />
 
   <arg name="rgbd_ip" default="" />
@@ -42,10 +44,10 @@
   <group ns="$(arg rgb_name)">
     <param name="frame_id" value="world" />
   </group>
-  <param name="my_robot_description"
-    textfile="$(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.urdf" />
+
+  <param name="robot_description"
+    command="$(find xacro)/xacro.py $(find abb_irb4600_support)/urdf/irb4600.xacro" />
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub">
-    <remap from="robot_description" to="my_robot_description" />
     <remap from="joint_states" to="/rws/joint_states" />
   </node>
 
@@ -61,7 +63,7 @@
     <arg name="camera_model" value="OAK-D-POE" />
   </include>
 
-       <!-- node name="pc2pcd" pkg="pcl_ros" type="pointcloud_to_pcd">
+  <!-- node name="pc2pcd" pkg="pcl_ros" type="pointcloud_to_pcd">
     <remap from="input" to="/oak/points" />
     <param name="frame_id" value="world" />
     <param name="prefix" value="/home/tetov/pcds/" />

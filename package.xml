@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format3.xsd"
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd"
   schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>stone_clay_ros</name>
@@ -35,6 +35,7 @@
   <exec_depend>abb_rws_state_publisher</exec_depend>
   <exec_depend>abb_robot_bringup_examples</exec_depend>
   <exec_depend>aruco_detect</exec_depend>
+  <exec_depend>abb_resources</exec_depend> <!-- to execute xacro for abb robots -->
 
   <buildtool_depend>catkin</buildtool_depend>
   <!-- The export tag contains other, unspecified, tags -->
