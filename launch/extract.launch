@@ -1,0 +1,13 @@
+<launch>
+  <node pkg="rosbag" type="play" name="rosbag" required="true" args="/home/tetov/pcds/new7/_2023-12-08-17-14-47.bag" />
+  <node name="extract" pkg="image_view" type="extract_images" respawn="false" required="true"
+    output="screen" cwd="ROS_HOME">
+    <remap from="image" to="/oak/rgb/image_raw" />
+  </node>
+  <node name="pc2pcd" pkg="pcl_ros" type="pointcloud_to_pcd">
+    <remap from="input" to="/oak/points" />
+    <param name="frame_id" value="world" />
+    <param name="prefix" value="/home/tetov/pcds/" />
+  </node>
+  <node name="tf_echo_camera" pkg="tf" type="tf_echo" args="oak world 1" />
+</launch>
