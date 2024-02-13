@@ -67,13 +67,6 @@
     <param name="prefix" value="/home/tetov/pcds/" />
 	       </node-->
 
-  <!-- node name="transform_point_cloud" pkg="transform_point_cloud"
-      type="transform_point_cloud">
-    <param name="source_frame" value="oak" />
-    <param name="target_frame" value="base_link" />
-    <remap from="point_cloud" to="/oak/points" />
-  </node -->
-
   <node pkg="aruco_detect" name="aruco_detect"
     type="aruco_detect" output="screen" respawn="false" />
 

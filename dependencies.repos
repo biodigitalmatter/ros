@@ -17,7 +17,3 @@ repositories:
     type: git
     url: https://github.com/gramaziokohler/ros_file_server.git
     version: master
-  transform_pointcloud:
-    type: git
-    url: https://github.com/timkambic/transform_pointcloud.git
-    version: master
