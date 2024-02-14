@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+
+  <!-- Load all robots, then remap to robot_state_publisher or moveit node when needed -->
+
+  <arg name="robot_model" />
+
+  <param name="robot_description"
+    command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro"
+    if="$(eval robot_model == 'abb_irb4600_40_255')" />
+  <!-- This seems to be the most correct model for the IRB 2400/16 in the LTH RobotLab -->
+  <param name="robot_description"
+    command="xacro $(find abb_irb2400_support)/urdf/irb2400_12_155.xacro"
+    if="$(eval robot_model == 'abb_irb2400_12_155')" />
+
+</launch>

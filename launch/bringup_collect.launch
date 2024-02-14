@@ -10,8 +10,6 @@
   <arg name="rgb_user" default="" />
   <arg name="rgb_pw" default="" />
 
-  <arg name="params_file" default="$(find depthai_filters)/config/wls.yaml" />
-
   <arg name="luxonis_parent_frame" default="tool0" />
   <arg name="luxonis_cam_pos_x" default="0.175319" />
   <arg name="luxonis_cam_pos_y" default="0.39145" />
@@ -21,12 +19,14 @@
   <arg name="luxonis_cam_yaw" default="1.3089969387" />
 
   <!-- ROBOT -->
+  <include file="$(find biodigitalmatter_ros)/launch/robot_descriptions.launch">
+    <arg name="robot_model" value="$(arg robot_model)" />
+  </include>
+
   <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch">
     <arg name="robot_ip" value="$(arg robot_ip)" />
   </include>
 
-  <param name="robot_description"
-    command="$(find xacro)/xacro.py $(find abb_irb4600_support)/urdf/irb4600.xacro" />
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub">
     <remap from="joint_states" to="/rws/joint_states" />
   </node>
