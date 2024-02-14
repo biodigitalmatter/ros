@@ -5,10 +5,10 @@
     <arg name="rgb_ip" default="192.168.0.204" />
     <arg name="rgb_user" default="root" />
     <arg name="rgb_pw" default="***REMOVED***" />
-    <arg name="rgb_name" default="axisaccc8e68d212" /> 
+    <arg name="rgb_name" default="axisaccc8e68d212" />
     <arg name="rrc" default="false" />
 
-    <include file="$(find stone_clay_ros)/launch/bringup_collect.launch">
+    <include file="$(find biodigitalmatter_ros)/launch/bringup_collect.launch">
         <arg name="robot_ip" value="$(arg robot_ip)" />
 
         <arg name="rgbd_ip" value="$(arg rgbd_ip)" />
@@ -16,9 +16,10 @@
         <arg name="rgb_name" value="$(arg rgb_name)" />
         <arg name="rgb_ip" value="$(arg rgb_ip)" />
         <arg name="rgb_user" value="$(arg rgb_user)" />
-        <arg name="rgb_pw" value="$(arg rgb_pw)" /> 
+        <arg name="rgb_pw" value="$(arg rgb_pw)" />
     </include>
-    <!-- include file="$(find stone_clay_ros)/launch/bringup_fabricate.launch" if="$(arg rrc)">
+
+    <include file="$(find biodigitalmatter_ros)/launch/bringup_fabricate.launch" if="$(arg rrc)">
         <arg name="robot_ip" value="$(arg robot_ip)" />
         <arg name="namespace" value="/rob1" />
     </include -->
