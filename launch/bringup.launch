@@ -7,6 +7,8 @@
     <arg name="rgb_pw" default="***REMOVED***" />
     <arg name="rgb_name" default="axisaccc8e68d212" />
     <arg name="rrc" default="false" />
+    <!-- Start this here since it applies to both bringup_collect and bringup_fabricate -->
+    <node pkg="tf" type="static_transform_publisher" name="world_broadcaster" args="0 0 0 0 0 0 1 world base_link 100" />
 
     <include file="$(find biodigitalmatter_ros)/launch/bringup_collect.launch">
         <arg name="robot_ip" value="$(arg robot_ip)" />
@@ -21,7 +23,6 @@
 
     <include file="$(find biodigitalmatter_ros)/launch/bringup_fabricate.launch" if="$(arg rrc)">
         <arg name="robot_ip" value="$(arg robot_ip)" />
-        <arg name="namespace" value="/rob1" />
-    </include -->
-    <node pkg="tf" type="static_transform_publisher" name="world_broadcaster" args="0 0 0 0 0 0 1 world base_link 100" />
+    </include>
+
 </launch>
