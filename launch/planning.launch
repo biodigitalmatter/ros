@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+  <include file="$(find abb_irb4600_40_255_moveit_config)/launch/demo.launch"/>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <args name="unregister_timeout" value="28800" doc=""/>
+    <!-- This horribly long timeout of 8 hours is to workaround this issue:
+     https://github.com/RobotWebTools/rosbridge_suite/issues/138 -->
+  </include>
+  <include file="$(find file_server)/launch/file_server.launch"/>
+</launch>
