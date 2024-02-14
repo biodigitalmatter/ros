@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<launch>
-    <arg name="robot_ip" default="192.168.0.188" />
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="rgbd_ip" default="192.168.0.230" />
+    <arg name="robot_ip" default="192.168.0.188" />
+    <arg name="robot_model" default="abb_irb4600_40_255" />
+
+    <arg name="luxonis_parent_frame" default="tool0" />
+    <arg name="luxonis_cam_pos_x" default="0.175319" />
+    <arg name="luxonis_cam_pos_y" default="0.39145" />
+    <arg name="luxonis_cam_pos_z" default="0.047145" />
+    <arg name="luxonis_cam_roll" default="0.0" />
+    <arg name="luxonis_cam_pitch" default="0.0" />
+    <arg name="luxonis_cam_yaw" default="1.3089969387" />
+
     <arg name="rgb_ip" default="192.168.0.204" />
     <arg name="rgb_user" default="root" />
     <arg name="rgb_pw" default="***REMOVED***" />
     <arg name="rgb_name" default="axisaccc8e68d212" />
 
-    <arg name="robot_model" default="4600_40_255" />
+    <include file="$(dirname)/bringup/rgbd.launch" pass_all_args="true" />
 
-    <!-- Start this here since it applies to both bringup_collect and bringup_fabricate -->
-    <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-        args="0 0 0 0 0 0 1 world base_link 100" />
+    <include file="$(dirname)/bringup/rgb.launch" pass_all_args="true" />
 
-    <include file="$(find biodigitalmatter_ros)/launch/bringup_collect.launch">
-        <arg name="robot_ip" value="$(arg robot_ip)" />
-        <arg name="robot_model" value="$(arg robot_model)" />
+    <include file="$(dirname)/bringup/robots.launch" pass_all_args="true" />
 
-        <arg name="rgbd_ip" value="$(arg rgbd_ip)" />
-
-        <arg name="rgb_name" value="$(arg rgb_name)" />
-        <arg name="rgb_ip" value="$(arg rgb_ip)" />
-        <arg name="rgb_user" value="$(arg rgb_user)" />
-        <arg name="rgb_pw" value="$(arg rgb_pw)" />
-    </include>
-
-    <include file="$(find biodigitalmatter_ros)/launch/bringup_rrc.launch">
-        <arg name="robot_ip" value="$(arg robot_ip)" />
-    </include>
-
+    <!-- RECORD -->
+    <node name="record" pkg="rosbag" type="record"
+        args="--all --output-prefix=$(env HOME)/rosbags/biodigitalmatter --split --size=50000 --lz4" />
 </launch>

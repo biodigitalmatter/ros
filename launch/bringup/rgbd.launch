@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+
+    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch">
+        <arg name="parent_frame" value="$(arg luxonis_parent_frame)" />
+        <arg name="cam_pos_x" value="$(arg luxonis_cam_pos_x)" />
+        <arg name="cam_pos_y" value="$(arg luxonis_cam_pos_y)" />
+        <arg name="cam_pos_z" value="$(arg luxonis_cam_pos_z)" />
+        <arg name="cam_roll" value="$(arg luxonis_cam_roll)" />
+        <arg name="cam_pitch" value="$(arg luxonis_cam_pitch)" />
+        <arg name="cam_yaw" value="$(arg luxonis_cam_yaw)" />
+        <arg name="camera_model" value="OAK-D-POE" />
+        <arg name="params_file"
+            value="$(find biodigitalmatter_ros)/config/oak-d-s2-af-poe/rgbd.yaml" />
+    </include>
+
+</launch>
