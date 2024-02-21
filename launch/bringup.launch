@@ -3,27 +3,43 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="robot_ip" default="192.168.0.188" />
-    <arg name="robot_model" default="abb_irb4600_40_255" />
-
-    <arg name="luxonis_parent_frame" default="tool0" />
-    <arg name="luxonis_cam_pos_x" default="0.175319" />
-    <arg name="luxonis_cam_pos_y" default="0.39145" />
-    <arg name="luxonis_cam_pos_z" default="0.047145" />
-    <arg name="luxonis_cam_roll" default="0.0" />
-    <arg name="luxonis_cam_pitch" default="0.0" />
-    <arg name="luxonis_cam_yaw" default="1.3089969387" />
+    <!-- ARGS -->
+    <arg name="rgbd_camera" default="OAK-D-POE" />
+    <arg name="rgbd_parent_frame" default="tool0" />
+    <arg name="rgbd_x" default="0.175319" />
+    <arg name="rgbd_y" default="0.39145" />
+    <arg name="rgbd_z" default="0.047145" />
+    <arg name="rgbd_roll" default="0.0" />
+    <arg name="rgbd_pitch" default="0.0" />
+    <arg name="rgbd_yaw" default="1.3089969387" />
 
     <arg name="rgb_ip" default="192.168.0.204" />
     <arg name="rgb_user" default="root" />
     <arg name="rgb_pw" default="***REMOVED***" />
     <arg name="rgb_name" default="axisaccc8e68d212" />
 
-    <include file="$(dirname)/bringup/rgbd.launch" pass_all_args="true" />
+    <arg name="robot_ip" doc="IP of the controller" default="192.168.125.1" />
+    <arg name="robot_model" default="abb_irb4600_40_255" />
+    <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
+    <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
+    <arg name="sequence_check_mode" default="none"
+        doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
+    <arg name="namespace" default="/"
+        doc="Allows to define a namespace in order to connect to multiple robots. Defaults to root (ie /)." />
 
-    <include file="$(dirname)/bringup/rgb.launch" pass_all_args="true" />
+    <arg name="no_rgb" default="false" />
+    <arg name="no_rgbd" default="false" />
+    <arg name="no_robots" default="false" />
+    <arg name="no_rrc" default="false" />
+    <arg name="no_rws" default="false" />
 
-    <include file="$(dirname)/bringup/robots.launch" pass_all_args="true" />
+
+    <!-- INCLUDES -->
+    <include file="$(dirname)/bringup/rgbd.launch" pass_all_args="true" unless="$(arg no_rgbd)" />
+
+    <include file="$(dirname)/bringup/rgb.launch" pass_all_args="true" unless="$(arg no_rgb)" />
+
+    <include file="$(dirname)/bringup/robots.launch" pass_all_args="true" unless="$(arg no_robots)" />
 
     <!-- RECORD -->
     <node name="record" pkg="rosbag" type="record"

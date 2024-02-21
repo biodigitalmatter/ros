@@ -3,17 +3,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch">
-        <arg name="parent_frame" value="$(arg luxonis_parent_frame)" />
-        <arg name="cam_pos_x" value="$(arg luxonis_cam_pos_x)" />
-        <arg name="cam_pos_y" value="$(arg luxonis_cam_pos_y)" />
-        <arg name="cam_pos_z" value="$(arg luxonis_cam_pos_z)" />
-        <arg name="cam_roll" value="$(arg luxonis_cam_roll)" />
-        <arg name="cam_pitch" value="$(arg luxonis_cam_pitch)" />
-        <arg name="cam_yaw" value="$(arg luxonis_cam_yaw)" />
+    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch"
+        if="$(eval rgbd_camera == 'OAK-D-POE')">
+        <arg name="parent_frame" value="$(arg rgbd_parent_frame)" />
+        <arg name="cam_pos_x" value="$(arg rgbd_x)" />
+        <arg name="cam_pos_y" value="$(arg rgbd_y)" />
+        <arg name="cam_pos_z" value="$(arg rgbd_z)" />
+        <arg name="cam_roll" value="$(arg rgbd_roll)" />
+        <arg name="cam_pitch" value="$(arg rgbd_pitch)" />
+        <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
         <arg name="camera_model" value="OAK-D-POE" />
         <arg name="params_file"
             value="$(find biodigitalmatter_ros)/config/oak-d-s2-af-poe/rgbd.yaml" />
+    </include>
+
+    <node pkg="tf" type="static_transform_publisher" name="rgbd_rs_broadcaster"
+        args="$(arg rgbd_x) $(arg rgbd_y) $(arg rgbd_z) $(arg rgbd_roll) $(arg rgbd_pitch) $(arg rgbd_yaw) $(arg rgbd_parent_frame) camera_link 100" />
+
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"
+        if="$(eval rgbd_camera == 'D435i')">
+        <!-- <arg name="tf_prefix" value="rgbd_rs_camera" /> -->
+        <!-- <arg name="align_depth" value="true" /> -->
     </include>
 
 </launch>
