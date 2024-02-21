@@ -4,7 +4,7 @@
 
 ROS Noetic installation on Ubuntu 20.04 assumed.
 
-``` sh
+```sh
 sudo apt install python3-vcstool python3-catkin-tools
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src

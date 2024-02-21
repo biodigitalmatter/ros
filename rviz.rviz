@@ -197,8 +197,7 @@ Visualization Manager:
       Tree:
         world:
           base_link:
-            base:
-              {}
+            base: {}
             link_1:
               link_2:
                 link_3:
@@ -207,19 +206,14 @@ Visualization Manager:
                       link_6:
                         tool0:
                           oak:
-                            oak_imu_frame:
-                              {}
+                            oak_imu_frame: {}
                             oak_left_camera_frame:
-                              oak_left_camera_optical_frame:
-                                {}
-                            oak_model_origin:
-                              {}
+                              oak_left_camera_optical_frame: {}
+                            oak_model_origin: {}
                             oak_rgb_camera_frame:
-                              oak_rgb_camera_optical_frame:
-                                {}
+                              oak_rgb_camera_optical_frame: {}
                             oak_right_camera_frame:
-                              oak_right_camera_optical_frame:
-                                {}
+                              oak_right_camera_optical_frame: {}
       Update Interval: 0
       Value: true
     - Class: rviz/Camera
