@@ -21,3 +21,11 @@ repositories:
     type: git
     url: https://github.com/ros-industrial/abb/
     version: kinetic-devel
+  axis_camera:  # need newer than what's in rosdep
+    type: git
+    url: https://github.com/ros-drivers/axis_camera
+    version: noetic-devel
+  camera_info_manager_py: # upstream has no noetic release, axis dep
+    type: git
+    url: https://github.com/lucasw/camera_info_manager_py
+    version: noetic-devel
