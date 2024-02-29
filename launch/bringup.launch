@@ -15,8 +15,8 @@
 
     <arg name="rgb_ip" default="192.168.0.204" />
     <arg name="rgb_user" default="root" />
-    <arg name="rgb_pw" default="***REMOVED***" />
     <arg name="rgb_name" default="axisaccc8e68d212" />
+    <arg name="rgb_pw" default="$(env RGB1_PW)" />
 
     <arg name="robot_ip" doc="IP of the controller" default="192.168.125.1" />
     <arg name="robot_model" default="abb_irb4600_40_255" />

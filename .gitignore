@@ -43,3 +43,4 @@ CATKIN_IGNORE
 
 # vscode
 .vscode/
+.env
