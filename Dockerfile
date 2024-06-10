@@ -25,8 +25,12 @@ RUN rosdep install -y --from-paths . --ignore-src --rosdistro ${ROS_DISTRO}
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.bash && catkin build
 
-RUN echo "source /usr/local/bin/ros_catkin_entrypoint.sh" >> /root/.bashrc
-RUN echo 'source $CATKIN_WS/src/biodigitalmatter_ros/bashrc_fragment' >> /root/.bashrc
+COPY ros_catkin_entrypoint.sh /usr/local/bin/ros_catkin_entrypoint.sh
 
-ENTRYPOINT ["roslaunch" "biodigitalmatter_ros" "bringup.lauch"]
+RUN chmod +x /usr/local/bin/ros_catkin_entrypoint.sh
+
+# Always source ros_catkin_entrypoint.sh when launching bash (e.g. when attaching to container)
+RUN echo "source /usr/local/bin/ros_catkin_entrypoint.sh" >> /root/.bashrc
+
+ENTRYPOINT ["/usr/local/bin/ros_catkin_entrypoint.sh"]
 CMD ["bash"]
