@@ -19,6 +19,7 @@
   <exec_depend>abb_irb4600_40_255_moveit_config</exec_depend>
   <exec_depend>file_server</exec_depend>
   <exec_depend>depthai</exec_depend> <!-- luxonis -->
+  <exec_depend>depthai-ros</exec_depend> <!-- luxonis -->
   <exec_depend>realsense2_camera</exec_depend>
   <exec_depend>rgbd_launch</exec_depend> <!-- dep realsense2 -->
   <exec_depend>axis_camera</exec_depend>

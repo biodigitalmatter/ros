@@ -32,6 +32,7 @@
     <arg name="no_robots" default="false" />
     <arg name="no_rrc" default="false" />
     <arg name="no_rws" default="false" />
+    <arg name="no_record" default="false" />
 
 
     <!-- INCLUDES -->
@@ -43,5 +44,7 @@
 
     <!-- RECORD -->
     <node name="record" pkg="rosbag" type="record"
-        args="--all --output-prefix=$(env HOME)/rosbags/biodigitalmatter --split --size=50000 --lz4" />
+        args="--all --publish --output-prefix=$(env HOME)/rosbags/biodigitalmatter --split
+    --size=50000 --lz4"
+        unless="$(arg no_record)" />
 </launch>
