@@ -13,6 +13,10 @@ repositories:
     type: git
     url: https://github.com/gramaziokohler/abb_irb4600_40_255_moveit_config.git
     version: noetic-devel
+  abb_robot_driver:
+    type: git
+    url: https://github.com/ros-industrial/abb_robot_driver.git
+    version: master
   compas_rrc_driver:
     type: git
     url: https://github.com/compas-rrc/compas_rrc_ros.git
@@ -29,7 +33,7 @@ repositories:
     type: git
     url: https://github.com/lucasw/camera_info_manager_py.git
     version: noetic-devel
-  abb_robot_driver:
-    type: git
-    url: https://github.com/ros-industrial/abb_robot_driver.git
-    version: master
+#  depthai-ros:
+#    type: git
+#    url: https://github.com/luxonis/depthai-ros.git
+#    version: v2.6.1-noetic

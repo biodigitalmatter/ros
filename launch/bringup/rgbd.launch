@@ -22,8 +22,8 @@
 
     <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"
         if="$(eval rgbd_camera == 'D435i')">
-        <!-- <arg name="tf_prefix" value="rgbd_rs_camera" /> -->
-        <!-- <arg name="align_depth" value="true" /> -->
+        <arg name="tf_prefix" value="rgbd_rs_camera" />
+        <arg name="align_depth" value="true" />
     </include>
 
 </launch>
