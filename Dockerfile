@@ -25,7 +25,7 @@ RUN vcs import src < src/abb_robot_driver/pkgs.repos
 
 RUN rosdep install -y --from-paths . --ignore-src --rosdistro ${ROS_DISTRO}
 
-RUN catkin build
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash && catkin build
 
 COPY ros_catkin_entrypoint.sh /usr/local/bin/ros_catkin_entrypoint.sh
 
