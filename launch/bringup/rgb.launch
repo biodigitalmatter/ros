@@ -3,17 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="rgb_ip" default="" />
-    <arg name="rgb_name" default="" />
-    <arg name="rgb_user" default="" />
-    <arg name="rgb_pw" default="" />
-
     <node pkg="tf" type="static_transform_publisher" name="$(arg rgb_name)_broadcaster"
         args="0 0 0 0 0 0 1 world $(arg rgb_name)_camera_link 100" />
-
-    <group ns="$(arg rgb_name)">
-        <param name="frame_id" value="world" />
-    </group>
 
     <include file="$(find axis_camera)/launch/axis.launch">
         <arg name="camera_name" value="$(arg rgb_name)" />

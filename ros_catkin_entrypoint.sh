@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/opt/ros/$ROS_DISTRO/setup.bash"
+source "/opt/ros/${ROS_DISTRO:-noetic}/setup.bash"
 
 export CATKIN_WS=${CATKIN_WS:-$HOME/catkin_ws}
 

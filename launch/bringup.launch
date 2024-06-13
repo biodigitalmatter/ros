@@ -4,7 +4,9 @@
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
     <!-- ARGS -->
-    <arg name="rgbd_camera" default="OAK-D-POE" />
+    <arg name="use_realsense" default="false" />
+    <arg name="use_oak" default="true" />
+    <arg name="rgbd_camera_model" default="OAK-D-POE" />
     <arg name="rgbd_parent_frame" default="tool0" />
     <arg name="rgbd_x" default="0.175319" />
     <arg name="rgbd_y" default="0.39145" />
@@ -33,7 +35,6 @@
     <arg name="no_rrc" default="false" />
     <arg name="no_rws" default="false" />
     <arg name="no_record" default="false" />
-
 
     <!-- INCLUDES -->
     <include file="$(dirname)/bringup/rgbd.launch" pass_all_args="true" unless="$(arg no_rgbd)" />
