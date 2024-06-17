@@ -6,7 +6,6 @@
     <!-- ARGS -->
     <arg name="use_realsense" default="false" />
     <arg name="use_oak" default="true" />
-    <arg name="rgbd_camera_model" default="OAK-D-POE" />
     <arg name="rgbd_parent_frame" default="tool0" />
     <arg name="rgbd_x" default="0.175319" />
     <arg name="rgbd_y" default="0.39145" />

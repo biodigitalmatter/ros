@@ -33,7 +33,7 @@ repositories:
     type: git
     url: https://github.com/lucasw/camera_info_manager_py.git
     version: noetic-devel
-#  depthai-ros:
-#    type: git
-#    url: https://github.com/luxonis/depthai-ros.git
-#    version: v2.6.1-noetic
+  depthai-ros:
+   type: git
+   url: https://github.com/luxonis/depthai-ros.git
+   version: v2.9.0-noetic
