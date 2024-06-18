@@ -18,7 +18,12 @@ RUN apt-get upgrade -y
 
 RUN rosdep update
 
-RUN apt-get install git python3-catkin-tools python3-vcstool -y
+RUN apt-get install -y     \
+      git                  \
+      iputils-ping         \
+      net-tools            \
+      python3-catkin-tools \
+      python3-vcstool
 
 RUN vcs import src < src/biodigitalmatter_ros/dependencies.repos
 RUN vcs import src < src/abb_robot_driver/pkgs.repos
