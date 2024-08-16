@@ -15,7 +15,7 @@
 
     <arg name="rgbd_oak_model" default="OAK-D-POE" /> <!-- or OAK-D-PRO -->
 
-    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch"
+    <include file="$(find depthai_ros_driver)/launch/camera.launch"
         if="$(arg use_oak)">
         <arg name="parent_frame" value="$(arg rgbd_parent_frame)" />
         <arg name="cam_pos_x" value="$(arg rgbd_x)" />
