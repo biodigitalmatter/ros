@@ -26,7 +26,7 @@
         <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
         <arg name="camera_model" value="$(arg rgbd_oak_model)" />
         <arg name="params_file"
-            value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model)/rgbd.yaml" />
+            value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model).yaml" />
     </include>
 
     <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_rgbd_parent"
