@@ -3,6 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
+    <arg name="robot_ip" doc="IP of the controller" default="192.168.8.125" />
+    <arg name="robot_model" default="abb_irb4600_40_255" />
+    <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
+    <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
+    <arg name="sequence_check_mode" default="none"
+        doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
+    <arg name="namespace" default="/"
+        doc="Allows to define a namespace in order to connect to multiple robots. Defaults to root (ie /)." />
 
     <group ns="$(arg namespace)">
 
@@ -26,7 +34,7 @@
         </include>
 
         <node pkg="robot_state_publisher" type="robot_state_publisher"
-        name="rob_st_pub"
+            name="rob_st_pub"
             unless="$(arg no_rws)">
             <remap from="joint_states" to="/rws/joint_states" />
         </node>

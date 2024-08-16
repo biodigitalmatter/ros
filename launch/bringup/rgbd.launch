@@ -3,7 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="rgbd_oak_model" default="OAK-D-POE" />
+    <arg name="use_realsense" default="false" />
+    <arg name="use_oak" default="true" />
+    <arg name="rgbd_parent_frame" default="tool0" />
+    <arg name="rgbd_x" default="0.175319" />
+    <arg name="rgbd_y" default="0.39145" />
+    <arg name="rgbd_z" default="0.047145" />
+    <arg name="rgbd_roll" default="0.0" />
+    <arg name="rgbd_pitch" default="0.0" />
+    <arg name="rgbd_yaw" default="1.3089969387" />
+
+    <arg name="rgbd_oak_model" default="OAK-D-POE" /> <!-- or OAK-D-PRO -->
 
     <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch"
         if="$(arg use_oak)">
@@ -16,8 +26,8 @@
         <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
         <arg name="camera_model" value="$(arg rgbd_oak_model)" />
         <arg name="params_file"
-            value="$(find biodigitalmatter_ros)/config/oak-d-s2-af-poe/rgbd.yaml" />
-        </include >
+            value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model)/rgbd.yaml" />
+    </include>
 
     <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_rgbd_parent"
         args="0 0 0 0 0 0 world $(arg rgbd_parent_frame)" if="$(arg no_robots)" />

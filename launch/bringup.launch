@@ -4,30 +4,6 @@
     xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
     <!-- ARGS -->
-    <arg name="use_realsense" default="false" />
-    <arg name="use_oak" default="true" />
-    <arg name="rgbd_parent_frame" default="tool0" />
-    <arg name="rgbd_x" default="0.175319" />
-    <arg name="rgbd_y" default="0.39145" />
-    <arg name="rgbd_z" default="0.047145" />
-    <arg name="rgbd_roll" default="0.0" />
-    <arg name="rgbd_pitch" default="0.0" />
-    <arg name="rgbd_yaw" default="1.3089969387" />
-
-    <arg name="rgb_ip" default="192.168.8.20" />
-    <arg name="rgb_user" default="root" />
-    <arg name="rgb_name" default="axisaccc8e68d212" />
-    <arg name="rgb_pw" default="$(env RGB1_PW)" />
-
-    <arg name="robot_ip" doc="IP of the controller" default="192.168.8.125" />
-    <arg name="robot_model" default="abb_irb4600_40_255" />
-    <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
-    <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
-    <arg name="sequence_check_mode" default="none"
-        doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
-    <arg name="namespace" default="/"
-        doc="Allows to define a namespace in order to connect to multiple robots. Defaults to root (ie /)." />
-
     <arg name="no_rgb" default="false" />
     <arg name="no_rgbd" default="false" />
     <arg name="no_robots" default="false" />
