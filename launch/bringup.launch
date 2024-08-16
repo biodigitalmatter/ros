@@ -14,12 +14,12 @@
     <arg name="rgbd_pitch" default="0.0" />
     <arg name="rgbd_yaw" default="1.3089969387" />
 
-    <arg name="rgb_ip" default="192.168.0.204" />
+    <arg name="rgb_ip" default="192.168.8.20" />
     <arg name="rgb_user" default="root" />
     <arg name="rgb_name" default="axisaccc8e68d212" />
     <arg name="rgb_pw" default="$(env RGB1_PW)" />
 
-    <arg name="robot_ip" doc="IP of the controller" default="192.168.125.1" />
+    <arg name="robot_ip" doc="IP of the controller" default="192.168.8.125" />
     <arg name="robot_model" default="abb_irb4600_40_255" />
     <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
     <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
