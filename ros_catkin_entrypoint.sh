@@ -3,6 +3,7 @@
 source "/opt/ros/${ROS_DISTRO:-noetic}/setup.bash"
 
 export CATKIN_WS=${CATKIN_WS:-$HOME/catkin_ws}
+export HOSTNAME
 
 if [ -f $CATKIN_WS/devel/setup.bash ] ; then 
   source $CATKIN_WS/devel/setup.bash
