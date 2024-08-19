@@ -75,3 +75,21 @@ The relevant ones are
 ```sh
 roslaunch biodigitalmatter_ros bringup.launch rgbd_camera:=D435i
 ```
+
+## Launch setups
+
+### Kaolin on robot
+
+### Kaolin
+
+```bash
+ROS_MASTER_URI=http://cook.local:11311/ mon launch biodigitalmatter_ros
+bringup.launch no_robots:=true rgbd_oak_model:=OAK-D-PRO no_rgb:=true
+no_record:=true
+```
+
+### Cook
+
+```bash
+ROS_MASTER_URI=http://cook.local:11311 mon launch biodigitalmatter_ros bringup.launch no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
+```
