@@ -12,6 +12,7 @@
     <arg name="namespace" default="/"
         doc="Allows to define a namespace in order to connect to multiple robots. Defaults to root (ie /)." />
 
+
     <group ns="$(arg namespace)">
 
         <!-- TF -->
@@ -34,7 +35,7 @@
         </include>
 
         <node pkg="robot_state_publisher" type="robot_state_publisher"
-            name="rob_st_pub"
+        name="rob_st_pub"
             unless="$(arg no_rws)">
             <remap from="joint_states" to="/rws/joint_states" />
         </node>

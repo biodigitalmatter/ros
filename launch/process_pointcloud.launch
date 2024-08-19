@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="name" default="oak" />
+    <arg name="params_file" default="$(find depthai_ros_driver)/config/rgbd.yaml" />
+    <arg name="rectify_rgb" default="true" />
+    <node pkg="nodelet" type="nodelet" name="rectify_color"
+        args="load image_proc/rectify $(arg  name)_nodelet_manager" if="$(arg rectify_rgb)">
+        <remap from="image_mono" to="$(arg name)/rgb/image_raw" />
+        <remap from="image_rect" to="$(arg name)/rgb/image_rect" />
+
+    </node>
+    <node pkg="nodelet" type="nodelet" name="depth_image_to_rgb_pointcloud"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg  name)_nodelet_manager">
+        <param name="queue_size" value="10" />
+        <remap from="rgb/camera_info" to="$(arg name)/rgb/camera_info" />
+        <remap from="rgb/image_rect_color" to="$(arg name)/rgb/image_rect" if="$(arg rectify_rgb)" />
+        <remap from="rgb/image_rect_color" to="$(arg name)/rgb/image_raw"
+            unless="$(arg rectify_rgb)" />
+        <remap from="depth_registered/image_rect" to="$(arg name)/stereo/image_raw" />
+        <remap from="depth_registered/points" to="$(arg name)/points" />
+
+    </node>
+</launch>

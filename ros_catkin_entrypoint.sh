@@ -15,5 +15,6 @@ if [ -f $CATKIN_WS/src/biodigitalmatter_ros/.env ] ; then
 fi
 
 mkdir -p ~/rosbags
+mkdir -p ~/pcds
 
 exec "$@"
