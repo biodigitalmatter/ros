@@ -29,9 +29,6 @@
             value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model).yaml" />
     </include>
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_rgbd_parent"
-        args="0 0 0 0 0 0 world $(arg rgbd_parent_frame)" if="$(arg no_robots)" />
-
     <node pkg="tf2_ros" type="static_transform_publisher" name="rgbd_rs_broadcaster"
         args="$(arg rgbd_x) $(arg rgbd_y) $(arg rgbd_z) $(arg rgbd_roll) $(arg rgbd_pitch) $(arg rgbd_yaw) $(arg rgbd_parent_frame) rgbd_rs_camera_link" />
 
