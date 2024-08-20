@@ -1,4 +1,4 @@
-/oak:
+/rgbd_camera:
   camera_i_ip: "192.168.8.10"
   camera_i_nn_type: none
   stereo_i_subpixel: true
