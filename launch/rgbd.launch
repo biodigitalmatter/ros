@@ -53,13 +53,17 @@
     </include>
 
     <group ns="$(arg name)/rgb">
-        <rosparam param="disable_pub_plugins"> - 'image_transport/compressedDepth' -
-            'image_transport/theora' </rosparam>
+        <rosparam param="disable_pub_plugins"> 
+            - 'image_transport/compressedDepth'
+            - 'image_transport/theora' 
+        </rosparam>
     </group>
 
     <group ns="$(arg name)/stereo">
-        <rosparam param="disable_pub_plugins"> - 'image_transport/compressedDepth' -
-            'image_transport/theora' </rosparam>
+        <rosparam param="disable_pub_plugins"> 
+            - 'image_transport/compressedDepth' 
+            - 'image_transport/theora' 
+        </rosparam>
     </group>
 
     <include file="$(dirname)/rgbd_mapping.launch" unless="$(arg no_mapping)">
