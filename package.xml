@@ -18,16 +18,19 @@
   <exec_depend>compas_rrc_driver</exec_depend>
   <exec_depend>abb_irb4600_40_255_moveit_config</exec_depend>
   <exec_depend>file_server</exec_depend>
-  <exec_depend>depthai-ros</exec_depend> 
+  <exec_depend>depthai-ros</exec_depend>
   <exec_depend>realsense2_camera</exec_depend>
-  <exec_depend>rgbd_launch</exec_depend> <!-- dep realsense2 -->
+  <!-- dep realsense2 -->
+  <exec_depend>rgbd_launch</exec_depend>
   <exec_depend>axis_camera</exec_depend>
   <exec_depend>abb_rws_service_provider</exec_depend>
   <exec_depend>abb_rws_state_publisher</exec_depend>
   <exec_depend>abb_robot_bringup_examples</exec_depend>
   <exec_depend>aruco_detect</exec_depend>
   <exec_depend>abb_irb2400_moveit_config</exec_depend>
-  <exec_depend>abb_resources</exec_depend> <!-- to execute xacro for abb robots -->
+  <!-- to execute xacro for abb robots -->
+  <exec_depend>abb_resources</exec_depend>
+  <exec_depend>octomap_server</exec_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
   <!-- The export tag contains other, unspecified, tags -->

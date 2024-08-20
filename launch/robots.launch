@@ -17,7 +17,10 @@
 
         <!-- TF -->
         <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-            args="0 0 0 0 0 0 1 world base_link 100" />
+            args="0 0 0 0 0 0 1 world platform_base 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
+            args="0 0 0.45 0 0 0 1 platform_base base_link 100" />
 
         <!-- DESCRIPTION -->
         <param name="robot_description"
@@ -35,7 +38,7 @@
         </include>
 
         <node pkg="robot_state_publisher" type="robot_state_publisher"
-        name="rob_st_pub"
+            name="rob_st_pub"
             unless="$(arg no_rws)">
             <remap from="joint_states" to="/rws/joint_states" />
         </node>

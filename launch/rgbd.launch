@@ -20,7 +20,7 @@
     <arg name="rgbd_oak_model" default="OAK-D-POE" /> <!-- or OAK-D-PRO -->
 
     <arg name="no_record" default="false" />
-    <arg name="no_pointcloud" default="false" />
+    <arg name="no_mapping" default="false" />
 
     <include file="$(find depthai_ros_driver)/launch/camera.launch"
         if="$(arg use_oak)">
@@ -52,7 +52,7 @@
         <arg name="depth_registered_pub" default="$(arg name)" />
     </include>
 
-    <include file="$(dirname)/pointcloud.launch" unless="$(arg no_pointcloud)">
+    <include file="$(dirname)/rgbd_mapping.launch" unless="$(arg no_mapping)">
         <arg name="name" value="$(arg name)" />
         <arg name="rectify_rgb" value="$(arg rectify_rgb)" />
         <arg name="no_record" value="$(arg no_record)" />
