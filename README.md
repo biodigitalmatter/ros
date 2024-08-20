@@ -93,3 +93,7 @@ no_record:=true
 ```bash
 ROS_MASTER_URI=http://cook.local:11311 mon launch biodigitalmatter_ros bringup.launch no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
 ```
+
+```bash
+ROS_HOSTNAME=cook.local roscore
+```
