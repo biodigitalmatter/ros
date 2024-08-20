@@ -36,7 +36,7 @@
             <param name="robot_description"
                 command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro" />
             <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-                args="0 0 0 0 0 0 1 world platform_base 100" />
+                args="0 0 0 0 0 0 1 world base_footprint 100" />
             <node pkg="tf" type="static_transform_publisher" name="base_footprint_broadcaster"
                 args="0 0 0.45 0 0 0 1 base_footprint base_link 100" />
         </group>
