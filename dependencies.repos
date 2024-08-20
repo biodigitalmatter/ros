@@ -21,7 +21,7 @@ repositories:
     type: git
     url: https://github.com/compas-rrc/compas_rrc_ros.git
     version: v1.1.3
-  file_server:
+  ros_file_server:
     type: git
     url: https://github.com/gramaziokohler/ros_file_server.git
     version: master
@@ -33,7 +33,3 @@ repositories:
     type: git
     url: https://github.com/lucasw/camera_info_manager_py.git
     version: noetic-devel
-  depthai-ros:
-   type: git
-   url: https://github.com/luxonis/depthai-ros.git
-   version: v2.9.0-noetic
