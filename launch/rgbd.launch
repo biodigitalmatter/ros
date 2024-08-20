@@ -52,14 +52,14 @@
         <arg name="depth_registered_pub" default="$(arg name)" />
     </include>
 
-    <group ns="$(arg name)/rgb">
+    <group ns="$(arg name)/rgb/image_raw">
         <rosparam param="disable_pub_plugins"> 
             - 'image_transport/compressedDepth'
             - 'image_transport/theora' 
         </rosparam>
     </group>
 
-    <group ns="$(arg name)/stereo">
+    <group ns="$(arg name)/stereo/image_raw">
         <rosparam param="disable_pub_plugins"> 
             - 'image_transport/compressedDepth' 
             - 'image_transport/theora' 
