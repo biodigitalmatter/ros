@@ -15,45 +15,50 @@
 
     <group ns="$(arg namespace)">
 
-        <!-- TF -->
-        <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-            args="0 0 0 0 0 0 1 world platform_base 100" />
+        <!-- ROBBAN -->
+        <group if="$(eval robot_model == 'abb_irb2400_12_155')">
+            <!-- This seems to be the most correct model for the IRB 2400/16 in the LTH RobotLab -->
+            <param name="robot_description"
+                command="xacro $(find abb_irb2400_support)/urdf/irb2400_12_155.xacro"
+            />
+            <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
+                args="0 0 0 0 0 0 1 world base_link 100" />
+        </group>
 
-        <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-            args="0 0 0.45 0 0 0 1 platform_base base_link 100" />
-
-        <!-- DESCRIPTION -->
-        <param name="robot_description"
-            command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro"
-            if="$(eval robot_model == 'abb_irb4600_40_255')" />
-        <!-- This seems to be the most correct model for the IRB 2400/16 in the LTH RobotLab -->
-        <param name="robot_description"
-            command="xacro $(find abb_irb2400_support)/urdf/irb2400_12_155.xacro"
-            if="$(eval robot_model == 'abb_irb2400_12_155')" />
+        <!-- BETTAN -->
+        <group if="$(eval robot_model == 'abb_irb4600_40_255')">
+            <param name="robot_description"
+                command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro" />
+            <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
+                args="0 0 0 0 0 0 1 world platform_base 100" />
+            <node pkg="tf" type="static_transform_publisher" name="platform_broadcaster"
+                args="0 0 0.45 0 0 0 1 platform_base base_link 100" />
+        </group>
 
         <!-- STATE -->
-        <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch"
-            unless="$(arg no_rws)">
-            <arg name="robot_ip" value="$(arg robot_ip)" />
-        </include>
+        <group unless="$(arg no_rws)">
+            <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch">
+                <arg name="robot_ip" value="$(arg robot_ip)" />
+            </include>
 
-        <node pkg="robot_state_publisher" type="robot_state_publisher"
-            name="rob_st_pub"
-            unless="$(arg no_rws)">
-            <remap from="joint_states" to="/rws/joint_states" />
-        </node>
+            <node pkg="robot_state_publisher" type="robot_state_publisher"
+                name="rob_st_pub">
+                <remap from="joint_states" to="/rws/joint_states" />
+            </node>
+        </group>
 
         <!-- COMPAS_RRC -->
-        <include file="$(find compas_rrc_driver)/launch/bringup-common.launch"
-            unless="$(arg no_rrc)">
-            <arg name="robot_ip" value="$(arg robot_ip)" />
-            <arg name="robot_streaming_port" value="$(arg robot_streaming_port)" />
-            <arg name="robot_state_port" value="$(arg robot_state_port)" />
-            <arg name="sequence_check_mode" value="$(arg sequence_check_mode)" />
-        </include>
-        <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-            <arg name="unregister_timeout" value="28800" />
-        </include>
+        <group unless="$(arg no_rrc">
+            <include file="$(find compas_rrc_driver)/launch/bringup-common.launch">
+                <arg name="robot_ip" value="$(arg robot_ip)" />
+                <arg name="robot_streaming_port" value="$(arg robot_streaming_port)" />
+                <arg name="robot_state_port" value="$(arg robot_state_port)" />
+                <arg name="sequence_check_mode" value="$(arg sequence_check_mode)" />
+            </include>
+            <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+                <arg name="unregister_timeout" value="28800" />
+            </include>
+        </group>
     </group>
 
 </launch>
