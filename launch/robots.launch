@@ -54,7 +54,7 @@
         </group>
 
         <!-- COMPAS_RRC -->
-        <group unless="$(arg no_rrc">
+        <group unless="$(arg no_rrc)">
             <include file="$(find compas_rrc_driver)/launch/bringup-common.launch">
                 <arg name="robot_ip" value="$(arg robot_ip)" />
                 <arg name="robot_streaming_port" value="$(arg robot_streaming_port)" />
