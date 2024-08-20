@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
-    
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+
     <arg name="name" default="rgbd_camera" />
 
     <arg name="use_realsense" default="false" />
@@ -19,10 +19,10 @@ xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d
 
     <arg name="no_record" default="false" />
 
-    <include file="$(find depthai_ros_driver)/launch/rgbd_pcl.launch"
+    <include file="$(find depthai_ros_driver)/launch/pointcloud.launch"
         if="$(arg use_oak)">
         <arg name="name" value="$(arg name)" />
-        <arg name="rectify_rgb" value="true"/>
+        <arg name="rectify_rgb" value="true" />
         <arg name="parent_frame" value="$(arg rgbd_parent_frame)" />
         <arg name="cam_pos_x" value="$(arg rgbd_x)" />
         <arg name="cam_pos_y" value="$(arg rgbd_y)" />
@@ -32,7 +32,7 @@ xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d
         <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
         <arg name="camera_model" value="$(arg rgbd_oak_model)" />
         <arg name="params_file"
-        value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model).yaml"
+            value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model).yaml"
         />
     </include>
 
@@ -51,7 +51,7 @@ xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d
     </include>
 
     <node name="store_pointclouds" pkg="pcl_ros" type="pointcloud_to_pcd"
-    unless="$(arg no_record)">
+        unless="$(arg no_record)">
         <remap from="input" to="/points" />
         <param name="fixed_frame" value="world" />
         <param name="prefix" value="$(env HOME)/pcds/" />
