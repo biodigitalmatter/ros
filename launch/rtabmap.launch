@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+
+    <arg name="name" default="oak" />
+    <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap">
+        <remap from="rgb/image" to="$(arg name)/rgb/image_raw" />
+        <remap from="rgb/camera_info" to="$(arg name)/rgb/camera_info" />
+        <remap from="depth/image" to="$(arg name)/stereo/image_raw" />
+        <rosparam param="Rtabmap/DetectionRate">3.5</rosparam>
+        <param name="frame_id" type="string" value="$(arg name)" />
+        <param name="map_frame_id" type="string" value="world" />
+        <param name="odom_frame_id" type="string" value="$(arg name)" />
+        <param name="subscribe_depth" type="bool" value="true" />
+    </node>
+    <node type="rtab_mapviz" name="rtabmap_viz" pkg="rtabmap_viz">
+        <remap from="rgb/image" to="$(arg name)/rgb/image_raw" />
+        <remap from="rgb/camera_info" to="$(arg name)/rgb/camera_info" />
+        <remap from="depth/image" to="$(arg name)/stereo/image_raw" />
+        <param name="map_frame_id" type="string" value="world" />
+        <param name="odom_frame_id" type="string" value="$(arg name)" />
+        <param name="subscribe_depth" type="bool" value="true" />
+    </node>
+</launch>

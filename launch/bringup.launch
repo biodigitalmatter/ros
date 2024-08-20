@@ -15,14 +15,14 @@
         name="no_record" default="false" />
 
     <!-- INCLUDES -->
-    <include file="$(dirname)/bringup/rgbd.launch"
+    <include file="$(dirname)/rgbd.launch"
         pass_all_args="true" unless="$(arg no_rgbd)" />
 
-    <include file="$(dirname)/bringup/rgb.launch"
+    <include file="$(dirname)/rgb.launch"
         pass_all_args="true" unless="$(arg no_rgb)" />
 
     <include
-        file="$(dirname)/bringup/robots.launch" pass_all_args="true" unless="$(arg no_robots)" />
+        file="$(dirname)/robots.launch" pass_all_args="true" unless="$(arg no_robots)" />
 
     <!-- RECORD -->
     <node
@@ -30,9 +30,4 @@
         args="--all --publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split
     --duration=2h --lz4"
         unless="$(arg no_record)" />
-    <node name="store_pointclouds" pkg="pcl_ros" type="pointcloud_to_pcd">
-        <remap from="input" to="/points" />
-        <param name="fixed_frame" value="world" />
-        <param name="prefix" value="$(env HOME)/pcds/" />
-    </node>
 </launch>
