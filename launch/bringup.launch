@@ -9,8 +9,6 @@
     <arg name="no_rgbd" default="false" />
     <arg name="no_robots"
         default="false" />
-    <arg name="no_rrc" default="false" />
-    <arg name="no_rws" default="false" />
     <arg
         name="no_record" default="false" />
 
