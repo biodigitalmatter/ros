@@ -45,21 +45,15 @@
         if="$(arg use_realsense)">
         <arg name="name" value="$(arg name)" />
         <arg name="align_depth" value="true" />
-        <arg name="pointcloud" value="true" unless="$(arg no_pointcloud)"/>
+        <arg name="pointcloud" value="true" unless="$(arg no_pointcloud)" />
 
         <!-- Remapping args, to follow luxonis convention -->
         <arg name="rgb" default="rgb" />
         <arg name="depth_registered_pub" default="$(arg name)" />
     </include>
 
-    <node pkg="nodelet" type="nodelet" name="rectify_color"
-        args="load image_proc/rectify $(arg  name)_nodelet_manager" if="$(arg rectify_rgb)">
-        <remap from="image_mono" to="$(arg name)/rgb/image_raw" />
-        <remap from="image_rect" to="$(arg name)/rgb/image_rect" />
-    </node>
-
     <include file="$(dirname)/pointcloud.launch" unless="$(arg no_pointcloud)">
-        <arg name="name" value="$(arg name)"/>
+        <arg name="name" value="$(arg name)" />
         <arg name="rectify_rgb" value="$(arg rectify_rgb)" />
         <arg name="no_record" value="$(arg no_record)" />
     </include>
