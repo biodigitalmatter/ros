@@ -26,6 +26,7 @@
     <node
         name="record" pkg="rosbag" type="record"
         args="--publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split
-    --duration=1h --lz4 --regex '/tf(*.)' '(*.)image_raw' '(.*)camera_info' '(*.)image_rect'"
+    --duration=1h --lz4 --regex '/tf(.*)'
+    '(.*)(image_raw|camera_info|image_rect)' '(.*)points(.*)' '/octomap(.*)'"
         unless="$(arg no_record)" />
 </launch>
