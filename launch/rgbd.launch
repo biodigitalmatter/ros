@@ -59,19 +59,19 @@
         <arg name="depth_registered_pub" default="$(arg name)" />
     </include>
 
-    <group ns="$(arg name)/rgb/image_raw">
+    <!-- group ns="$(arg name)/rgb/image_raw">
         <rosparam param="disable_pub_plugins"> 
             - 'image_transport/compressedDepth'
             - 'image_transport/theora' 
         </rosparam>
-    </group>
+    </group -->
 
-    <group ns="$(arg name)/stereo/image_raw">
+    <!-- group ns="$(arg name)/stereo/image_raw">
         <rosparam param="disable_pub_plugins"> 
             - 'image_transport/compressedDepth' 
             - 'image_transport/theora' 
         </rosparam>
-    </group>
+    </group -->
 
     <include file="$(dirname)/rgbd_mapping.launch" unless="$(arg no_mapping)">
         <arg name="name" value="$(arg name)" />
