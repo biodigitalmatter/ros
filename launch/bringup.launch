@@ -28,6 +28,6 @@
     name="record"
     pkg="rosbag"
     type="record"
-    args="--publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split --duration=1h --lz4 --regex '/tf(.*)' '(.*)/camera_info' '(.*)/(image_raw|image_rect|filtered)/compressed' '(.*)points(.*)' '(.*)/octomap_binary"
+    args="--publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split --duration=1h --lz4 --regex '/tf(.*)' '(.*)/camera_info' '(.*)/(image_raw|image_rect|filtered)/compressed' '(.*)points(.*)' '(.*)/octomap_binary'"
     unless="$(arg no_record)" />
 </launch>
