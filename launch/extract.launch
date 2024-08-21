@@ -6,17 +6,17 @@
 
   <node pkg="rosbag" type="play" name="rosbag" required="true" args="$(arg bag_file)" />
 
-  <node name="extract" pkg="image_view" type="extract_images" respawn="false" required="true"
+  <node pkg="image_view" type="extract_images" name="extract" required="true"
     output="screen" cwd="ROS_HOME">
     <remap from="image" to="/oak/rgb/image_raw" />
   </node>
 
-  <node name="pc2pcd" pkg="pcl_ros" type="pointcloud_to_pcd">
+  <node pkg="pcl_ros" type="pointcloud_to_pcd" name="pc2pcd">
     <remap from="input" to="/oak/points" />
     <param name="frame_id" value="world" />
     <param name="prefix" value="/home/tetov/pcds/" />
   </node>
 
-  <node name="tf_echo_camera" pkg="tf" type="tf_echo" args="oak world 1" />
+  <node pkg="tf" type="tf_echo" name="tf_echo_camera" args="oak world 1" />
 
 </launch>

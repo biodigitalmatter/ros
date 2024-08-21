@@ -9,9 +9,8 @@
     <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
     <arg name="sequence_check_mode" default="none"
         doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
-    <arg name="namespace" default="/"
-        doc="Allows to define a namespace in order to connect to multiple robots.
-    Defaults to root (ie /)." />
+    <arg name="namespace" default="rob1"
+    doc="Allows to define a namespace in order to connect to multiple robots." />
 
     <arg name="no_rws" default="false" />
     <arg name="no_rrc" default="false" />
@@ -49,7 +48,7 @@
 
             <node pkg="robot_state_publisher" type="robot_state_publisher"
                 name="rob_st_pub">
-                <remap from="joint_states" to="/rws/joint_states" />
+                <remap from="joint_states" to="rws/joint_states" />
             </node>
         </group>
 

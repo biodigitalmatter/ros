@@ -1,32 +1,33 @@
 <?xml version="1.0"?>
-<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+<launch
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <!-- ARGS -->
-    <arg
-        name="no_rgb" default="false" />
-    <arg name="no_rgbd" default="false" />
-    <arg name="no_robots"
-        default="false" />
-    <arg
-        name="no_record" default="false" />
+  <!-- ARGS -->
+  <arg name="no_rgb" default="false" />
+  <arg name="no_rgbd" default="false" />
+  <arg name="no_robots" default="false" />
+  <arg name="no_record" default="false" />
+  <include
+    file="$(dirname)/rgbd.launch"
+    pass_all_args="true"
+    unless="$(arg no_rgbd)" />
 
-    <!-- INCLUDES -->
-    <include file="$(dirname)/rgbd.launch"
-        pass_all_args="true" unless="$(arg no_rgbd)" />
+  <include
+    file="$(dirname)/rgb.launch"
+    pass_all_args="true"
+    unless="$(arg no_rgb)" />
 
-    <include file="$(dirname)/rgb.launch"
-        pass_all_args="true" unless="$(arg no_rgb)" />
+  <include
+    file="$(dirname)/robots.launch"
+    pass_all_args="true"
+    unless="$(arg no_robots)" />
 
-    <include
-        file="$(dirname)/robots.launch" pass_all_args="true" unless="$(arg no_robots)" />
-
-    <!-- RECORD -->
-    <node
-        name="record" pkg="rosbag" type="record"
-        args="--publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split
-    --duration=1h --lz4 --regex '/tf(.*)'
-    '(.*)(image_raw|camera_info|image_rect)' '(.*)points(.*)' '/octomap(.*)'"
-        unless="$(arg no_record)" />
+  <node
+    name="record"
+    pkg="rosbag"
+    type="record"
+    args="--publish --output-prefix=$(env HOME)/rosbags/$(optenv HOSTNAME no_env_hostname) --split --duration=1h --lz4 --regex '/tf(.*)' '(.*)/camera_info' '(.*)/(image_raw|image_rect|filtered)/compressed' '(.*)points(.*)' '(.*)/octomap_binary"
+    unless="$(arg no_record)" />
 </launch>
