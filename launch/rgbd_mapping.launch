@@ -23,15 +23,6 @@
         <remap from="image_rect" to="$(arg name)/rgb/image_rect" />
     </node>
 
-    <node
-        pkg="nodelet"
-        type="nodelet"
-        name="rectify_left"
-        args="load image_proc/rectify $(arg rgbd_mapping_nodelet_manager)">
-        <remap from="image_mono" to="$(arg name)/left/image_raw" />
-        <remap from="image_rect" to="$(arg name)/left/image_rect" />
-    </node>
-
     <!-- TODO: Why is this not needed? -->
     <!-- node pkg="nodelet" type="nodelet" name="rectify_stereo"
         args="load image_proc/rectify $(arg  name)_nodelet_manager">
