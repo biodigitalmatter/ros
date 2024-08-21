@@ -1,8 +1,8 @@
 /rgbd_camera:
+  camera_i_enable_imu: false
   camera_i_nn_type: none
-  stereo_i_subpixel: true
-  i_publish_synced_rect_pair: true
-  i_enable_imu: false
+  left_i_publish_topic: true
   stereo_i_align_depth: true
-  # left_i_publish_topic: true
-  # stereo_i_output_disparity: true
+  stereo_i_output_disparity: true
+  stereo_i_publish_synced_rect_pair: true
+  stereo_i_subpixel: true
