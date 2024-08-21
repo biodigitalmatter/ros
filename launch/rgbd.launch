@@ -22,6 +22,12 @@
     <arg name="no_record" default="false" />
     <arg name="no_mapping" default="false" />
 
+    <param name="$(arg name)/camera_i_ip" value="192.168.8.10"
+        if="$(eval
+    rgbd_oak_model == 'OAK-D-POE'" />
+    <param name="$(arg name)/camera_i_mx_id" value="18443010C10B361300"
+        if="$(eval rgbd_oak_model == 'OAK-D-PRO'" />
+
     <include file="$(find depthai_ros_driver)/launch/camera.launch"
         if="$(arg use_oak)">
         <arg name="name" value="$(arg name)" />
@@ -34,7 +40,7 @@
         <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
         <arg name="camera_model" value="$(arg rgbd_oak_model)" />
         <arg name="params_file"
-            value="$(find biodigitalmatter_ros)/config/$(arg rgbd_oak_model).yaml"
+            value="$(find biodigitalmatter_ros)/config/OAK-D.yaml"
         />
     </include>
 
