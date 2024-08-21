@@ -9,24 +9,25 @@
         name="no_record" default="false" />
     <arg name="use_wls_filter" default="true" />
 
-    <arg name="nodelet_manager" default="$(arg name)_mapping_nodelet_manager" />
+    <arg name="rgbd_mapping_nodelet_manager" default="$(env HOSTNAME)_$(arg name)_nodelet_manager" />
 
-    <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" />
+    <node pkg="nodelet" type="nodelet" name="$(arg rgbd_mapping_nodelet_manager)" args="manager" />
 
     <node
         pkg="nodelet" type="nodelet" name="rectify_color"
-        args="load image_proc/rectify $(arg  nodelet_manager)" if="$(arg
+        args="load image_proc/rectify $(arg rgbd_mapping_nodelet_manager)"
+        if="$(arg
     rectify_rgb)"
         required="true">
         <remap from="image_mono" to="$(arg name)/rgb/image_raw" />
         <remap from="image_rect" to="$(arg name)/rgb/image_rect" />
     </node>
 
-    <node 
+    <node
         pkg="nodelet"
-        type="nodelet" 
+        type="nodelet"
         name="rectify_left"
-        args="load image_proc/rectify $(arg  nodelet_manager)">
+        args="load image_proc/rectify $(arg rgbd_mapping_nodelet_manager)">
         <remap from="image_mono" to="$(arg name)/left/image_raw" />
         <remap from="image_rect" to="$(arg name)/left/image_rect" />
     </node>
@@ -39,12 +40,12 @@
     </node -->
 
 
-    <node 
-        pkg="nodelet" 
+    <node
+        pkg="nodelet"
         type="nodelet"
         name="wls"
-        args="load depthai_filters/WLSFilter $(arg nodelet_manager)"
-        required="true" 
+        args="load depthai_filters/WLSFilter $(arg rgbd_mapping_nodelet_manager)"
+        required="true"
         if="$(arg use_wls_filter)">
         <remap from="/stereo/image_raw" to="$(arg name)/stereo/image_raw" />
         <remap
@@ -56,10 +57,10 @@
     </node>
 
     <node
-        pkg="nodelet" 
-        type="nodelet" 
+        pkg="nodelet"
+        type="nodelet"
         name="depth_image_to_rgb_pointcloud"
-        args="load depth_image_proc/point_cloud_xyzrgb $(arg  name)_nodelet_manager"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg rgbd_mapping_nodelet_manager)"
         required="true">
         <param name="queue_size" value="10" />
         <remap from="rgb/camera_info" to="$(arg name)/rgb/camera_info" />
@@ -77,8 +78,8 @@
     </node>
 
     <node
-    pkg="pcl_ros" type="pointcloud_to_pcd"
-        name="store_pointclouds" 
+        pkg="pcl_ros" type="pointcloud_to_pcd"
+        name="store_pointclouds"
         unless="$(arg no_record)">
         <remap from="input" to="/points" />
         <param name="fixed_frame" value="world" />
