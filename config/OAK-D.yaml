@@ -5,3 +5,7 @@
   stereo_i_output_disparity: true
   stereo_i_publish_synced_rect_pair: true
   stereo_i_subpixel: true
+  rgb_i_fps: 5
+  right_i_fps: 5
+  left_i_fps: 5
+  stereo_i_fps: 5
