@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-
-<launch>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
     <arg name="name" default="rgbd_camera" />
     <arg name="rectify_rgb" default="true" />
@@ -34,14 +35,15 @@
 
     <node name="wls"
         pkg="nodelet" type="nodelet" output="screen"
-        required="true" if="$(arg use_wls_filter)" /> args="load depthai_filters/WLSFilter $(arg
-    name)_nodelet_manager"> <remap from="/stereo/image_raw" to="$(arg name)/stereo/image_raw" />
+        required="true" args="load depthai_filters/WLSFilter $(arg name)_nodelet_manager"
+        if="$(arg use_wls_filter)">
+        <remap from="/stereo/image_raw" to="$(arg name)/stereo/image_raw" />
         <remap
-        from="/stereo/left/rect" to="$(arg name)/left/image_rect" />
+            from="/stereo/left/rect" to="$(arg name)/left/image_rect" />
         <remap
-        from="/stereo/camera_info" to="$(arg name)/stereo/camera_info" />
+            from="/stereo/camera_info" to="$(arg name)/stereo/camera_info" />
         <remap
-        from="/stereo/wls/filtered" to="$(arg name)/stereo/wls/filtered" />
+            from="/stereo/wls/filtered" to="$(arg name)/stereo/wls/filtered" />
     </node>
 
     <node
@@ -83,4 +85,5 @@
         <!-- data source to integrate (PointCloud2) -->
         <remap from="cloud_in" to="$(arg name)/points" />
     </node>
+
 </launch>
