@@ -1,8 +1,6 @@
 /rgbd_camera:
   camera_i_enable_imu: false
   camera_i_nn_type: none
-  stereo_i_align_depth: true
-  stereo_i_output_disparity: true
   stereo_i_publish_left_rect: true
   stereo_i_subpixel: true
   rgb_i_fps: 5
