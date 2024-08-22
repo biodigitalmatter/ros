@@ -9,6 +9,7 @@
   <arg name="no_rgbd" default="false" />
   <arg name="no_robots" default="false" />
   <arg name="no_record" default="false" />
+
   <include
     file="$(dirname)/rgbd.launch"
     pass_all_args="true"

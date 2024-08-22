@@ -1,32 +1,29 @@
 <?xml version="1.0"?>
 <launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="name" default="rgbd_camera" />
-    <arg name="rectify_rgb" default="true" />
-    <arg
-        name="no_record" default="false" />
-    <arg name="use_wls_filter" default="true" />
+  <arg name="name" default="rgbd_camera" />
+  <arg name="rectify_rgb" default="true" />
+  <arg
+    name="no_record" default="false" />
+  <arg name="use_wls_filter" default="true" />
 
-    <arg name="rgbd_mapping_nodelet_manager"
-        default="$(env HOSTNAME)_$(arg
+  <arg name="rgbd_mapping_nodelet_manager"
+    default="$(env HOSTNAME)_$(arg
     name)_nodelet_manager" />
 
-    <group ns="$(arg name)">
-    <node pkg="tf" type="static_transform_publisher" name="map_broadcaster"
-        args="0 0 0 0 0 0 1 world map 100" />
-
+  <group ns="$(arg name)">
     <node pkg="nodelet" type="nodelet" name="$(arg rgbd_mapping_nodelet_manager)" args="manager" />
 
     <node
-        pkg="nodelet" type="nodelet" name="rectify_color"
-        args="load image_proc/rectify $(arg rgbd_mapping_nodelet_manager)"
-        if="$(arg
+      pkg="nodelet" type="nodelet" name="rectify_color"
+      args="load image_proc/rectify $(arg rgbd_mapping_nodelet_manager)"
+      if="$(arg
     rectify_rgb)"
-        required="true">
-        <remap from="image_mono" to="rgb/image_raw" />
-        <remap from="image_rect" to="rgb/image_rect" />
+      required="true">
+      <remap from="image_mono" to="rgb/image_raw" />
+      <remap from="image_rect" to="rgb/image_rect" />
     </node>
 
     <!-- TODO: Why is this not needed? -->
@@ -37,79 +34,79 @@
     </node -->
 
     <node
-        pkg="nodelet"
-        type="nodelet"
-        name="wls"
-        args="load depthai_filters/WLSFilter $(arg rgbd_mapping_nodelet_manager)"
-        required="true"
-        if="$(arg use_wls_filter)">
-        <remap from="/stereo/image_raw" to="stereo/image_raw" />
-        <remap
-            from="/stereo/left/rect" to="left/image_rect" />
-        <remap
-            from="/stereo/camera_info" to="stereo/camera_info" />
+      pkg="nodelet"
+      type="nodelet"
+      name="wls"
+      args="load depthai_filters/WLSFilter $(arg rgbd_mapping_nodelet_manager)"
+      required="true"
+      if="$(arg use_wls_filter)">
+      <remap from="/stereo/image_raw" to="stereo/image_raw" />
+      <remap
+        from="/stereo/left/rect" to="left/image_rect" />
+      <remap
+        from="/stereo/camera_info" to="stereo/camera_info" />
     </node>
 
     <node
-        pkg="nodelet"
-        type="nodelet"
-        name="depth_image_to_rgb_pointcloud"
-        args="load depth_image_proc/point_cloud_xyzrgb $(arg rgbd_mapping_nodelet_manager)"
-        required="true">
-        <param name="queue_size" value="10" />
-        <remap from="rgb/image_rect_color" to="rgb/image_rect" />
-        <remap from="depth_registered/image_rect" to="stereo/wls/filtered"
-            if="$(arg use_wls_filter)" />
-        <remap from="depth_registered/image_rect" to="stereo/image_raw"
-            unless="$(arg use_wls_filter)" />
+      pkg="nodelet"
+      type="nodelet"
+      name="depth_image_to_rgb_pointcloud"
+      args="load depth_image_proc/point_cloud_xyzrgb $(arg rgbd_mapping_nodelet_manager)"
+      required="true">
+      <param name="queue_size" value="10" />
+      <remap from="rgb/image_rect_color" to="rgb/image_rect" />
+      <remap from="depth_registered/image_rect" to="stereo/wls/filtered"
+        if="$(arg use_wls_filter)" />
+      <remap from="depth_registered/image_rect" to="stereo/image_raw"
+        unless="$(arg use_wls_filter)" />
     </node>
 
     <node
-        pkg="nodelet"
-        type="nodelet"
-        name="pcl_passthrough_clean"
-        args="load pcl/PassThrough $(arg rgbd_mapping_nodelet_manager)"
-        required="true">
-        <remap from="~input" to="depth_registered/points" />
-        <!-- input/output frame not set since we use frame_id: from pointcloud
+      pkg="nodelet"
+      type="nodelet"
+      name="pcl_passthrough_clean"
+      args="load pcl/PassThrough $(arg rgbd_mapping_nodelet_manager)"
+      required="true">
+      <remap from="~input" to="depth_registered/points" />
+      <!-- input/output frame not set since we use frame_id: from pointcloud
         msg header -->
-        <param name="filter_field_name" value="z" />
-        <param name="filter_limit_min" value="0.4" />
-        <param name="filter_limit_max" value="2.5" />
+      <param name="filter_field_name" value="z" />
+      <param name="filter_limit_min" value="0.4" />
+      <param name="filter_limit_max" value="2.5" />
     </node>
 
     <node
-        pkg="nodelet"
-        type="nodelet"
-        name="pcl_cropbox_world"
-        args="load pcl/CropBox $(arg rgbd_mapping_nodelet_manager)"
-        required="true">
-        <remap from="~input" to="pcl_passthrough_clean/output" />
-        <remap from="~output" to="filtered/points" />
-        <param name="min_x" value="-2" />
-        <param name="max_x" value="2" />
-        <param name="min_y" value="-2" />
-        <param name="max_y" value="2" />
-        <param name="min_z" value=".7" />
-        <param name="max_z" value="2.5" />
-        <param name="output_frame" value="map" />
+      pkg="nodelet"
+      type="nodelet"
+      name="pcl_cropbox_world"
+      args="load pcl/CropBox $(arg rgbd_mapping_nodelet_manager)"
+      required="true">
+      <remap from="~input" to="pcl_passthrough_clean/output" />
+      <remap from="~output" to="filtered/points" />
+      <param name="min_x" value="-2" />
+      <param name="max_x" value="2" />
+      <param name="min_y" value="-2" />
+      <param name="max_y" value="2" />
+      <param name="min_z" value=".7" />
+      <param name="max_z" value="2.5" />
+      <param name="output_frame" value="map" />
     </node>
 
     <node pkg="octomap_server"
-        type="octomap_server_node" name="octomap_server">
-        <param name="resolution" value="0.005" />
-        <remap from="cloud_in" to="filtered/points" />
+      type="octomap_server_node" name="octomap_server">
+      <param name="resolution" value="0.005" />
+      <remap from="cloud_in" to="filtered/points" />
     </node>
 
     <node
-        pkg="pcl_ros"
-        type="pointcloud_to_pcd"
-        name="store_pointclouds"
-        unless="$(arg no_record)">
-        <remap from="input" to="filtered/points" />
-        <param name="prefix" value="$(env HOME)/pcds/" />
+      pkg="pcl_ros"
+      type="pointcloud_to_pcd"
+      name="store_pointclouds"
+      unless="$(arg no_record)">
+      <remap from="input" to="filtered/points" />
+      <param name="prefix" value="$(env HOME)/pcds/" />
     </node>
-    </group>
+  </group>
 
 
 </launch>

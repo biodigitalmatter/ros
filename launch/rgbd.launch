@@ -1,68 +1,68 @@
 <?xml version="1.0"?>
 <launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="name" default="rgbd_camera" />
-    <arg name="rectify_rgb" default="true" />
+  <arg name="name" default="rgbd_camera" />
+  <arg name="rectify_rgb" default="true" />
 
-    <arg name="use_realsense" default="false" />
-    <arg name="use_oak" default="true" />
+  <arg name="use_realsense" default="false" />
+  <arg name="use_oak" default="true" />
 
-    <arg name="rgbd_parent_frame" default="tool0" />
-    <arg name="rgbd_x" default="0.175319" />
-    <arg name="rgbd_y" default="0.39145" />
-    <arg name="rgbd_z" default="0.047145" />
-    <arg name="rgbd_roll" default="0.0" />
-    <arg name="rgbd_pitch" default="0.0" />
-    <arg name="rgbd_yaw" default="1.3089969387" />
+  <arg name="rgbd_parent_frame" default="tool0" />
+  <arg name="rgbd_x" default="0.175319" />
+  <arg name="rgbd_y" default="0.39145" />
+  <arg name="rgbd_z" default="0.047145" />
+  <arg name="rgbd_roll" default="0.0" />
+  <arg name="rgbd_pitch" default="0.0" />
+  <arg name="rgbd_yaw" default="1.3089969387" />
 
-    <arg name="rgbd_oak_model" default="OAK-D-POE" /> <!-- or OAK-D-PRO -->
+  <arg name="rgbd_oak_model" default="OAK-D-POE" /> <!-- or OAK-D-PRO -->
 
-    <arg name="use_wls_filter" default="true" />
+  <arg name="use_wls_filter" default="true" />
 
-    <arg name="no_record" default="false" />
-    <arg name="no_mapping" default="false" />
+  <arg name="no_record" default="false" />
+  <arg name="no_mapping" default="false" />
 
-    <group if="$(arg use_oak)">
-        <param name="$(arg name)/camera_i_ip" value="192.168.8.10"
-            if="$(eval rgbd_oak_model == 'OAK-D-POE')" />
-        <param name="$(arg name)/camera_i_mx_id" value="18443010C10B361300"
-            if="$(eval rgbd_oak_model == 'OAK-D-PRO')" />
+  <group if="$(arg use_oak)">
+    <param name="$(arg name)/camera_i_ip" value="192.168.8.10"
+      if="$(eval rgbd_oak_model == 'OAK-D-POE')" />
+    <param name="$(arg name)/camera_i_mx_id" value="18443010C10B361300"
+      if="$(eval rgbd_oak_model == 'OAK-D-PRO')" />
 
-        <include file="$(find depthai_ros_driver)/launch/camera.launch"
-            if="$(arg use_oak)">
-            <arg name="name" value="$(arg name)" />
-            <arg name="parent_frame" value="$(arg rgbd_parent_frame)" />
-            <arg name="cam_pos_x" value="$(arg rgbd_x)" />
-            <arg name="cam_pos_y" value="$(arg rgbd_y)" />
-            <arg name="cam_pos_z" value="$(arg rgbd_z)" />
-            <arg name="cam_roll" value="$(arg rgbd_roll)" />
-            <arg name="cam_pitch" value="$(arg rgbd_pitch)" />
-            <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
-            <arg name="camera_model" value="$(arg rgbd_oak_model)" />
-            <arg name="params_file"
-                value="$(find biodigitalmatter_ros)/config/OAK-D.yaml"
-            />
-        </include>
-    </group>
-    <group if="$(arg use_realsense)">
-        <node pkg="tf2_ros" type="static_transform_publisher" name="rgbd_rs_broadcaster"
-            args="$(arg rgbd_x) $(arg rgbd_y) $(arg rgbd_z) $(arg rgbd_roll) $(arg rgbd_pitch) $(arg rgbd_yaw) $(arg rgbd_parent_frame) rgbd_rs_camera_link" />
-
-        <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
-            <arg name="name" value="$(arg name)" />
-
-            <!-- Remapping args, to follow luxonis convention -->
-            <arg name="rgb" default="rgb" />
-            <arg name="depth_registered_pub" default="$(arg name)" />
-        </include>
-    </group>
-
-    <include file="$(dirname)/rgbd_mapping.launch" unless="$(arg no_mapping)">
-        <arg name="name" value="$(arg name)" />
-        <arg name="rectify_rgb" value="$(arg rectify_rgb)" />
-        <arg name="no_record" value="$(arg no_record)" />
-        <arg name="use_wls_filter" value="$(arg use_wls_filter)" />
+    <include file="$(find depthai_ros_driver)/launch/camera.launch"
+      if="$(arg use_oak)">
+      <arg name="name" value="$(arg name)" />
+      <arg name="parent_frame" value="$(arg rgbd_parent_frame)" />
+      <arg name="cam_pos_x" value="$(arg rgbd_x)" />
+      <arg name="cam_pos_y" value="$(arg rgbd_y)" />
+      <arg name="cam_pos_z" value="$(arg rgbd_z)" />
+      <arg name="cam_roll" value="$(arg rgbd_roll)" />
+      <arg name="cam_pitch" value="$(arg rgbd_pitch)" />
+      <arg name="cam_yaw" value="$(arg rgbd_yaw)" />
+      <arg name="camera_model" value="$(arg rgbd_oak_model)" />
+      <arg name="params_file"
+        value="$(find biodigitalmatter_ros)/config/OAK-D.yaml"
+      />
     </include>
+  </group>
+  <group if="$(arg use_realsense)">
+    <node pkg="tf2_ros" type="static_transform_publisher" name="rgbd_rs_broadcaster"
+      args="$(arg rgbd_x) $(arg rgbd_y) $(arg rgbd_z) $(arg rgbd_roll) $(arg rgbd_pitch) $(arg rgbd_yaw) $(arg rgbd_parent_frame) rgbd_rs_camera_link" />
+
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
+      <arg name="name" value="$(arg name)" />
+
+      <!-- Remapping args, to follow luxonis convention -->
+      <arg name="rgb" default="rgb" />
+      <arg name="depth_registered_pub" default="$(arg name)" />
+    </include>
+  </group>
+
+  <include file="$(dirname)/rgbd_mapping.launch" unless="$(arg no_mapping)">
+    <arg name="name" value="$(arg name)" />
+    <arg name="rectify_rgb" value="$(arg rectify_rgb)" />
+    <arg name="no_record" value="$(arg no_record)" />
+    <arg name="use_wls_filter" value="$(arg use_wls_filter)" />
+  </include>
 </launch>

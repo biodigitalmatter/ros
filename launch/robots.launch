@@ -1,69 +1,69 @@
 <?xml version="1.0"?>
 <launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
-    <arg name="robot_ip" doc="IP of the controller" default="192.168.8.125" />
-    <arg name="robot_model" default="abb_irb4600_40_255" />
-    <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
-    <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
-    <arg name="sequence_check_mode" default="none"
-        doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
-    <arg name="namespace" default="rob1"
+  <arg name="robot_ip" doc="IP of the controller" default="192.168.8.125" />
+  <arg name="robot_model" default="abb_irb4600_40_255" />
+  <arg name="robot_streaming_port" default="30101" doc="Port of the streaming interface" />
+  <arg name="robot_state_port" default="30201" doc="Port of the state interface" />
+  <arg name="sequence_check_mode" default="none"
+    doc="Define sequence ID check mode. Supported: none|all|incoming|outgoing" />
+  <arg name="namespace" default="rob1"
     doc="Allows to define a namespace in order to connect to multiple robots." />
 
-    <arg name="no_rws" default="false" />
-    <arg name="no_rrc" default="false" />
+  <arg name="no_rws" default="false" />
+  <arg name="no_rrc" default="false" />
 
 
-    <group ns="$(arg namespace)">
+  <group ns="$(arg namespace)">
 
-        <!-- ROBBAN -->
-        <group if="$(eval robot_model == 'abb_irb2400_12_155')">
-            <!-- This seems to be the most correct model for the IRB 2400/16 in the LTH RobotLab -->
-            <param name="robot_description"
-                command="xacro $(find abb_irb2400_support)/urdf/irb2400_12_155.xacro"
-            />
-            <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-                args="0 0 0 0 0 0 1 world base_footprint 100" />
-            <node pkg="tf" type="static_transform_publisher" name="base_footprint_broadcaster"
-                args="0 0 0 0 0 0 1 base_footprint base_link 100" />
-        </group>
-
-        <!-- BETTAN -->
-        <group if="$(eval robot_model == 'abb_irb4600_40_255')">
-            <param name="robot_description"
-                command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro" />
-            <node pkg="tf" type="static_transform_publisher" name="world_broadcaster"
-                args="0 0 0 0 0 0 1 world base_footprint 100" />
-            <node pkg="tf" type="static_transform_publisher" name="base_footprint_broadcaster"
-                args="0 0 0.45 0 0 0 1 base_footprint base_link 100" />
-        </group>
-
-        <!-- STATE -->
-        <group unless="$(arg no_rws)">
-            <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch">
-                <arg name="robot_ip" value="$(arg robot_ip)" />
-            </include>
-
-            <node pkg="robot_state_publisher" type="robot_state_publisher"
-                name="rob_st_pub">
-                <remap from="joint_states" to="rws/joint_states" />
-            </node>
-        </group>
-
-        <!-- COMPAS_RRC -->
-        <group unless="$(arg no_rrc)">
-            <include file="$(find compas_rrc_driver)/launch/bringup-common.launch">
-                <arg name="robot_ip" value="$(arg robot_ip)" />
-                <arg name="robot_streaming_port" value="$(arg robot_streaming_port)" />
-                <arg name="robot_state_port" value="$(arg robot_state_port)" />
-                <arg name="sequence_check_mode" value="$(arg sequence_check_mode)" />
-            </include>
-            <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-                <arg name="unregister_timeout" value="28800" />
-            </include>
-        </group>
+    <!-- ROBBAN -->
+    <group if="$(eval robot_model == 'abb_irb2400_12_155')">
+      <!-- This seems to be the most correct model for the IRB 2400/16 in the LTH RobotLab -->
+      <param name="robot_description"
+        command="xacro $(find abb_irb2400_support)/urdf/irb2400_12_155.xacro"
+      />
+      <node pkg="tf" type="static_transform_publisher" name="base_footprint_broadcaster"
+        args="0 0 0 0 0 0 1 map base_footprint 100" />
+      <node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster"
+        args="0 0 0 0 0 0 1 base_footprint base_link 100" />
     </group>
+
+    <!-- BETTAN -->
+    <group if="$(eval robot_model == 'abb_irb4600_40_255')">
+      <param name="robot_description"
+        command="xacro $(find abb_irb4600_40_255)/urdf/abb_irb4600_40_255.xacro" />
+      <node pkg="tf" type="static_transform_publisher" name="base_footprint_broadcaster"
+        args="0 0 0 0 0 0 1 map base_footprint 100" />
+      <node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster"
+        args="0 0 0.45 0 0 0 1 base_footprint base_link 100" />
+    </group>
+
+    <!-- STATE -->
+    <group unless="$(arg no_rws)">
+      <include file="$(find abb_robot_bringup_examples)/launch/ex1_rws_only.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)" />
+      </include>
+
+      <node pkg="robot_state_publisher" type="robot_state_publisher"
+        name="rob_st_pub">
+        <remap from="joint_states" to="rws/joint_states" />
+      </node>
+    </group>
+
+    <!-- COMPAS_RRC -->
+    <group unless="$(arg no_rrc)">
+      <include file="$(find compas_rrc_driver)/launch/bringup-common.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)" />
+        <arg name="robot_streaming_port" value="$(arg robot_streaming_port)" />
+        <arg name="robot_state_port" value="$(arg robot_state_port)" />
+        <arg name="sequence_check_mode" value="$(arg sequence_check_mode)" />
+      </include>
+      <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="unregister_timeout" value="28800" />
+      </include>
+    </group>
+  </group>
 
 </launch>
