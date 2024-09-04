@@ -4,18 +4,15 @@
   xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
 
   <arg name="board" default="large" />
+  <arg name="camera_ns" default="/rgbd_camera/rgb" />
 
-  <group if="$(eval board == 'large')">
+  <include file="$(find charuco_detector)/launch/charuco_detector.launch">
     <arg name="squares_sides_size_in_meters" value="0.040" />
     <arg name="markers_sides_size_in_meters" value="0.031" />
     <arg name="number_of_squares_in_x" value="14" />
     <arg name="number_of_squares_in_y" value="9" />
     <arg name="number_of_markers" value="63" />
-  </group>
-
-  <include file="$(find charuco_detector)/launch/charuco_detector.launch"
-    if="$(eval board == 'large')" pass_all_args="true">
-    <arg name="image_topic" value="/rgbd_camera/rgb/image_raw" />
-    <arg name="camera_info_topic" value="/rgbd_camera/rgb/camera_info" />
+    <arg name="image_topic" value="$(arg camera_ns)/image_raw" />
+    <arg name="camera_info_topic" value="$(arg camera_ns)/camera_info" />
   </include>
 </launch>
