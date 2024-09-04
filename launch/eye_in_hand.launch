@@ -30,9 +30,10 @@
 
   <arg name="board" default="large" />
 
-  <include file="$(dirname)/rgbd.launch" />
+  <include file="$(dirname)/rgbd.launch">
+  <arg name="no_mapping" value="true" />
   <include file="$(dirname)/robots.launch">
-    <arg name="no_rws" value="true" />
+    <arg name="no_rrc" value="true" />
   </include>
 
   <group if="$(eval board == 'large')">
@@ -45,15 +46,12 @@
 
   <include file="$(find charuco_detector)/launch/charuco_detector.launch"
     if="$(eval board == 'large')" pass_all_args="true">
-    <arg name="image_topic" default="/rgbd_camera/stereo/image_raw" />
-    <arg name="camera_info_topic" default="/rgbd_camera/stereo/camera_info" />
+    <arg name="image_topic" value="/rgbd_camera/stereo/image_raw" />
+    <arg name="camera_info_topic" value="/rgbd_camera/stereo/camera_info" />
   </include>
 
   <include file="$(find easy_handeye)/launch/calibrate.launch">
     <arg name="eye_on_hand" value="true" />
-
-    <!-- you can choose any identifier, as long as you use the same for publishing the calibration -->
-    <arg name="namespace_prefix" value="my_eih_calib" />
 
     <!-- fill in the following parameters according to your robot's published tf frames -->
     <arg name="robot_base_frame" value="/base_link" />
@@ -62,5 +60,8 @@
     <!-- fill in the following parameters according to your tracking system's published tf frames -->
     <arg name="tracking_base_frame" value="/rgbd_camera_rgb_camera_optical_frame" />
     <arg name="tracking_marker_frame" value="/charuco" />
+
+    <arg name="freehand_robot_movement" value="true" />
+
   </include>
 </launch>
