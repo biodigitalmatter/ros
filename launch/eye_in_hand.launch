@@ -43,7 +43,6 @@
     <arg name="number_of_markers" value="63" />
   </group>
 
-  </include>
   <include file="$(find charuco_detector)/launch/charuco_detector.launch"
     if="$(eval board == 'large')" pass_all_args="true">
     <arg name="image_topic" default="/rgbd_camera/stereo/image_raw" />
