@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://gist.githubusercontent.com/nalt/dfa2abc9d2e3ae4feb82ca5608090387/raw/roslaunch.xsd">
+
+  <!-- enum  	cv::aruco::PredefinedDictionaryType {
+  cv::aruco::DICT_4X4_50 = 0 ,
+  cv::aruco::DICT_4X4_100 ,
+  cv::aruco::DICT_4X4_250 ,
+  cv::aruco::DICT_4X4_1000 ,
+  cv::aruco::DICT_5X5_50 ,
+  cv::aruco::DICT_5X5_100 ,
+  cv::aruco::DICT_5X5_250 ,
+  cv::aruco::DICT_5X5_1000 ,
+  cv::aruco::DICT_6X6_50 ,
+  cv::aruco::DICT_6X6_100 ,
+  cv::aruco::DICT_6X6_250 ,
+  cv::aruco::DICT_6X6_1000 ,
+  cv::aruco::DICT_7X7_50 ,
+  cv::aruco::DICT_7X7_100 ,
+  cv::aruco::DICT_7X7_250 ,
+  cv::aruco::DICT_7X7_1000 ,
+  cv::aruco::DICT_ARUCO_ORIGINAL ,
+  cv::aruco::DICT_APRILTAG_16h5 ,
+  cv::aruco::DICT_APRILTAG_25h9 ,
+  cv::aruco::DICT_APRILTAG_36h10 ,
+  cv::aruco::DICT_APRILTAG_36h11 ,
+  cv::aruco::DICT_ARUCO_MIP_36h12
+} -->
+
+  <arg name="board" default="large" />
+
+  <include file="$(dirname)/rgbd.launch" />
+  <include file="$(dirname)/robots.launch">
+    <arg name="no_rws" value="true" />
+  </include>
+
+  <group if="$(eval board == 'large')">
+    <arg name="squares_sides_size_in_meters" value="0.040" />
+    <arg name="markers_sides_size_in_meters" value="0.031" />
+    <arg name="number_of_squares_in_x" value="14" />
+    <arg name="number_of_squares_in_y" value="9" />
+    <arg name="number_of_markers" value="63" />
+  </group>
+
+  </include>
+  <include file="$(find charuco_detector)/launch/charuco_detector.launch"
+    if="$(eval board == 'large')" pass_all_args="true">
+    <arg name="image_topic" default="/rgbd_camera/stereo/image_raw" />
+    <arg name="camera_info_topic" default="/rgbd_camera/stereo/camera_info" />
+  </include>
+
+  <include file="$(find easy_handeye)/launch/calibrate.launch">
+    <arg name="eye_on_hand" value="true" />
+
+    <!-- you can choose any identifier, as long as you use the same for publishing the calibration -->
+    <arg name="namespace_prefix" value="my_eih_calib" />
+
+    <!-- fill in the following parameters according to your robot's published tf frames -->
+    <arg name="robot_base_frame" value="/base_link" />
+    <arg name="robot_effector_frame" value="/tool0" />
+
+    <!-- fill in the following parameters according to your tracking system's published tf frames -->
+    <arg name="tracking_base_frame" value="/rgbd_camera_rgb_camera_optical_frame" />
+    <arg name="tracking_marker_frame" value="/charuco" />
+  </include>
+</launch>

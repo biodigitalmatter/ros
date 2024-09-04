@@ -33,3 +33,11 @@ repositories:
     type: git
     url: https://github.com/lucasw/camera_info_manager_py.git
     version: noetic-devel
+  easy_handeye:
+    type: git
+    url: https://github.com/IFL-CAMP/easy_handeye
+    version: ffcc43d1e63cd16b3052f499c681cd8fbc7b71f5
+  charuco_detector:
+    type: git
+    url: https://github.com/carlosmccosta/charuco_detector
+    version: 5941c153dcdff986effb1512ffbb03983dc0748d

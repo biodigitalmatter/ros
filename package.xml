@@ -31,6 +31,8 @@
   <!-- to execute xacro for abb robots -->
   <exec_depend>abb_resources</exec_depend>
   <exec_depend>octomap_server</exec_depend>
+  <exec_depend>easy_handeye</exec_depend>
+  <exec_depend>charuco_detector</exec_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
   <!-- The export tag contains other, unspecified, tags -->
