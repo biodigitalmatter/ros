@@ -47,8 +47,8 @@
 
   <include file="$(find charuco_detector)/launch/charuco_detector.launch"
     if="$(eval board == 'large')" pass_all_args="true">
-    <arg name="image_topic" value="/rgbd_camera/stereo/image_raw" />
-    <arg name="camera_info_topic" value="/rgbd_camera/stereo/camera_info" />
+    <arg name="image_topic" value="/rgbd_camera/rgb/image_raw" />
+    <arg name="camera_info_topic" value="/rgbd_camera/rgb/camera_info" />
   </include>
 
   <include file="$(find easy_handeye)/launch/calibrate.launch">
