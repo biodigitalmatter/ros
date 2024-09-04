@@ -31,7 +31,8 @@
   <arg name="board" default="large" />
 
   <include file="$(dirname)/rgbd.launch">
-  <arg name="no_mapping" value="true" />
+    <arg name="no_mapping" value="true" />
+  </include>
   <include file="$(dirname)/robots.launch">
     <arg name="no_rrc" value="true" />
   </include>
