@@ -23,20 +23,13 @@ RUN apt-get install -y     \
       iputils-ping         \
       net-tools            \
       python3-catkin-tools \
+      python3-pip          \
       python3-vcstool
 
 RUN vcs import src < src/biodigitalmatter_ros/dependencies.repos
 RUN vcs import src < src/abb_robot_driver/pkgs.repos
 
-RUN rosdep install -y --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} \
-      --skip-keys=depthai 
-
-# https://github.com/luxonis/depthai-ros/issues/540
-RUN cd /tmp \ 
-      && git clone --recursive https://github.com/luxonis/depthai-core.git --branch v2.24.0 \
-      && cmake -Hdepthai-core -Bdepthai-core/build -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr/local \
-      && cmake --build depthai-core/build --target install \
-      && rm -r depthai-core
+RUN rosdep install -y --from-paths . --ignore-src --rosdistro ${ROS_DISTRO}
 
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && catkin build
 
