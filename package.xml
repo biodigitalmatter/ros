@@ -1,42 +1,29 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd"
   schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="2">
+<package format="3">
   <name>biodigitalmatter_ros</name>
   <version>0.0.0</version>
   <description>ROS setup for biodigital matter lab</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>MIT</license>
   <url type="website">https://www.abm.lth.se/biodigitalmatter/</url>
-  <url type="repository">https://github.com/biodigitalmatter/</url>
-  <url type="bugtracker">https://github.com/biodigitalmatter/issues</url>
+  <url type="repository">https://github.com/biodigitalmatter/ros/</url>
+  <url type="bugtracker">https://github.com/biodigitalmatter/ros/issues</url>
 
-  <depend>roscpp</depend>
-  <depend>rospy</depend>
-
-  <exec_depend>rosbridge_suite</exec_depend>
   <exec_depend>compas_rrc_driver</exec_depend>
-  <exec_depend>abb_irb4600_40_255_moveit_config</exec_depend>
-  <exec_depend>file_server</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
   <exec_depend>depthai-ros</exec_depend>
-  <exec_depend>realsense2_camera</exec_depend>
-  <!-- dep realsense2 -->
-  <exec_depend>rgbd_launch</exec_depend>
   <exec_depend>axis_camera</exec_depend>
-  <exec_depend>abb_rws_service_provider</exec_depend>
-  <exec_depend>abb_rws_state_publisher</exec_depend>
-  <exec_depend>abb_robot_bringup_examples</exec_depend>
-  <exec_depend>aruco_detect</exec_depend>
-  <exec_depend>abb_irb2400_moveit_config</exec_depend>
-  <!-- to execute xacro for abb robots -->
-  <exec_depend>abb_resources</exec_depend>
-  <exec_depend>octomap_server</exec_depend>
-  <exec_depend>easy_handeye</exec_depend>
+  <exec_depend>abb_bringup</exec_depend>
+  <exec_depend>abb_rws_client</exec_depend>
+  <!-- <exec_depend>octomap_server</exec_depend> -->
+  <exec_depend>easy_handeye2</exec_depend>
   <exec_depend>charuco_detector</exec_depend>
+  <exec_depend>cv_bridge</exec_depend> <!-- forgotten dep for charuco_detector -->
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
+    <build_type>ament_python</build_type>
   </export>
+
 </package>
