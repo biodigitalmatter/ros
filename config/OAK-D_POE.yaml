@@ -1,0 +1,12 @@
+/rgbd_camera:
+  ros__parameters:
+    camera:
+      i_enable_imu: false
+      i_nn_type: none
+      i_ip: 192.168.8.10
+    stereo:
+      i_publish_left_rect: true
+      i_subpixel: true
+      i_fps: 5
+  rgb:
+    i_fps: 5

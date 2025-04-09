@@ -1,0 +1,23 @@
+launch:
+  - arg:
+      name: robot_ip
+      default: 192.168.8.125
+  - arg:
+      name: rgb1_pw
+      default: $(env RGB1_PW)
+  - include:
+      file: "$(find-pkg-share biodigitalmatter_ros)/launch/rgbd.launch.yaml"
+  - include:
+      file: "$(find-pkg-share biodigitalmatter_ros)/launch/rgb.launch.yaml"
+      arg:
+        - name: rgb1_pw
+          value: $(var rgb1_pw)
+  - include:
+      file: "$(find-pkg-share biodigitalmatter_ros)/launch/robots.launch.yaml"
+      arg:
+        - name: robot_ip
+          value: $(var robot_ip)
+  - executable:
+      cwd: $(env HOME)/rosbags
+      cmd: >-
+        ros2 bag record --max-bag-duration=3600 --compression-mode=file --compression-format=zstd --all --exclude-topic-types sensor_msgs/msg/PointCloud2 sensor_msgs/msg/Image
