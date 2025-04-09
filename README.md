@@ -2,31 +2,30 @@
 
 ## Setup
 
-ROS Noetic installation on Ubuntu 20.04 assumed.
+ROS 2 Jazzy installation on Ubuntu 24.04 (Noble) assumed.
 
 ```sh
-grep -qxF 'source ~/catkin_ws/src/biodigitalmatter_ros/bashrc_fragment.sh' ~/.bashrc || echo 'source ~/catkin_ws/src/biodigitalmatter_ros/bashrc_fragment.sh' >> ~/.bashrc
-sudo apt install python3-vcstool python3-catkin-tools
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone https://github.com/biodigitalmatter/biodigitalmatter_ros.git
-cd ..
+sudo apt install python3-vcstool
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws
+git clone https://github.com/biodigitalmatter/ros.git src/biodigitalmatter_ros
 vcs import src < src/biodigitalmatter_ros/dependencies.repos
-vcs import src --input https://raw.githubusercontent.com/ros-industrial/abb_robot_driver/0f0424ea4a857adffa99c6fccafa9ef5329772e8/pkgs.repos
 rosdep update
-rosdep install --from-paths src --ignore-src -y
-catkin build
+PIP_BREAK_SYSTEM_PACKAGES=1 rosdep install --from-paths src --ignore-src -y
+colcon build
 ```
 
-Create an .env file based on .env.example adding the passwords needed.
+Create an `.env` file based on `.env.example` adding the passwords needed.
 
 ## Launch
 
 The entry point is:
 
 ```sh
-roslaunch biodigitalmatter_ros bringup.launch
+ros2 launch biodigitalmatter_ros bringup.launch.yaml
 ```
+
+## Following not implemented for jazzy properly yet
 
 ### Arguments
 
@@ -36,7 +35,7 @@ There are a few different arguments that turn on and off features. They are by
 default set to false.
 
 - `no_robots`: Don't start nodes relating to robot control that need a robot connected.
-- `no_rrc`: Don't start compas_rrc_driver
+- `no_rrc`: Don't start `compas_rrc_driver`
 - `no_rws`: Don't start rws related nodes, e.g. `rws_state_publisher`
 - `no_rgb`: Don't start network camera nodes for RGB (normal) cameras that need
   cameras connected.
@@ -46,7 +45,7 @@ default set to false.
 Example:
 
 ```sh
-roslaunch biodigitalmatter_ros bringup.launch no_robots:=true no_record:=true
+ros2 launch biodigitalmatter_ros bringup.launch.xml no_robots:=true no_record:=true
 ```
 
 #### Robot settings
@@ -73,27 +72,21 @@ The relevant ones are
   Luxonis camera. Defaults to `OAK-D-POE`.
 
 ```sh
-roslaunch biodigitalmatter_ros bringup.launch rgbd_camera:=D435i
+ros2 launch biodigitalmatter_ros bringup.launch.xml rgbd_camera:=D435i
 ```
 
-## Launch setups
+### Launch setups
 
-### Kaolin on robot
+#### Kaolin on robot
 
-### Kaolin
+#### Kaolin
 
 ```bash
-ROS_MASTER_URI=http://cook.local:11311/ mon launch biodigitalmatter_ros
-bringup.launch no_robots:=true rgbd_oak_model:=OAK-D-PRO no_rgb:=true
-no_record:=true
+ros2 launch biodigitalmatter_ros bringup.launch.xml no_robots:=true no_rgb:=true no_record:=true
 ```
 
-### Cook
+#### Cook
 
 ```bash
-ROS_MASTER_URI=http://cook.local:11311 mon launch biodigitalmatter_ros bringup.launch no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
-```
-
-```bash
-ROS_HOSTNAME=cook.local roscore
+ros2 launch biodigitalmatter_ros bringup.launch.xml no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
 ```
