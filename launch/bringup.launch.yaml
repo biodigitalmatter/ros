@@ -20,4 +20,4 @@ launch:
   - executable:
       cwd: $(env HOME)/rosbags
       cmd: >-
-        ros2 bag record --max-bag-duration=3600 --compression-mode=file --compression-format=zstd --all --exclude-topic-types sensor_msgs/msg/PointCloud2 sensor_msgs/msg/Image
+        ros2 bag record --max-bag-duration=3600 --regex='((left|right|rgb)/image_(raw|rect)/compressed$)|(stereo/image_(raw|rect)/compressedDepth$)|^\/(tf|rob1)'

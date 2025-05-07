@@ -3,7 +3,7 @@ launch:
       name: camera_model
       default: OAK-D_POE
   - include:
-      file: "$(find-pkg-share depthai_ros_driver)/launch/rgbd_pcl.launch.py"
+      file: "$(find-pkg-share depthai_ros_driver)/launch/pointcloud.launch.py"
       arg:
         - name: name
           value: rgbd_camera
