@@ -21,6 +21,7 @@
   <exec_depend>easy_handeye2</exec_depend>
   <exec_depend>charuco_detector</exec_depend>
   <exec_depend>cv_bridge</exec_depend> <!-- forgotten dep for charuco_detector -->
+  <exec_depend>docker-compose</exec_depend> <!-- ros 1 compas_rrc -->
 
   <export>
     <build_type>ament_python</build_type>
