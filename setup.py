@@ -1,5 +1,3 @@
-# from glob import glob
-import os
 from pathlib import Path
 
 from setuptools import setup
