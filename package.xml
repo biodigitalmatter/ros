@@ -13,14 +13,14 @@
 
   <exec_depend>compas_rrc_driver</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
-  <exec_depend>depthai-ros</exec_depend>
+  <!-- <exec_depend>depthai-ros</exec_depend> -->
   <exec_depend>axis_camera</exec_depend>
   <exec_depend>abb_bringup</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>
+  <exec_depend>charuco-detector</exec_depend>
+  <!-- ros 1 compas_rrc -->
+  <exec_depend>docker-compose</exec_depend>
   <!-- <exec_depend>octomap_server</exec_depend> -->
-  <exec_depend>charuco_detector</exec_depend>
-  <exec_depend>cv_bridge</exec_depend> <!-- forgotten dep for charuco_detector -->
-  <exec_depend>docker-compose</exec_depend> <!-- ros 1 compas_rrc -->
   <exec_depend>robot_calibration</exec_depend>
 
   <export>

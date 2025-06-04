@@ -23,6 +23,5 @@ setup(
  maintainer_email = "anton@tetov.se",
  description="ROS setup for biodigital matter lab",
  license='MIT',
- tests_require=[],
  entry_points={},
 )
