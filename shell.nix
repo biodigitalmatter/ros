@@ -48,6 +48,9 @@ pkgs.mkShell {
               numpy
             ]
           ))
+
+          ros2-utils-tool
+          rosbag2
         ]
       )
       ++ builtins.attrValues extraPkgs
