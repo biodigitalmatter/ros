@@ -25,11 +25,11 @@ pkgs.mkShell {
         with pkgs.rosPackages.${rosDistro};
         with extraPkgs;
         [
-          # Dependencies from package.xml files
+          biodigitalmatter-ros
+          # biodigitalmatter_ros deps
           abb-bringup
           abb-rws-client
           axis-camera
-          charuco-detector
           compas-rrc-driver
           docker-compose
           cv-bridge
@@ -37,6 +37,17 @@ pkgs.mkShell {
           rosbridge-server
           # depthai
           # depthai-ros
+
+          chess-vision
+          # chess-vision deps
+          cv-bridge
+          opencv
+          (python.withPackages (
+            ps: with ps; [
+              scipy
+              numpy
+            ]
+          ))
         ]
       )
       ++ builtins.attrValues extraPkgs

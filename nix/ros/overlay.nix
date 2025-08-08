@@ -18,8 +18,7 @@ in
   # abb-ros2 = callPackage ./abb_ros2.nix { }; unused, empty metapackage
   abb-rws-client = callPackage ./abb_rws_client.nix { };
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };
-  charuco-detector = callPackage ./charuco_detector/package.nix { };
-  charuco-detector-interfaces = callPackage ./charuco_detector_interfaces.nix { };
+  chess-vision = callPackage ./chess_vision.nix { };
   compas-rrc-driver = callPackage ./compas_rrc_driver.nix { };
   compas-rrc-ros-interfaces = callPackage ./compas_rrc_ros_interfaces.nix { };
 }

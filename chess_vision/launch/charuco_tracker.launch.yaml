@@ -1,0 +1,11 @@
+launch:
+  - arg:
+      name: board_type
+      default: "standard"
+      description: "Type of ChArUco board to track"
+  - node:
+      package: charuco_tracker
+      executable: charuco_tracker_node
+      name: charuco_tracker
+      parameters:
+        - board_type: "$(var board_type)"

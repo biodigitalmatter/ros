@@ -17,7 +17,7 @@
   <exec_depend>axis_camera</exec_depend>
   <exec_depend>abb_bringup</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>
-  <exec_depend>charuco-detector</exec_depend>
+  <exec_depend>chess_vision</exec_depend>
   <!-- ros 1 compas_rrc -->
   <exec_depend>docker-compose</exec_depend>
   <!-- <exec_depend>octomap_server</exec_depend> -->
