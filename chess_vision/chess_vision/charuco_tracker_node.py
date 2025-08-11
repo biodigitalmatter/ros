@@ -4,31 +4,23 @@ from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import PoseStamped
 
 from cv_bridge import CvBridge
-import cv2
-import cv2.aruco as aruco
+from cv2 import aruco, Rodrigues
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+
+from chess_vision import boards
 
 
 class CharucoTracker(Node):
     def __init__(self):
         super().__init__("charuco_tracker")
-        self.declare_parameter("board_type", "standard")
-        self.board_type = (
-            self.get_parameter("board_type").get_parameter_value().string_value
-        )
-        # Hardcoded ChArUco boards
-        self.boards = {
-            "standard": aruco.CharucoBoard_create(
-                squaresX=5,
-                squaresY=7,
-                squareLength=0.04,
-                markerLength=0.02,
-                dictionary=aruco.getPredefinedDictionary(aruco.DICT_4X4_50),
-            ),
-        }
 
-        self.board = self.boards[self.board_type]
+        self.declare_parameter("board_name", "standard")
+
+        board_name = self.get_parameter("board_type").get_parameter_value().string_value
+
+        self.board = getattr(boards, board_name)
+
         self.bridge = CvBridge()
 
         self.camera_info_sub = self.create_subscription(
@@ -52,12 +44,16 @@ class CharucoTracker(Node):
             return
 
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+
+        # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga061ee5b694d30fa2258dd4f13dc98129
         corners, ids, _ = aruco.detectMarkers(frame, self.board.dictionary)
         if ids is not None:
+            # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#gadcc5dc30c9ad33dcf839e84e8638dcd1
             retval, charuco_corners, charuco_ids = aruco.interpolateCornersCharuco(
                 corners, ids, frame, self.board
             )
             if retval > 0:
+                # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga21b51b9e8c6422a4bac27e48fa0a150b
                 success, rvec, tvec = aruco.estimatePoseCharucoBoard(
                     charuco_corners,
                     charuco_ids,
@@ -83,7 +79,7 @@ class CharucoTracker(Node):
         pose_msg.pose.position.y = float(tvec[1][0])
         pose_msg.pose.position.z = float(tvec[2][0])
 
-        rot_matrix, _ = cv2.Rodrigues(rvec)
+        rot_matrix, _ = Rodrigues(rvec)
         x, y, z, w = R.from_matrix(rot_matrix).as_quat()
 
         pose_msg.pose.orientation.x = x
