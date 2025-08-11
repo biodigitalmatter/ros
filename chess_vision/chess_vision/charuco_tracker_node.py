@@ -16,21 +16,32 @@ class CharucoTracker(Node):
         super().__init__("charuco_tracker")
 
         self.declare_parameter("board_name", "standard")
+        self.declare_parameter("rectified", False)
 
-        board_name = self.get_parameter("board_type").get_parameter_value().string_value
+        board_name = self.get_parameter("board_name").get_parameter_value().string_value
 
         self.board = getattr(boards, board_name)
 
+        self.rectified = (
+            self.get_parameter("rectified").get_parameter_value().bool_value
+        )
+
         self.bridge = CvBridge()
 
-        self.camera_info_sub = self.create_subscription(
-            CameraInfo, "/camera/camera_info", self.camera_info_callback, 10
-        )
+        if self.rectified:
+            self.camera_info_sub = None
+        else:
+            self.camera_info_sub = self.create_subscription(
+                CameraInfo, "camera_info", self.camera_info_callback, 10
+            )
 
         self.image_sub = self.create_subscription(
-            Image, "/camera/image_raw", self.image_callback, 10
+            Image, "image_raw", self.image_callback, 10
         )
+
         self.pose_pub = self.create_publisher(PoseStamped, "charuco_pose", 10)
+
+        self.get_logger().debug("__init__ ran")
 
     def camera_info_callback(self, msg: CameraInfo) -> None:
         self.camera_matrix = np.array(msg.k).reshape((3, 3))
@@ -39,9 +50,10 @@ class CharucoTracker(Node):
         self.destroy_subscription(self.camera_info_sub)
 
     def image_callback(self, msg: Image) -> None:
-        if not hasattr(self, "camera_matrix") or not hasattr(self, "dist_coeffs"):
-            self.get_logger().warn("Camera calibration not yet received.")
-            return
+        if not self.rectified:
+            if not hasattr(self, "camera_matrix") or not hasattr(self, "dist_coeffs"):
+                self.get_logger().warn("Camera calibration not yet received.")
+                return
 
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
@@ -58,8 +70,8 @@ class CharucoTracker(Node):
                     charuco_corners,
                     charuco_ids,
                     self.board,
-                    self.camera_matrix,
-                    self.dist_coeffs,
+                    self.camera_matrix or None,
+                    self.dist_coeffs or None,
                 )
                 if success:
                     pose_msg = PoseStamped()

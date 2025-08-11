@@ -4,8 +4,9 @@ launch:
       default: "large"
       description: "Name of ChArUco board to track"
   - node:
-      package: chess_vision
-      executable: charuco_tracker_node
+      pkg: chess_vision
+      exec: charuco_tracker_node
       name: charuco_tracker
-      parameters:
-        - board_type: "$(var board_name)"
+      param:
+        - name: board_name
+          value: "$(var board_name)"

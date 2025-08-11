@@ -2,6 +2,7 @@
   lib,
   buildRosPackage,
   cv-bridge,
+  launch-pytest,
   opencv,
   python3Packages,
 }:
@@ -17,6 +18,7 @@ buildRosPackage {
     opencv
     python3Packages.numpy
     python3Packages.scipy
+    launch-pytest
   ];
 
   meta = {
