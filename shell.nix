@@ -36,7 +36,7 @@ pkgs.mkShell {
           robot-calibration
           rosbridge-server
           # depthai
-          # depthai-ros
+          depthai-ros
 
           chess-vision
           # chess-vision deps

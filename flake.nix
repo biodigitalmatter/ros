@@ -6,6 +6,7 @@
 
     nixpkgs.follows = "nix-ros-overlay/nixpkgs"; # IMPORTANT!!!
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -17,7 +18,7 @@
       { ... }:
       let
         rosDistro = "jazzy";
-        localRosPkgsOverlay = ./nix/ros/overlay.nix;
+        localRosPkgsOverlayPath = ./nix/ros/overlay.nix;
       in
       {
         imports = [
@@ -35,11 +36,15 @@
               rosOverlay: rosPackages:
               rosPackages
               // builtins.mapAttrs (
-                rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
+                rosDistro: rosPkgs:
+                if rosPkgs ? overrideScope then
+                  rosPkgs.overrideScope rosOverlay
+                else
+                  rosPkgs
               ) rosPackages;
           in
           final: prev: {
-            rosPackages = applyDistroOverlay (import localRosPkgsOverlay) prev.rosPackages;
+            rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath) prev.rosPackages;
           };
 
         perSystem =
@@ -57,6 +62,7 @@
                 (_: prev: {
                   abb_libegm = prev.callPackage ./nix/abb_libegm/package.nix { };
                   abb_librws = prev.callPackage ./nix/abb_librws/package.nix { };
+                  inherit (inputs.nixpkgs-depthai-core.legacyPackages.${system}) cpr fp16 libnop;
                 })
               ];
             };
@@ -73,13 +79,11 @@
               };
               extraPaths = [ ];
             };
-
             legacyPackages = pkgs.rosPackages;
-            packages = builtins.intersectAttrs (import localRosPkgsOverlay null
+            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath null
               null
             ) pkgs.rosPackages.${rosDistro};
-
-            checks = builtins.intersectAttrs (import localRosPkgsOverlay null
+            checks = builtins.intersectAttrs (import localRosPkgsOverlayPath null
               null
             ) pkgs.rosPackages.${rosDistro};
             treefmt = {

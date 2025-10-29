@@ -1,0 +1,151 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a5514a7a7..458149f62 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -350,61 +350,18 @@ set(DEPTHAI_RESOURCES_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/resources")
+ include(Depthai/DepthaiDeviceSideConfig)    # Depthai device binary commit/version configuration
+ include(Depthai/DepthaiBootloaderConfig)    # Depthai bootloader binary commit/version configuration
+ 
+-# Include downloaders
+-include(DepthaiDownloader)                  # Depthai device binary downloader
+-include(DepthaiBootloaderDownloader)        # Depthai bootloader binary downloader
+-
+-
+ # depthai-shared enforce commit hash match if CI
+ if($ENV{CI})
+     set(DEPTHAI_SHARED_COMMIT_HASH_ENFORCE ON)
+     set(DEPTHAI_BOOTLOADER_SHARED_COMMIT_HASH_ENFORCE ON)
+ endif()
+ 
+-
+-# Then get the Depthai device side binaries (local or download)
+-if(DEPTHAI_CMD_PATH OR DEPTHAI_USB2_CMD_PATH OR DEPTHAI_USB2_PATCH_PATH)
+-    # At least one of the paths is set. include binaries locally
+-    message(STATUS "Using local Depthai device side binaries...")
+-
+-    DepthaiLocal(
+-        PATCH_ONLY ${DEPTHAI_USB2_PATCH_ONLY_MODE}
+-        "${DEPTHAI_RESOURCES_OUTPUT_DIR}"            # Output folder
+-        DEPTHAI_RESOURCE_LIST                       # List of output resources
+-        "${DEPTHAI_CMD_PATH}"                       # depthai.cmd
+-        "${DEPTHAI_USB2_CMD_PATH}"                  # depthai-usb2.cmd
+-        "${DEPTHAI_USB2_PATCH_PATH}"                # depthai-usb2-patch.patch
+-    )
+-
+-else()
+-    # No user specified paths, download from server
+-    message(STATUS "Downloading Depthai device side binaries from server...")
+-
+-    DepthaiDownload(
+-        "${DEPTHAI_SHARED_COMMIT_HASH}" "${DEPTHAI_SHARED_COMMIT_HASH_ENFORCE}"
+-        PATCH_ONLY ${DEPTHAI_USB2_PATCH_ONLY_MODE}
+-        "${DEPTHAI_RESOURCES_OUTPUT_DIR}"            # Output folder
+-        DEPTHAI_RESOURCE_LIST                       # List of output resources
+-        "${DEPTHAI_DEVICE_SIDE_MATURITY}"           # Maturity
+-        "${DEPTHAI_DEVICE_SIDE_COMMIT}"             # commit hash
+-        "${DEPTHAI_DEVICE_SIDE_VERSION}"            # Optional version
+-    )
+-endif()
+-list(APPEND RESOURCE_COMPILED_FILES ${DEPTHAI_RESOURCE_LIST})
+-
+-# Add bootloader
+-DepthaiBootloaderDownload(
+-    "${DEPTHAI_BOOTLOADER_SHARED_COMMIT_HASH}" "${DEPTHAI_BOOTLOADER_SHARED_COMMIT_HASH_ENFORCE}"
+-    "${DEPTHAI_RESOURCES_OUTPUT_DIR}"                # Output folder
+-    DEPTHAI_BOOTLOADER_RESOURCE_LIST                # List of output resources
+-    "${DEPTHAI_BOOTLOADER_MATURITY}"                # Maturity
+-    "${DEPTHAI_BOOTLOADER_VERSION}"                 # if maturity == snapshot -> hash else version
+-)
+-list(APPEND RESOURCE_COMPILED_FILES ${DEPTHAI_BOOTLOADER_RESOURCE_LIST})
+-
+-message(STATUS "LIST OF RESOURCE COMPILED FILES: ${RESOURCE_COMPILED_FILES}")
+-
+ if(DEPTHAI_BINARIES_RESOURCE_COMPILE)
++    message(STATUS "LIST OF RESOURCE COMPILED FILES: ${RESOURCE_COMPILED_FILES}")
++    file(COPY "${DEPTHAI_BOOTLOADER_FWP}" DESTINATION "${DEPTHAI_RESOURCES_OUTPUT_DIR}")
++    file(COPY "${DEPTHAI_DEVICE_FWP}" DESTINATION "${DEPTHAI_RESOURCES_OUTPUT_DIR}")
++    file(GLOB RESOURCE_COMPILED_FILES "${DEPTHAI_RESOURCES_OUTPUT_DIR}/*.tar.xz")
++
+     # Add RC and resource compile the binares
+     include(CMakeRC)
+ 
+@@ -471,11 +428,11 @@ target_link_libraries(${TARGET_CORE_NAME}
+     PRIVATE
+         XLink
+         Threads::Threads
+-        BZip2::bz2
++        BZip2::BZip2
+         FP16::fp16
+-        archive_static
++        LibArchive::LibArchive
+         spdlog::spdlog
+-        ZLIB::zlib
++        ZLIB::ZLIB
+         ghcFilesystem::ghc_filesystem
+ )
+ 
+@@ -742,9 +699,11 @@ configure_file("cmake/${PROJECT_NAME}Dependencies.cmake" ${PROJECT_NAME}Dependen
+ # Write project version
+ write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY AnyNewerVersion)
+ 
++if(HUNTER_ENABLED)
+ # Configure config file (one for exporting build directory, one for installation)
+ file(RELATIVE_PATH DEPTHAI_DEPENDENCIES_INSTALLATION_PATH_REL "${CMAKE_CURRENT_BINARY_DIR}" "${HUNTER_INSTALL_PREFIX}")
+ configure_file(cmake/${PROJECT_NAME}Config.cmake.in ${PROJECT_NAME}Config.cmake @ONLY)
++endif()
+ 
+ # Config for installation
+ set(DEPTHAI_DEPENDENCIES_INSTALLATION_PATH_REL "./dependencies")
+@@ -783,7 +742,9 @@ if(DEPTHAI_INSTALL)
+     # Install depthai-bootloader-shared public headers
+     install(DIRECTORY "${DEPTHAI_BOOTLOADER_SHARED_PUBLIC_INCLUDE}/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+     # Install Hunter dependencies
++    if(HUNTER_ENABLED)
+     install(DIRECTORY "${HUNTER_INSTALL_PREFIX}/" DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/dependencies")
++    endif()
+     # Install resources if not RC'd
+     if(NOT DEPTHAI_BINARIES_RESOURCE_COMPILE)
+         install(DIRECTORY "${DEPTHAI_RESOURCES_OUTPUT_DIR}/" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}")
+diff --git a/cmake/depthaiDependencies.cmake b/cmake/depthaiDependencies.cmake
+index 6b0b44f98..a4ed24c75 100644
+--- a/cmake/depthaiDependencies.cmake
++++ b/cmake/depthaiDependencies.cmake
+@@ -37,16 +37,16 @@ endif()
+ if(NOT CONFIG_MODE OR (CONFIG_MODE AND NOT DEPTHAI_SHARED_LIBS))
+ 
+     # BZip2 (for bspatch)
+-    find_package(BZip2 ${_QUIET} CONFIG REQUIRED)
++    find_package(BZip2 ${_QUIET} REQUIRED)
+ 
+     # FP16 for conversions
+     find_package(FP16 ${_QUIET} CONFIG REQUIRED)
+ 
+     # libarchive for firmware packages
+-    find_package(archive_static ${_QUIET} CONFIG REQUIRED)
+-    find_package(lzma ${_QUIET} CONFIG REQUIRED)
++    find_package(LibArchive ${_QUIET} REQUIRED)
++    find_package(LibLZMA ${_QUIET} REQUIRED)
+     # ZLIB for compressing Apps
+-    find_package(ZLIB CONFIG REQUIRED)
++    find_package(ZLIB REQUIRED)
+ 
+     # spdlog for library and device logging
+     find_package(spdlog ${_QUIET} CONFIG REQUIRED)
+@@ -75,7 +75,7 @@ find_package(Threads ${_QUIET} REQUIRED)
+ find_package(nlohmann_json 3.6.0 ${_QUIET} CONFIG REQUIRED)
+ 
+ # libnop for serialization
+-find_package(libnop ${_QUIET} CONFIG REQUIRED)
++find_package(libnop ${_QUIET} REQUIRED)
+ 
+ # XLink
+ if(DEPTHAI_XLINK_LOCAL AND (NOT CONFIG_MODE))
+@@ -86,7 +86,7 @@ if(DEPTHAI_XLINK_LOCAL AND (NOT CONFIG_MODE))
+     unset(_BUILD_SHARED_LIBS_SAVED)
+     list(APPEND targets_to_export XLink)
+ else()
+-    find_package(XLink ${_QUIET} CONFIG REQUIRED HINTS "${CMAKE_CURRENT_LIST_DIR}/XLink" "${CMAKE_CURRENT_LIST_DIR}/../XLink")
++    find_package(XLink ${_QUIET} CONFIG REQUIRED)
+ endif()
+ 
+ # OpenCV 4 - (optional, quiet always)

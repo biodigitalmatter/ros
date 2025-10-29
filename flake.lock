@@ -72,6 +72,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-depthai-core": {
+      "locked": {
+        "lastModified": 1761653142,
+        "narHash": "sha256-LDyTXXYCzG+DuQC6Nqt/8fq+UW7D1qq3ybxNaDyFvhc=",
+        "owner": "tetov",
+        "repo": "nixpkgs",
+        "rev": "450893c3c9518359494e2c4c8d25b4bc44af8e9f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tetov",
+        "ref": "depthai-core",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1753579242,
@@ -127,6 +143,7 @@
           "nix-ros-overlay",
           "nixpkgs"
         ],
+        "nixpkgs-depthai-core": "nixpkgs-depthai-core",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "treefmt-nix": "treefmt-nix"
       }
