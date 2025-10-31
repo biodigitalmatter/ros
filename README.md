@@ -12,10 +12,17 @@ git clone https://github.com/biodigitalmatter/ros.git src/biodigitalmatter_ros
 vcs import src < src/biodigitalmatter_ros/dependencies.repos
 rosdep update
 PIP_BREAK_SYSTEM_PACKAGES=1 rosdep install --from-paths src --ignore-src -y
-colcon build
+colcon build --symlink-install
 ```
 
 Create an `.env` file based on `.env.example` adding the passwords needed.
+
+If CMAKE can't find PCL when installing vdb_mapping:
+
+``` bash
+sudo mkdir /lib/x86_64-linux-gnu/cmake/pcl/include
+sudo ln -s /usr/include/pcl-*/pcl /lib/x86_64-linux-gnu/cmake/pcl/include/pcl
+```
 
 ## Launch
 

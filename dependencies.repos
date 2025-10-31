@@ -9,6 +9,14 @@ repositories:
     type: git
     url: https://github.com/PickNikRobotics/abb_ros2
     version: 7d0eb930dfbfc64bc620bbbd70dd31fdd512ee68 # rolling
+  vdb_mapping:
+    type: git
+    url: https://github.com/fzi-forschungszentrum-informatik/vdb_mapping
+    version: 5f524a3d624131dbf8570614ba9613e45c8f4ebd # main
+  vdb_mapping_ros2:
+    type: git
+    url: https://github.com/fzi-forschungszentrum-informatik/vdb_mapping_ros2
+    version: ed38f7c4255279d16b2b1b8b66261be0ff97e24e # main
   # for abb_ros2 (from abb.repos in their repo)
   abb_libegm:
     type: git
@@ -16,7 +24,7 @@ repositories:
     version: 2c9350abfb67131cae796805fed8cd6eeb2ab7f9 # master
   abb_librws:
     type: git
-    url: https://github.com/ros-industrial/abb_librws.git
+    url: https://github.com/ros-industrial/abb_librws
     version: 9ba08371482f3975f364011db9b1368fa0fc6b32 # master
   abb_egm_rws_managers:
     type: git
