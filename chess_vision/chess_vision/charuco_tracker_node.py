@@ -76,7 +76,9 @@ class CharucoTracker(Node):
                     self.pose_pub.publish(pose_msg)
 
     @staticmethod
-    def set_pose_from_cv(pose_msg: PoseStamped, rvec: np.ndarray, tvec: np.array) -> None:
+    def set_pose_from_cv(
+        pose_msg: PoseStamped, rvec: np.ndarray, tvec: np.array
+    ) -> None:
         pose_msg.pose.position.x = float(tvec[0][0])
         pose_msg.pose.position.y = float(tvec[1][0])
         pose_msg.pose.position.z = float(tvec[2][0])

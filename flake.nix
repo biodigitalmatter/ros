@@ -86,6 +86,8 @@
               programs = {
                 nixfmt.enable = true;
                 nixf-diagnose.enable = true;
+                ruff-check.enable = true;
+                ruff-format.enable = true;
                 yamlfmt.enable = true;
               };
               pkgs = import inputs.nixpkgs-unstable { inherit system; }; # nixf-diagnose
