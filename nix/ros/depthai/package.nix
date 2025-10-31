@@ -60,8 +60,11 @@ buildRosPackage {
     pkg-config
     ament-cmake
   ];
+
   propagatedBuildInputs = [
     libnop
+    nlohmann_json
+    xlink
   ];
 
   patches = [ ./cmake_deps.patch ];

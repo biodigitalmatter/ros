@@ -36,11 +36,7 @@
               rosOverlay: rosPackages:
               rosPackages
               // builtins.mapAttrs (
-                rosDistro: rosPkgs:
-                if rosPkgs ? overrideScope then
-                  rosPkgs.overrideScope rosOverlay
-                else
-                  rosPkgs
+                rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
               ) rosPackages;
           in
           final: prev: {

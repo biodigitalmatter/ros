@@ -22,5 +22,6 @@ in
   compas-rrc-driver = callPackage ./compas_rrc_driver.nix { };
   compas-rrc-ros-interfaces = callPackage ./compas_rrc_ros_interfaces.nix { };
   depthai = callPackage ./depthai/package.nix { };
+  depthai-bridge = callPackage ./depthai-bridge.nix { };
   ros2-utils-tool = callPackage ./ros2-utils-tool.nix { };
 }
