@@ -1,7 +1,7 @@
 launch:
   - arg:
       name: camera_model
-      default: OAK-D_POE
+      default: OAK-D-S2-POE
   - include:
       file: "$(find-pkg-share depthai_ros_driver)/launch/pointcloud.launch.py"
       arg:
@@ -10,17 +10,18 @@ launch:
         - name: parent_frame
           value: tool0
         - name: cam_pos_x
-          value: "0.175319"
+          value: "0.270721"
         - name: cam_pos_y
-          value: "0.39145"
+          value: "0.072498"
         - name: cam_pos_z
-          value: "0.047145"
-        - name: cam_roll
-          value: "0"
+          value: "0.077085"
+        - name: cam_yaw
+          value: "0.2617994"
+          #value: "-0.2617994"
         - name: cam_pitch
           value: "0"
-        - name: cam_yaw
-          value: "1.3089969387"
+        - name: cam_roll
+          value: "0"
         - name: camera_model
           value: $(var camera_model)
         - name: params_file
