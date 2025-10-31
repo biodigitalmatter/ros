@@ -22,7 +22,6 @@
   <exec_depend>docker-compose</exec_depend>
   <!-- <exec_depend>octomap_server</exec_depend> -->
   <exec_depend>robot_calibration</exec_depend>
-  <exec_depend>ros2_utils_tool</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
