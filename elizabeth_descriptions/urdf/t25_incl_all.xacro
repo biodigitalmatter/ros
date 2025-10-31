@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot name="t25_incl_all"
+	xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <link name="t25_incl_all">
+    <visual>
+      <geometry>
+        <mesh filename="file://$(find elizabeth_descriptions)/urdf/models/t25_incl_all.stl"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <mesh filename="file://$(find elizabeth_descriptions)/urdf/models/t25_incl_all.stl"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="tool0_to_t25_incl_all" type="fixed">
+    <parent link="tool0"/>
+    <child link="t25_incl_all"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

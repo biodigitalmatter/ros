@@ -2,12 +2,6 @@ launch:
   - arg:
       name: robot_ip
       default: 192.168.8.125
-  - let:
-      name: robot_xacro
-      value: $(find-pkg-share abb_irb4600_support)/urdf/irb4600_40_255.xacro
-  - let:
-      name: robot_description
-      value: $(command '$(find-exec xacro) $(var robot_xacro)')
   - group:
       - push_ros_namespace:
           namespace: rob1
@@ -24,31 +18,20 @@ launch:
           args: >-
             --z 0.45 --frame-id base_footprint --child-frame-id base_link
       - include:
+          file: $(find-pkg-share elizabeth_descriptions)/launch/urdf_description.launch.yaml
+          arg:
+            - name: joint_states_topic
+              value: /rob1/rws_client/joint_states
+      - include:
           file: $(find-pkg-share abb_bringup)/launch/abb_rws_client.launch.py
           arg:
             - name: robot_ip
               value: $(var robot_ip)
-      - node:
-          pkg: robot_state_publisher
-          exec: robot_state_publisher
-          remap:
-            - from: joint_states
-              to: /rob1/rws_client/joint_states
-          param:
-            - name: robot_description
-              value: $(var robot_description)
       - executable:
-          cmd: ['docker', 'compose', '-f', '$(find-pkg-share biodigitalmatter_ros)/launch/extra/ros1_compas_rrc/compose.yaml', 'up']
+          cmd: "docker compose -f $(find-pkg-share biodigitalmatter_ros)/launch/extra/ros1_compas_rrc/compose.yaml up"
           name: docker_compose
           shell: true
           output: screen
-      # Optional: Add a shutdown handler to ensure Docker Compose is stopped
-      - executable:
-          cmd: ['docker', 'compose', '-f', '/path/to/your/docker-compose.yml', 'down']
-          name: docker_compose_shutdown
-          shell: true
-          output: screen
-          on_exit: [docker_compose]
     # - include:
     #     file: $(find-pkg-share compas_rrc_driver)/launch/bringup-common.launch.xml
     #     arg:

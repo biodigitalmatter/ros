@@ -1,0 +1,19 @@
+launch:
+  - arg:
+      name: joint_states_topic
+      default: joint_states
+  - let:
+      name: robot_xacro
+      value: $(find-pkg-share elizabeth_descriptions)/urdf/elizabeth.xacro
+  - let:
+      name: robot_description
+      value: $(command '$(find-exec xacro) $(var robot_xacro)')
+  - node:
+      pkg: robot_state_publisher
+      exec: robot_state_publisher
+      remap:
+        - from: joint_states
+          to: $(var joint_states_topic)
+      param:
+        - name: robot_description
+          value: $(var robot_description)
