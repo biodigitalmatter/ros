@@ -5,14 +5,6 @@ repositories:
     type: git
     url: https://github.com/biodigitalmatter/compas_rrc_ros.git
     version: ros2
-  easy_handeye2:
-    type: git
-    url: https://github.com/marcoesposito1988/easy_handeye2
-    version: 3e0fa5c6a82f023bdbc32cac5a9ee0ad996cbfa8 # master
-  charuco_detector_ROS2:
-    type: git
-    url: https://github.com/biodigitalmatter/charuco_detector_ROS2.git
-    version: jazzy
   abb_ros2:
     type: git
     url: https://github.com/PickNikRobotics/abb_ros2

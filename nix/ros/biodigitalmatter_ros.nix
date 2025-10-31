@@ -4,7 +4,6 @@
   abb-bringup,
   abb-rws-client,
   axis-camera,
-  # charuco-detector,
   compas-rrc-driver,
   cv-bridge,
   # depthai-ros,
@@ -23,7 +22,6 @@ buildRosPackage {
     abb-bringup
     abb-rws-client
     axis-camera
-    # charuco-detector
     compas-rrc-driver
     cv-bridge
     # depthai-ros
