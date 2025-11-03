@@ -2,6 +2,7 @@
   lib,
   buildRosPackage,
   fetchurl,
+  writeTextFile,
   ament-cmake,
   boost,
   camera-info-manager,
@@ -62,6 +63,23 @@ buildRosPackage {
     xacro
   ];
   nativeBuildInputs = [ ament-cmake ];
+
+  cmakeFlags =
+    let
+      inherit (lib) cmakeFeature;
+    in
+    [
+      (cmakeFeature "libnop_DIR" (
+        toString (writeTextFile {
+          name = "libnop-config";
+          text = ''
+            add_library(libnop INTERFACE IMPORTED)
+            target_include_directories(libnop INTERFACE "${libnop}/include")
+          '';
+          destination = "/libnopConfig.cmake";
+        })
+      ))
+    ];
 
   meta = {
     description = "The depthai_bridge package";
