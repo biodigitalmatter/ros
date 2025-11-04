@@ -4,7 +4,16 @@
       i_enable_imu: false
       i_nn_type: none
       i_ip: 192.168.8.10
-      i_pipeline_dump: true
     stereo:
-      i_subpixel: true
       i_align_depth: true
+      i_low_bandwidth: true
+      i_fps: 5.0
+    rgb:
+      i_low_bandwidth: true
+      i_fps: 5.0
+    left:
+      i_low_bandwidth: true
+      i_fps: 5.0
+    right:
+      i_low_bandwidth: true
+      i_fps: 5.0
