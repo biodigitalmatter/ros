@@ -4,9 +4,7 @@
       i_enable_imu: false
       i_nn_type: none
       i_ip: 192.168.8.10
+      i_pipeline_dump: true
     stereo:
       i_subpixel: true
       i_align_depth: true
-      i_board_socket_id: 2
-      i_right_rect_publish_topic: true
-      i_right_rect_synced: false

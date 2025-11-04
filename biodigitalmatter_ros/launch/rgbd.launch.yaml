@@ -3,7 +3,7 @@ launch:
       name: camera_model
       default: OAK-D-S2-POE
   - include:
-      file: "$(find-pkg-share depthai_ros_driver)/launch/pointcloud.launch.py"
+      file: "$(find-pkg-share depthai_ros_driver)/launch/rgbd_pcl.launch.py"
       arg:
         - name: name
           value: rgbd_camera
@@ -26,3 +26,5 @@ launch:
           value: $(var camera_model)
         - name: params_file
           value: "$(find-pkg-share biodigitalmatter_ros)/config/$(var camera_model).yaml"
+        - name: rectify_rgb
+          value: "true"
