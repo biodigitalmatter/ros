@@ -1,0 +1,101 @@
+launch:
+  - arg:
+      name: ns
+      default: rgbd_camera
+  - arg:
+      name: input_topic
+      default: points
+  - arg:
+      name: output_topic
+      default: pointlesser_points
+  - arg:
+      name: tf_workspace
+      default: map
+  - arg:
+      name: workspace_min_x
+      default: -3.0
+  - arg:
+      name: workspace_max_x
+      default: 3.0
+  - arg:
+      name: workspace_min_y
+      default: -3.0
+  - arg:
+      name: workspace_max_y
+      default: 3.0
+  - arg:
+      name: workspace_min_z
+      default: 0.001
+  - arg:
+      name: workspace_max_z
+      default: 3.0
+  - node:
+      pkg: rclcpp_components
+      exec: component_container
+      name: pcl_container
+      namespace: $(var ns)
+      output: screen
+      composable_node:
+        - pkg: pcl_ros
+          plugin: pcl_ros::CropBox
+          name: crop_box_filter
+          remappings:
+            - from: input
+              to: $(var input_topic)
+            - from: output
+              to: points_cropboxed
+          parameters:
+            - name: input_frame
+              value: $(var tf_workspace) # transform to tf_w before processing
+            - name: output_frame # output to tf_w after processing
+              value: $(var tf_workspace)
+            - name: min_x
+              value: $(var workspace_min_x)
+            - name: max_x
+              value: $(var workspace_max_x)
+            - name: min_y
+              value: $(var workspace_min_y)
+            - name: max_y
+              value: $(var workspace_max_y)
+            - name: min_z
+              value: $(var workspace_min_z)
+            - name: max_z
+              value: $(var workspace_max_z)
+            - name: keep_organized
+              value: false
+            - name: negative
+              value: false
+        - pkg: pcl_ros
+          plugin: pcl_ros::StatisticalOutlierRemoval
+          name: outlier_filter
+          remappings:
+            - from: input
+              to: points_cropboxed
+            - from: output
+              to: points_cropboxed_statd
+          parameters:
+            - name: mean_k
+              value: 30
+            - name: stddev
+              value: 1.5
+            - name: negative
+              value: false
+        - pkg: pcl_ros
+          plugin: pcl_ros::VoxelGrid
+          name: voxel_filter
+          remappings:
+            - from: input
+              to: points_cropboxed_statd
+            - from: output
+              to: $(var output_topic)
+          parameters:
+            - name: leaf_size
+              value: 0.002
+            - name: filter_field_name
+              value: z
+            - name: filter_limit_min
+              value: -100.0
+            - name: filter_limit_max
+              value: 100.0
+            - name: filter_limit_negative
+              value: false
