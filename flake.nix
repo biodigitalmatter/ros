@@ -2,13 +2,14 @@
   description = "ROS 2 research setup";
 
   inputs = {
-    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    ros-dev-flake.url = "git+https://git.sr.ht/~tetov/ros-dev-flake";
+    nixpkgs.follows = "ros-dev-flake/nixpkgs";
+    nix-ros-overlay.follows = "ros-dev-flake/nix-ros-overlay";
+    systems.follows = "ros-dev-flake/systems";
+    flake-parts.follows = "ros-dev-flake/flake-parts";
 
-    nixpkgs.follows = "nix-ros-overlay/nixpkgs"; # IMPORTANT!!!
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
-
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
@@ -25,10 +26,7 @@
           inputs.treefmt-nix.flakeModule
         ];
 
-        systems = [
-          "aarch64-linux"
-          "x86_64-linux"
-        ];
+        systems = import inputs.systems;
 
         flake.overlays.default =
           let
@@ -45,7 +43,9 @@
 
         perSystem =
           {
+            config,
             pkgs,
+            self',
             system,
             ...
           }:
@@ -53,7 +53,7 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               overlays = [
-                inputs.nix-ros-overlay.overlays.default
+                inputs.ros-dev-flake.overlays.default
                 inputs.self.overlays.default
                 (_: prev: {
                   abb_libegm = prev.callPackage ./nix/abb_libegm/package.nix { };
@@ -63,18 +63,50 @@
               ];
             };
 
-            devShells.default = import ./shell.nix {
-              inherit pkgs rosDistro;
-              extraPkgs = {
-                inherit (pkgs)
-                  cmake
-                  docker-compose
-                  gnumake
-                  nixd
-                  ;
+            devShells.default =
+              let
+                extendedShell = inputs.ros-dev-flake.lib.extendShell system rosDistro (
+                  with pkgs;
+                  [
+                    "cv-bridge"
+                    "robot-calibration"
+                    "ament-cmake-core"
+                    "python-cmake-module"
+                    "robot-calibration"
+                    "rosbridge-server"
+                    "axis-camera"
+                    docker-compose
+                    nixd
+                    colcon
+                    opencv
+                    (pkgs.python3.withPackages (
+                      ps: with ps; [
+                        scipy
+                        numpy
+                      ]
+                    ))
+                  ]
+                );
+              in
+              pkgs.mkShell {
+                inputsFrom = [
+                  config.treefmt.build.devShell
+                  extendedShell
+                ];
+                buildInputs = [
+                  (pkgs.rosPackages.${rosDistro}.buildEnv {
+                    wrapPrograms = false;
+                    paths = with self'.packages; [
+                      biodigitalmatter-ros
+                      chess-vision
+                      abb-bringup
+                      abb-rws-client
+                      compas-rrc-driver
+                    ];
+                  })
+                ];
+
               };
-              extraPaths = [ ];
-            };
             legacyPackages = pkgs.rosPackages;
             packages = builtins.intersectAttrs (import localRosPkgsOverlayPath null
               null
