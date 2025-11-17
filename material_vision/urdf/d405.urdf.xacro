@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="realsense2_d405" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="camera_name" default="camera" />
+  <xacro:arg name="use_nominal_extrinsics" default="false" />
+  <xacro:arg name="parent_link" default="base_link" />
+  <xacro:arg name="add_plug" default="true" />
+
+  <!-- to props -->
+  <xacro:property name="camera_name" value="$(arg camera_name)" />
+  <xacro:property name="parent_link" value="$(arg parent_link)" />
+
+  <xacro:include filename="$(find realsense2_description)/urdf/_d405.urdf.xacro" />
+
+  <link name="${parent_link}" />
+
+  <xacro:sensor_d405
+      parent="${parent_link}"
+      name="${camera_name}"
+      use_nominal_extrinsics="$(arg use_nominal_extrinsics)"
+      >
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:sensor_d405>
+</robot>

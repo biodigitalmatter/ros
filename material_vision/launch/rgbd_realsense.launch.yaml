@@ -1,0 +1,44 @@
+launch:
+  - arg:
+      name: camera_model
+      default: d405
+  - arg:
+      name: camera_name
+      default: $(var camera_model)
+  - arg:
+      name: parent_frame
+      default: tool0
+  - let:
+      name: robot_xacro
+      value: $(find-pkg-share material_vision)/urdf/$(var camera_model).urdf.xacro
+  - let:
+      name: robot_description
+      value: "$(command '$(find-exec xacro) $(var robot_xacro) camera_name:=$(var camera_name) parent_link:=$(var parent_frame)')"
+  - node:
+      name: $(var camera_name)_robot_state_publisher
+      pkg: robot_state_publisher
+      exec: robot_state_publisher
+      namespace: rgbd
+      param:
+        - name: robot_description
+          value: $(var robot_description)
+  - node:
+      pkg: tf2_ros
+      exec: static_transform_publisher
+      namespace: rgbd
+      name: $(var camera_model)_tool0_tf_publisher
+      args: "--x 0 --y 0 --z 0 --yaw 0 --pitch 0 --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
+  - node:
+      pkg: realsense2_camera
+      exec: realsense2_camera_node
+      namespace: rgbd
+      name: $(var camera_name)
+      param:
+        - name: camera_name
+          value: $(var camera_name)
+        - name: device_type
+          value: $(var camera_model)
+        - name: enable_depth
+          value: true
+        - name: enable_color
+          value: true
