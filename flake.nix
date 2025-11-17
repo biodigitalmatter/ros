@@ -96,13 +96,7 @@
                 buildInputs = [
                   (pkgs.rosPackages.${rosDistro}.buildEnv {
                     wrapPrograms = false;
-                    paths = with self'.packages; [
-                      biodigitalmatter-ros
-                      chess-vision
-                      abb-bringup
-                      abb-rws-client
-                      compas-rrc-driver
-                    ];
+                    paths = builtins.attrValues self'.packages;
                   })
                 ];
 

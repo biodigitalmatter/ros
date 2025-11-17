@@ -13,7 +13,7 @@
 }:
 buildRosPackage {
   pname = "ros-jazzy-biodigitalmatter-ros";
-  version = "0.0.0";
+  version = "0.1.0";
 
   src = ../../biodigitalmatter_ros;
 
