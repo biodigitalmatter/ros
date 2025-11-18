@@ -23,6 +23,6 @@ buildRosPackage {
 
   meta = {
     description = "detect charco boards";
-    license = with lib.licenses; [ mit ];
+    license = with lib.licenses; [ asl20 ];
   };
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format2.xsd"
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd"
   schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>biodigitalmatter_ros</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>ROS setup for biodigital matter lab</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
   <url type="website">https://www.abm.lth.se/biodigitalmatter/</url>
   <url type="repository">https://github.com/biodigitalmatter/ros/</url>
   <url type="bugtracker">https://github.com/biodigitalmatter/ros/issues</url>

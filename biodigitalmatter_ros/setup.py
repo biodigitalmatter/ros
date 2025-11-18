@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 package_name = "biodigitalmatter_ros"
 
@@ -9,7 +9,7 @@ share_dir = Path("share") / package_name
 setup(
     name=package_name,
     version="0.1.0",
-    packages=[package_name],
+    packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         (str(share_dir), ["package.xml"]),
@@ -24,6 +24,13 @@ setup(
     maintainer="Anton Tetov Johansson",
     maintainer_email="anton@tetov.se",
     description="ROS setup for biodigital matter lab",
-    license="MIT",
-    entry_points={},
+    license="Apache-2.0",
+    extras_require={
+        "test": [
+            "pytest",
+        ],
+    },
+    entry_points={
+        "console_scripts": [],
+    },
 )
