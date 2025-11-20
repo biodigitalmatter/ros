@@ -10,7 +10,6 @@
   <url type="website">https://www.abm.lth.se/biodigitalmatter/</url>
   <url type="repository">https://github.com/biodigitalmatter/ros/</url>
   <url type="bugtracker">https://github.com/biodigitalmatter/ros/issues</url>
-
   <exec_depend>compas_rrc_driver</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
   <!-- exec_depend>depthai-ros</exec_depend -->
@@ -18,9 +17,7 @@
   <exec_depend>abb_bringup</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>
   <exec_depend>chess_vision</exec_depend>
-
   <export>
     <build_type>ament_python</build_type>
   </export>
-
 </package>

@@ -114,6 +114,7 @@
                 nixf-diagnose.enable = true;
                 ruff-check.enable = true;
                 ruff-format.enable = true;
+                xmllint.enable = true;
                 yamlfmt.enable = true;
               };
               pkgs = import inputs.nixpkgs-unstable { inherit system; }; # nixf-diagnose

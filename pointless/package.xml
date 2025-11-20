@@ -6,11 +6,9 @@
   <description>Filter some point clouds to get less points</description>
   <maintainer email="anton@tetov.se">Anton Tetov</maintainer>
   <license>Apache-2.0</license>
-
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>pcl_ros</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-
   <export>
     <build_type>ament_python</build_type>
   </export>
