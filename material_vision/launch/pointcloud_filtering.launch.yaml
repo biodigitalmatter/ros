@@ -13,38 +13,37 @@ launch:
       default: map
   - arg:
       name: workspace_min_x
-      default: -3.0
+      default: "-3.0"
   - arg:
       name: workspace_max_x
-      default: 3.0
+      default: "3.0"
   - arg:
       name: workspace_min_y
-      default: -3.0
+      default: "-3.0"
   - arg:
       name: workspace_max_y
-      default: 3.0
+      default: "3.0"
   - arg:
       name: workspace_min_z
-      default: 0.001
+      default: "0.001"
   - arg:
       name: workspace_max_z
-      default: 3.0
-  - node:
+      default: "3.0"
+  - node_container:
       pkg: rclcpp_components
       exec: component_container
       name: pcl_container
       namespace: $(var ns)
-      output: screen
       composable_node:
         - pkg: pcl_ros
           plugin: pcl_ros::CropBox
           name: crop_box_filter
-          remappings:
+          remap:
             - from: input
               to: $(var input_topic)
             - from: output
               to: points_cropboxed
-          parameters:
+          param:
             - name: input_frame
               value: $(var tf_workspace) # transform to tf_w before processing
             - name: output_frame # output to tf_w after processing
@@ -68,12 +67,12 @@ launch:
         - pkg: pcl_ros
           plugin: pcl_ros::StatisticalOutlierRemoval
           name: outlier_filter
-          remappings:
+          remap:
             - from: input
               to: points_cropboxed
             - from: output
               to: points_cropboxed_statd
-          parameters:
+          param:
             - name: mean_k
               value: 30
             - name: stddev
@@ -83,12 +82,12 @@ launch:
         - pkg: pcl_ros
           plugin: pcl_ros::VoxelGrid
           name: voxel_filter
-          remappings:
+          remap:
             - from: input
               to: points_cropboxed_statd
             - from: output
               to: $(var output_topic)
-          parameters:
+          param:
             - name: leaf_size
               value: 0.002
             - name: filter_field_name
