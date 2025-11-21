@@ -27,5 +27,7 @@ in
   compas-rrc-ros-interfaces = callPackage ./compas_rrc_ros_interfaces.nix { };
   depthai = callPackage ./depthai/package.nix { };
   depthai-bridge = callPackage ./depthai-bridge.nix { };
+  # industrial-reconstruction = callPackage ./industrial-reconstruction.nix { };
+  industrial-reconstruction-msgs = callPackage ./industrial-reconstruction-msgs.nix { };
   ros2-utils-tool = callPackage ./ros2-utils-tool.nix { };
 }
