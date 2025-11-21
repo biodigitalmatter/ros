@@ -64,6 +64,9 @@ launch:
               value: false
             - name: negative
               value: false
+          extra_arg:
+            - name: use_intra_process_comms
+              value: true
         - pkg: pcl_ros
           plugin: pcl_ros::StatisticalOutlierRemoval
           name: outlier_filter
@@ -79,6 +82,9 @@ launch:
               value: 1.5
             - name: negative
               value: false
+          extra_arg:
+            - name: use_intra_process_comms
+              value: true
         - pkg: pcl_ros
           plugin: pcl_ros::VoxelGrid
           name: voxel_filter
@@ -89,7 +95,7 @@ launch:
               to: $(var output_topic)
           param:
             - name: leaf_size
-              value: 0.002
+              value: 1.000
             - name: filter_field_name
               value: z
             - name: filter_limit_min
@@ -98,3 +104,6 @@ launch:
               value: 100.0
             - name: filter_limit_negative
               value: false
+          extra_arg:
+            - name: use_intra_process_comms
+              value: true

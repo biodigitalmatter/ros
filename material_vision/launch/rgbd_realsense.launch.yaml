@@ -34,6 +34,7 @@ launch:
       namespace: rgbd
       name: $(var camera_name)
       param:
+        - from: "$(find-pkg-share material_vision)/config/rgbd_realsense.yaml"
         - name: camera_name
           value: $(var camera_name)
         - name: device_type

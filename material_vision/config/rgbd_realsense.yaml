@@ -1,0 +1,23 @@
+/rgbd/d405:
+  ros__parameters:
+    enable_color: false
+    enable_depth: true
+    enable_infra2: true
+    enable_sync: true
+    clip_distance: 1.0
+    # decimation_filter:
+    #   enable: true
+    # hole_filling_filter:
+    #   enable: true
+    # spatial_filter:
+    #   enable: true
+    pointcloud:
+      enable: true
+      stream_filter: 3
+    # enable_color: true
+    # pointcloud:
+    #   enable: true
+    # enable_depth: true
+    # enable_color: true
+    # pointcloud:
+    #   enable: true
