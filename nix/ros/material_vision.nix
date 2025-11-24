@@ -7,6 +7,7 @@
   sensor-msgs,
   realsense2-camera,
   realsense2-description,
+  rtabmap-ros,
 }:
 buildRosPackage {
   pname = "ros-jazzy-material-vision";
@@ -23,6 +24,7 @@ buildRosPackage {
     realsense2-description
     sensor-msgs
     tf2-ros
+    rtabmap-ros
   ];
 
   meta = {

@@ -60,6 +60,7 @@
                   abb_librws = prev.callPackage ./nix/abb_librws/package.nix { };
                   # open3d = prev.callPackage ./nix/open3d.nix { };
                   # inherit (inputs.nixpkgs-depthai-core.legacyPackages.${system}) cpr fp16 libnop;
+                  inherit (inputs.nixpkgs-unstable.legacyPackages.${system}) rtabmap;
                 })
               ];
             };

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/ros2/design/gh-pages/articles/specs/launch.0.1.1.xsd" version="0.1.0">
+
+  <arg name="camera_name" default="d405"/>
+
+  <node pkg="rtabmap_ros" exec="rgbd_sync" output="screen">
+    <param name="approx_sync" value="false"/>
+    <param name="queue_size" value="10"/>
+
+    <remap from="/rgb/image" to="/rgbd/$(var camera_name)/color/image_rect_raw"/>
+    <remap from="/depth/image" to="/rgbd/$(var camera_name)/depth/image_rect_raw"/>
+    <remap from="/rgb/camera_info" to="/rgbd/$(var camera_name)/camera/rgb/camera_info"/>
+    <remap from="/rgbd_image" to="/$(var camera_name)/rgbd_image"/>
+  </node>
+
+  <!-- RTAB-Map Node -->
+  <node pkg="rtabmap_ros" exec="rtabmap" output="screen">
+    <param name="frame_id" value="base_link"/>
+    <param name="subscribe_rgbd" value="true"/>
+    <param name="subscribe_odom_info" value="true"/>
+    <param name="Rtabmap/CreateIntermediateNodes" value="true"/>
+
+    <!-- loop closure -->
+    <param name="RGBD/AngularUpdate" value="0.05"/>
+    <param name="RGBD/LinearUpdate" value="0.05"/>
+
+    <param name="Mem/NotLinkedNodesKept" value="false"/>
+    <param name="Mem/SaveDepth" value="true"/>
+    <param name="Mem/CovOffDiagIgnored" value="true"/>
+
+    <!-- mesh -->
+    <param name="Rtabmap/TimeLimited" value="false"/>
+    <param name="Grid/CellSize" value="0.005"/>
+    <param name="Grid/RangeMax" value="5.0"/>
+
+    <!-- features -->
+    <param name="SURF/HessianThreshold" value="100"/>
+    <param name="OdomF2G/MaxFeatures" value="200"/>
+
+    <!-- graph -->
+    <param name="Optimizer/Iterations" value="20"/>
+    <param name="Optimizer/GravitySigma" value="0"/>
+
+    <param name="Reg/Strategy" value="1"/> <!-- 1=ICP -->
+
+    <!-- Remappings -->
+    <remap from="/rgbd_image" to="/camera/rgbd_image"/>
+    <remap from="/odom" to="/arm_odometry"/>
+
+  </node>
+  <node pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share rtabmap_ros)/launch/config/rgbd.rviz" output="screen"/>
+
+  </launch>>
