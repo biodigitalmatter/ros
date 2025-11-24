@@ -1,6 +1,7 @@
 {
   lib,
   buildRosPackage,
+  # industrial-reconstruction,
   tf2-ros,
   pcl-ros,
   sensor-msgs,
@@ -16,10 +17,11 @@ buildRosPackage {
   buildType = "ament_cmake";
   propagatedBuildInputs = [
     # depthai-ros
+    # industrial-reconstruction
+    pcl-ros
     realsense2-camera
     realsense2-description
     sensor-msgs
-    pcl-ros
     tf2-ros
   ];
 

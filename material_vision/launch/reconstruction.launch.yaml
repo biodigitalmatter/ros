@@ -1,0 +1,11 @@
+---
+launch:
+  - include:
+      file: $(find-pkg-share industrial_reconstructon)/launch/reconstruction.launch.xml
+      arg:
+        - name: depth_image_topic
+          value: /rgbd/d405/depth/image_rect_raw
+        - name: color_image_topic
+          value: /rgbd/d405/color/image_rect_raw
+        - name: camera_info_topic
+          value: /rgbd/d405/depth/camera_info
