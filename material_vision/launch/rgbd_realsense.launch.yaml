@@ -27,7 +27,7 @@ launch:
       exec: static_transform_publisher
       namespace: rgbd
       name: $(var camera_model)_tool0_tf_publisher
-      args: "--x 0 --y 0 --z 0 --yaw 0 --pitch 0 --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
+      args: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0 --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
   - node:
       pkg: realsense2_camera
       exec: realsense2_camera_node
