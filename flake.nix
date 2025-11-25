@@ -8,7 +8,7 @@
     systems.follows = "ros-dev-flake/systems";
     flake-parts.follows = "ros-dev-flake/flake-parts";
 
-    nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
+    # nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -58,8 +58,8 @@
                 (_: prev: {
                   abb_libegm = prev.callPackage ./nix/abb_libegm/package.nix { };
                   abb_librws = prev.callPackage ./nix/abb_librws/package.nix { };
-                  open3d = prev.callPackage ./nix/open3d.nix { };
-                  inherit (inputs.nixpkgs-depthai-core.legacyPackages.${system}) cpr fp16 libnop;
+                  # open3d = prev.callPackage ./nix/open3d.nix { };
+                  # inherit (inputs.nixpkgs-depthai-core.legacyPackages.${system}) cpr fp16 libnop;
                 })
               ];
             };
