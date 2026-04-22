@@ -17,8 +17,8 @@ buildRosPackage {
   src = fetchFromGitHub {
     owner = "ros-industrial";
     repo = "abb_egm_rws_managers";
-    rev = "ea7d418e7b34aaacc033365d5326b6a6befde3df";
-    hash = "sha256-xpcB/DnaFphT3JVwJDbiiYFkzQgk04tB0I5Mh8rsIkE=";
+    rev = "7e554e53b415df1bbd743392b84a055c499b63d2";
+    hash = "sha256-kmi/g3Bj1gMvgWwh7LPuXazx7J3p6gl3Jvs3jRBmxY4=";
   };
 
   buildType = "cmake";

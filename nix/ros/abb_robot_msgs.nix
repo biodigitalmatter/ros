@@ -12,7 +12,7 @@
 }:
 buildRosPackage {
   pname = "ros-jazzy-abb-robot-msgs";
-  version = "1.0.0";
+  version = "0-unstable-2022-08-15";
 
   src = fetchFromGitHub {
     owner = "gbartyzel";

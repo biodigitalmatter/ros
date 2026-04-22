@@ -9,7 +9,7 @@
 }:
 buildRosPackage {
   pname = "ros-jazzy-abb-egm-msgs";
-  version = "1.0.0";
+  version = "0-unstable-2022-08-15";
 
   src = fetchFromGitHub {
     owner = "gbartyzel";
@@ -17,6 +17,7 @@ buildRosPackage {
     rev = "071bb1fc2148a7cd850a1ff550c5987e67da6bdd";
     hash = "sha256-d6u9wAep9Rerz7sKvy4/x90acorF5mz9o8k6SRxdk9o=";
   };
+
   sourceRoot = "source/abb_egm_msgs";
 
   buildType = "ament_cmake";

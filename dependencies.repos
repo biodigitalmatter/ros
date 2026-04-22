@@ -21,7 +21,7 @@ repositories:
   abb_libegm:
     type: git
     url: https://github.com/ros-industrial/abb_libegm.git
-    version: 2c9350abfb67131cae796805fed8cd6eeb2ab7f9 # master
+    version:  2c9350abfb67131cae796805fed8cd6eeb2ab7f9 # master
   abb_librws:
     type: git
     url: https://github.com/ros-industrial/abb_librws
@@ -29,7 +29,7 @@ repositories:
   abb_egm_rws_managers:
     type: git
     url: https://github.com/ros-industrial/abb_egm_rws_managers.git
-    version: ea7d418e7b34aaacc033365d5326b6a6befde3df # master
+    version: 7e554e53b415df1bbd743392b84a055c499b63d2 # master
   abb_ros2_msgs:
     type: git
     url: https://github.com/gbartyzel/abb_ros2_msgs.git
