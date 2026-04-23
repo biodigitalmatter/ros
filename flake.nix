@@ -38,7 +38,7 @@
               ) rosPackages;
           in
           _final: prev: {
-            rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath) prev.rosPackages;
+            rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath prev) prev.rosPackages;
           };
 
         perSystem =
@@ -55,12 +55,23 @@
               overlays = [
                 inputs.ros-dev-flake.overlays.default
                 inputs.self.overlays.default
-                (_: prev: {
-                  abb_libegm = prev.callPackage ./nix/abb_libegm/package.nix { };
-                  abb_librws = prev.callPackage ./nix/abb_librws/package.nix { };
-                  open3d = prev.callPackage ./nix/open3d.nix { };
-                  inherit (inputs.nixpkgs-depthai-core.legacyPackages.${system}) cpr fp16 libnop;
-                })
+                (
+                  final: _:
+                  let
+                    inherit (final) callPackage;
+                  in
+                  {
+
+                    abb_libegm = callPackage ./nix/abb_libegm/package.nix { };
+                    abb_librws = callPackage ./nix/abb_librws/package.nix { };
+                    open3d = callPackage ./nix/open3d.nix { };
+                    inherit (inputs.nixpkgs-depthai-core.legacyPackages.${final.stdenv.hostPlatform.system})
+                      cpr
+                      fp16
+                      libnop
+                      ;
+                  }
+                )
               ];
             };
 
@@ -104,10 +115,10 @@
 
               };
             legacyPackages = pkgs.rosPackages;
-            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath null
+            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
               null
             ) pkgs.rosPackages.${rosDistro};
-            checks = builtins.intersectAttrs (import localRosPkgsOverlayPath null
+            checks = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
               null
             ) pkgs.rosPackages.${rosDistro};
             treefmt = {

@@ -1,12 +1,29 @@
-final: _prev:
+# toplevel packages
+pkgs:
+# ros scope
+final: prev:
 let
   inherit (final) callPackage;
+  inherit (pkgs) fetchpatch2;
 in
 {
   # own
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };
   chess-vision = callPackage ./chess_vision.nix { };
   material-vision = callPackage ./material_vision.nix { };
+
+  # patched
+  launch-pytest = prev.launch-pytest.overrideAttrs (
+    _finalAttrs: previousAttrs: {
+      patches = (previousAttrs.patches or [ ]) ++ [
+        (fetchpatch2 {
+          relative = "launch_pytest";
+          url = "https://github.com/ros2/launch/pull/967.patch";
+          hash = "sha256-x1NJ10I/mzU88hs+xnkI0sA/bv1PCjo9XLq4pC9CYeg=";
+        })
+      ];
+    }
+  );
 
   # deps
   abb-bringup = callPackage ./abb_bringup.nix { };
