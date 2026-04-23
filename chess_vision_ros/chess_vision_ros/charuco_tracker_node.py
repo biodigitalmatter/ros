@@ -12,7 +12,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import numpy.typing as npt
 
-from chess_vision import ChArUcoBoard
+from chess_vision import CameraCalibration, ChArUcoBoard
 
 
 @final
@@ -24,27 +24,13 @@ class CharucoTracker(Node):
         _ = self.declare_parameter("rectified", False)
 
         self._board: ChArUcoBoard | None = None
-
-        self.rectified = (
-            self.get_parameter("rectified").get_parameter_value().bool_value
-        )
-
-        if not isinstance(self.rectified, bool):
-            raise RuntimeError(f"Parameter rectified not bool: {self.rectified=}")
+        self.camera_calibration: CameraCalibration | None = None
 
         self.bridge: CvBridge = CvBridge()
 
-        if self.rectified:
-            self.camera_info_sub = None
-            self.camera_matrix = np.array(
-                [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], dtype=np.float64
-            )
-            self.dist_coeffs = np.zeros(shape=(5, 1), dtype=np.float64)
-
-        else:
-            self.camera_info_sub = self.create_subscription(
-                CameraInfo, "camera_info", self.camera_info_callback, 10
-            )
+        self.camera_info_sub: Subscription = self.create_subscription(
+            CameraInfo, "camera_info", self.camera_info_callback, 10
+        )
 
         self.image_sub: Subscription = self.create_subscription(
             Image, "image_raw", self.image_callback, 10
@@ -69,9 +55,19 @@ class CharucoTracker(Node):
     def board(self):
         return ChArUcoBoard.from_board_parameters_dict(self.board_name)
 
+    @property
+    def rectified(self):
+        rectified = self.get_parameter("rectified").get_parameter_value().bool_value  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+
+        if not isinstance(rectified, bool):
+            raise RuntimeError(f"Invalid rectified parameter type: {rectified=}")
+
+        return rectified
+
     def camera_info_callback(self, msg: CameraInfo) -> None:
-        self.camera_matrix = np.array(msg.k).reshape((3, 3))
-        self.dist_coeffs = np.array(msg.d)
+        self.camera_calibration = CameraCalibration.from_camera_info_msg_k_msg_d(
+            msg.k, msg.d
+        )
 
         _ = self.logger.info("Camera calibration received and stored.")
 
@@ -79,25 +75,18 @@ class CharucoTracker(Node):
             _ = self.destroy_subscription(self.camera_info_sub)
 
     def image_callback(self, msg: Image) -> None:
-        if not self.rectified:
-            if not hasattr(self, "camera_matrix") or not hasattr(self, "dist_coeffs"):
+        if self.camera_calibration is None:
+            if self.rectified:
+                self.camera_calibration = (
+                    CameraCalibration.create_dummy_intrinsics_from_image(
+                        height=msg.height, width=msg.width
+                    )
+                )
+            else:
                 self.logger.warn("Camera calibration not yet received.")
                 return
 
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
-
-        # FIXME: temp fix
-        if not hasattr(self, "camera_matrix"):
-            self.camera_matrix = np.empty(shape=(3, 3))
-            self.get_logger().warn(
-                "Rectified was passed so setting camera matrix to empty array"
-            )
-        if not hasattr(self, "dist_coeffs"):
-            self.camera_matrix = np.empty(shape=(3, 3))
-            self.dist_coeffs = None
-            self.get_logger().warn(
-                "Rectified was passed so setting dist coeffs to None"
-            )
 
         corners, ids, _ = aruco.detectMarkers(frame, self.board.dictionary)
         if ids is not None:
@@ -105,13 +94,12 @@ class CharucoTracker(Node):
                 corners, ids, frame, self.board.board
             )
             if retval > 0:
-                # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga21b51b9e8c6422a4bac27e48fa0a150b
                 success, rvec, tvec = aruco.estimatePoseCharucoBoard(
                     charuco_corners,
                     charuco_ids,
                     self.board.board,
-                    self.camera_matrix,
-                    self.dist_coeffs,
+                    self.camera_calibration.matrix,
+                    self.camera_calibration.dist_coeffs,
                     np.empty(1),
                     np.empty(1),
                 )
