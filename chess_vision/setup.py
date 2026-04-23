@@ -26,7 +26,7 @@ setup(
     entry_points={
         "console_scripts": [
             "charuco_tracker_node = chess_vision.charuco_tracker_node:main",
-            "test_camera_info_publisher = chess_vision.tests.chess_vision.nodes.camera_info_publisher:main",
+            "test_camera_info_publisher = chess_vision.tests.nodes.camera_info_publisher:main",
         ],
     },
 )
