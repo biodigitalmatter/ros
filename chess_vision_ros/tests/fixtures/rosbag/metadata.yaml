@@ -1,0 +1,29 @@
+rosbag2_bagfile_information:
+  version: 9
+  storage_identifier: mcap
+  duration:
+    nanoseconds: 9733333820
+  starting_time:
+    nanoseconds_since_epoch: 1778511177884257338
+  message_count: 293
+  topics_with_message_count:
+    - topic_metadata:
+        name: /topic_video
+        type: sensor_msgs/msg/Image
+        serialization_format: cdr
+        offered_qos_profiles: []
+        type_description_hash: ""
+      message_count: 293
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - rosbag_0.mcap
+  files:
+    - path: rosbag_0.mcap
+      starting_time:
+        nanoseconds_since_epoch: 1778511177884257338
+      duration:
+        nanoseconds: 9733333820
+      message_count: 586
+  custom_data: ~
+  ros_distro: jazzy

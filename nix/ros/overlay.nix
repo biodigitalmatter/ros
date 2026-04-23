@@ -1,4 +1,4 @@
-final: prev:
+final: _prev:
 let
   inherit (final) callPackage;
 in

@@ -34,10 +34,10 @@
               rosOverlay: rosPackages:
               rosPackages
               // builtins.mapAttrs (
-                rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
+                _rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
               ) rosPackages;
           in
-          final: prev: {
+          _final: prev: {
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath) prev.rosPackages;
           };
 
@@ -86,6 +86,7 @@
                         numpy
                       ]
                     ))
+                    config.treefmt.build.wrapper
                   ]
                 );
               in
@@ -111,6 +112,7 @@
             ) pkgs.rosPackages.${rosDistro};
             treefmt = {
               programs = {
+                deadnix.enable = true;
                 nixfmt.enable = true;
                 nixf-diagnose.enable = true;
                 ruff-check.enable = true;

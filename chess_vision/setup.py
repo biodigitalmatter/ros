@@ -17,7 +17,7 @@ setup(
     maintainer="tetov",
     maintainer_email="anton@tetov.se",
     description="detect charco boards",
-    license="MIT",
+    license="Apache-2.0",
     entry_points={
         "console_scripts": [
             "charuco_tracker_node = chess_vision.charuco_tracker_node:main",
