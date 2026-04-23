@@ -10,7 +10,7 @@ def fixture_dir():
 
 @pytest.fixture
 def calibration_video_path(fixture_dir):
-    path = fixture_dir / "sample_calibration_video" / "sample_calibration_video.mp4"
+    path = fixture_dir / "sample_calibration_video.mp4"
     assert path.exists()
     return path
 
