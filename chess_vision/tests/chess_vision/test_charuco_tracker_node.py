@@ -1,21 +1,24 @@
 from pathlib import Path
-from threading import Event, Thread
+from threading import Event
 
 import launch
+from launch.events import Shutdown
 import launch_pytest
 import launch_ros
 import pytest
 import rclpy
 from rclpy.node import Node
-
 from geometry_msgs.msg import PoseStamped
 
 
 @pytest.fixture
-def rosbag_path():
-    here = Path(__file__).parent
+def fixture_directory():
+    return Path(__file__).parent / "fixtures"
 
-    path_ = here / "fixtures" / "sample_calibration_video" / "rosbag"
+
+@pytest.fixture
+def rosbag_path(fixture_directory):
+    path_ = fixture_directory / "sample_calibration_video" / "rosbag"
 
     datapath = path_ / "rosbag_0.mcap"
 
@@ -25,22 +28,34 @@ def rosbag_path():
     return path_
 
 
+@pytest.fixture
+def calibration_yaml_path(fixture_directory):
+    return fixture_directory / "sample_calibration.yaml"
+
+
 @launch_pytest.fixture
-def generate_test_description(rosbag_path):
-    node = launch_ros.actions.Node(
-        package="chess_vision",
-        executable="charuco_tracker_node",
-        name="charuco_tracker",
-        parameters=[
-            {"board_name": "sample_calibration_video_board", "rectified": True}
-        ],
-        remappings=[
-            (
-                "image_raw",
-                "/topic_video",
-            )
-        ],
-    )
+def generate_test_description(rosbag_path, calibration_yaml_path):
+    nodes = [
+        launch_ros.actions.Node(
+            package="chess_vision",
+            executable="charuco_tracker_node",
+            name="charuco_tracker",
+            parameters=[
+                {"board_name": "sample_calibration_video_board", "rectified": True}
+            ],
+            remappings=[
+                (
+                    "image_raw",
+                    "/topic_video",
+                )
+            ],
+        ),
+        launch_ros.actions.Node(
+            package="chess_vision",
+            executable="test_camera_info_publisher",
+            parameters=[{"camera_info_file": str(calibration_yaml_path)}],
+        ),
+    ]
     bag_play = launch.actions.ExecuteProcess(
         cmd=[
             "ros2",
@@ -54,7 +69,15 @@ def generate_test_description(rosbag_path):
         ],
     )
     return launch.LaunchDescription(
-        [node, bag_play, launch_pytest.actions.ReadyToTest()]
+        nodes
+        + [
+            bag_play,
+            launch_pytest.actions.ReadyToTest(),
+            launch.actions.TimerAction(
+                period=6.0,
+                actions=[launch.actions.EmitEvent(event=Shutdown())],
+            ),
+        ]
     )
 
 
@@ -62,13 +85,25 @@ def generate_test_description(rosbag_path):
 @pytest.mark.launch(fixture=generate_test_description)
 def test_check_if_msgs_published():
     rclpy.init()
+    node = MakeTestNode("test_node")
 
     try:
-        node = MakeTestNode("test_node")
-        node.start_subscriber()
-        msgs_received_flag = node.msg_event_object.wait(timeout=5.0)
-        assert msgs_received_flag, "Did not receive msgs!"
+        start_time = node.get_clock().now()
+
+        timeout_sec = 5.0
+        received = False
+
+        while (node.get_clock().now() - start_time).nanoseconds < timeout_sec * 1e9:
+            rclpy.spin_once(node, timeout_sec=0.1)
+
+            if node.msg_event_object.is_set():
+                received = True
+                break
+
+        assert received, "Did not receive msgs!"
+
     finally:
+        node.destroy_node()
         rclpy.shutdown()
 
 
@@ -77,15 +112,12 @@ class MakeTestNode(Node):
         super().__init__(name)
         self.msg_event_object = Event()
 
-    def start_subscriber(self):
         self.subscription = self.create_subscription(
-            PoseStamped, "charuco_pose", self.subscriber_callback, 10
+            PoseStamped,
+            "charuco_pose",
+            self.subscriber_callback,
+            10,
         )
-
-        self.ros_spin_thread = Thread(
-            target=lambda node: rclpy.spin(node), args=(self,)
-        )
-        self.ros_spin_thread.start()
 
     def subscriber_callback(self, data):
         self.msg_event_object.set()

@@ -30,6 +30,11 @@ class CharucoTracker(Node):
 
         if self.rectified:
             self.camera_info_sub = None
+            self.camera_matrix = np.array(
+                [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], dtype=np.float64
+            )
+            self.dist_coeffs = np.zeros(shape=(5, 1), dtype=np.float64)
+
         else:
             self.camera_info_sub = self.create_subscription(
                 CameraInfo, "camera_info", self.camera_info_callback, 10
@@ -57,6 +62,19 @@ class CharucoTracker(Node):
 
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
+        # FIXME: temp fix
+        if not hasattr(self, "camera_matrix"):
+            self.camera_matrix = np.empty(shape=(3, 3))
+            self.get_logger().warn(
+                "Rectified was passed so setting camera matrix to empty array"
+            )
+        if not hasattr(self, "dist_coeffs"):
+            self.camera_matrix = np.empty(shape=(3, 3))
+            self.dist_coeffs = None
+            self.get_logger().warn(
+                "Rectified was passed so setting dist coeffs to None"
+            )
+
         # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga061ee5b694d30fa2258dd4f13dc98129
         corners, ids, _ = aruco.detectMarkers(frame, self.board.dictionary)
         if ids is not None:
@@ -69,9 +87,11 @@ class CharucoTracker(Node):
                 success, rvec, tvec = aruco.estimatePoseCharucoBoard(
                     charuco_corners,
                     charuco_ids,
-                    self.camera_matrix or None,
-                    self.dist_coeffs or None,
                     self.board.board,
+                    self.camera_matrix,
+                    self.dist_coeffs,
+                    np.empty(1),
+                    np.empty(1),
                 )
                 if success:
                     pose_msg = PoseStamped()
