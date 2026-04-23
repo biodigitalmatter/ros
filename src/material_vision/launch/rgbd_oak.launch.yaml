@@ -1,14 +1,20 @@
 launch:
   - arg:
+      name: name
+      default: rgbd_camera
+  - arg:
+      name: parent_frame
+      default: tool0
+  - arg:
       name: camera_model
       default: OAK-D-S2-POE
   - include:
       file: "$(find-pkg-share depthai_ros_driver)/launch/rgbd_pcl.launch.py"
       arg:
         - name: name
-          value: rgbd_camera
+          value: $(var name)
         - name: parent_frame
-          value: tool0
+          value: $(var parent_frame)
         - name: cam_pos_x
           value: "0.270721"
         - name: cam_pos_y
