@@ -1,15 +1,15 @@
 import cv2
+from cv2 import aruco
 
-from chess_vision import boards
+from chess_vision import ChArUcoBoard
 
 
 def test_charuco_markers_detect_in_sample_video(calibration_video_path):
     cap = cv2.VideoCapture(str(calibration_video_path))
     assert cap.isOpened(), f"Failed to open video: {calibration_video_path}"
 
-    board = boards.ChessBoard.from_board_parameters_dict(
-        "sample_calibration_video_board"
-    )
+    board = ChArUcoBoard.from_board_parameters_dict("sample_calibration_video_board")
+    dictionary = board.dictionary
 
     best_charuco_corners = 0
     frames_with_charuco = 0
@@ -26,12 +26,12 @@ def test_charuco_markers_detect_in_sample_video(calibration_video_path):
                 continue
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            corners, ids, _ = cv2.aruco.detectMarkers(gray, board.dictionary)
+            corners, ids, _ = aruco.detectMarkers(gray, dictionary)
             if ids is None or len(ids) == 0:
                 frame_idx += 1
                 continue
 
-            retval, _, _ = cv2.aruco.interpolateCornersCharuco(
+            retval, _, _ = aruco.interpolateCornersCharuco(
                 corners, ids, gray, board.board
             )
             if retval > 0:
