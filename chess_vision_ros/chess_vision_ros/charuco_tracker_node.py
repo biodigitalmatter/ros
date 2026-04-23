@@ -23,15 +23,7 @@ class CharucoTracker(Node):
         _ = self.declare_parameter("board_name", "standard")
         _ = self.declare_parameter("rectified", False)
 
-        board_name = (
-            self.get_parameter(
-                "board_name",
-            )
-            .get_parameter_value()
-            .string_value
-        )
-
-        self.board = ChArUcoBoard.from_board_parameters_dict(board_name)
+        self._board: ChArUcoBoard | None = None
 
         self.rectified = (
             self.get_parameter("rectified").get_parameter_value().bool_value
@@ -63,6 +55,19 @@ class CharucoTracker(Node):
         )
 
         self.logger = self.get_logger()
+
+    @property
+    def board_name(self) -> str:
+        board_name = self.get_parameter("board_name").get_parameter_value().string_value  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+
+        if not isinstance(board_name, str):
+            raise RuntimeError(f"Invalid board_name type: {board_name=}")
+
+        return board_name
+
+    @property
+    def board(self):
+        return ChArUcoBoard.from_board_parameters_dict(self.board_name)
 
     def camera_info_callback(self, msg: CameraInfo) -> None:
         self.camera_matrix = np.array(msg.k).reshape((3, 3))
