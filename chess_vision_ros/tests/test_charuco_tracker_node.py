@@ -58,7 +58,6 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
 
 
 # https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
-# @pytest.mark.skip(reason="Something makes this run forever")
 @pytest.mark.launch(fixture=generate_test_description)
 def test_check_if_msgs_published():
     rclpy.init()

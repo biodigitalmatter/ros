@@ -18,7 +18,7 @@ class CharucoTracker(Node):
     def __init__(self):
         super().__init__("charuco_tracker")
 
-        _ = self.declare_parameter("board_name", "standard")
+        _ = self.declare_parameter("board_name", "large")
         _ = self.declare_parameter("rectified", False)
 
         self._detector: Detector | None = None

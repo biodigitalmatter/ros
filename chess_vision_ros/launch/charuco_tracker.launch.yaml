@@ -1,12 +1,25 @@
 launch:
   - arg:
-    name: board_name
-    default: "large"
-    description: "Name of ChArUco board to track"
+      name: board_name
+      default: "large"
+      description: "Name of ChArUco board to track"
+  - arg:
+      name: input_topic
+      default: "/rgbd/stereo/image_raw"
+      description: "Input topic"
+  - arg:
+      name: rectified
+      default: "false"
+      description: "Set if (stereo) image topic (image_raw) is already rectified"
   - node:
-    pkg: chess_vision
-    exec: charuco_tracker_node
-    name: charuco_tracker
-    param:
-      - name: board_name
-        value: "$(var board_name)"
+      pkg: chess_vision_ros
+      exec: charuco_tracker_node
+      name: charuco_tracker
+      param:
+        - name: board_name
+          value: "$(var board_name)"
+        - name: rectified
+          value: "$(var rectified)"
+      remap:
+        - from: "/image_raw"
+          to: "$(var input_topic)"
