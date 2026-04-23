@@ -13,5 +13,3 @@ curl -LO https://github.com/yumashino/Camera-Calibration-with-ChArUco-Board/blob
 ``` sh
 ros2 run ros2_utils_tool tool_video_to_bag ./sample_calibration_video.mp4 ./rosbag
 ```
-
-`

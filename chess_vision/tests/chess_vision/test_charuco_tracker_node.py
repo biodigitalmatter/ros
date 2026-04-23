@@ -31,7 +31,9 @@ def generate_test_description(rosbag_path):
         package="chess_vision",
         executable="charuco_tracker_node",
         name="charuco_tracker",
-        parameters=[{"board_name": "sample_calibration_video", "rectified": True}],
+        parameters=[
+            {"board_name": "sample_calibration_video_board", "rectified": True}
+        ],
         remappings=[
             (
                 "image_raw",

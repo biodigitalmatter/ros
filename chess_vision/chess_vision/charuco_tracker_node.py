@@ -8,7 +8,7 @@ from cv2 import aruco, Rodrigues
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from chess_vision import boards
+from chess_vision import ChArUcoBoard
 
 
 class CharucoTracker(Node):
@@ -20,7 +20,7 @@ class CharucoTracker(Node):
 
         board_name = self.get_parameter("board_name").get_parameter_value().string_value
 
-        self.board = getattr(boards, board_name)
+        self.board = ChArUcoBoard.from_board_parameters_dict(board_name)
 
         self.rectified = (
             self.get_parameter("rectified").get_parameter_value().bool_value
@@ -62,16 +62,16 @@ class CharucoTracker(Node):
         if ids is not None:
             # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#gadcc5dc30c9ad33dcf839e84e8638dcd1
             retval, charuco_corners, charuco_ids = aruco.interpolateCornersCharuco(
-                corners, ids, frame, self.board
+                corners, ids, frame, self.board.board
             )
             if retval > 0:
                 # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga21b51b9e8c6422a4bac27e48fa0a150b
                 success, rvec, tvec = aruco.estimatePoseCharucoBoard(
                     charuco_corners,
                     charuco_ids,
-                    self.board,
                     self.camera_matrix or None,
                     self.dist_coeffs or None,
+                    self.board.board,
                 )
                 if success:
                     pose_msg = PoseStamped()
