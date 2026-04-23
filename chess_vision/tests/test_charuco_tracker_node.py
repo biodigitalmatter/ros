@@ -1,4 +1,3 @@
-from pathlib import Path
 from threading import Event
 
 import launch
@@ -9,28 +8,6 @@ import pytest
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
-
-
-@pytest.fixture
-def fixture_directory():
-    return Path(__file__).parent / "fixtures"
-
-
-@pytest.fixture
-def rosbag_path(fixture_directory):
-    path_ = fixture_directory / "sample_calibration_video" / "rosbag"
-
-    datapath = path_ / "rosbag_0.mcap"
-
-    if not datapath.exists():
-        raise RuntimeError("rosbag not found, check README.md on how to create")
-
-    return path_
-
-
-@pytest.fixture
-def calibration_yaml_path(fixture_directory):
-    return fixture_directory / "sample_calibration.yaml"
 
 
 @launch_pytest.fixture
