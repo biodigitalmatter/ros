@@ -3,11 +3,14 @@ import typing
 
 import compas.geometry
 import cv2 as cv
-import cv2.typing as cvt
 import numpy as np
+import numpy.typing as npt
 
 from chess_vision import CameraCalibration, ChArUcoBoard
 
+ImageU8 = npt.NDArray[np.uint8]
+MarkerIDs = npt.NDArray[np.uint8]
+CornerCoordinates = npt.NDArray[np.float64]
 
 @typing.final
 class Detector:
@@ -21,7 +24,7 @@ class Detector:
 
     def detect_pose(
         self,
-        frame: cvt.MatLike,
+        frame: ImageU8,
         dump_debug_frame: bool = False,
         dump_debug_frame_directory: pathlib.Path | None = None,
     ) -> compas.geometry.Transformation | None:
@@ -40,10 +43,10 @@ class Detector:
 
             path = self.dump_debug_frame(
                 frame.copy(),
-                charucoCorners,
-                charucoIds,
-                markerCorners,
-                markerIds,
+                charucoCorners,  # pyright: ignore[reportArgumentType]
+                charucoIds,  # pyright: ignore[reportArgumentType]
+                markerCorners,  # pyright: ignore[reportArgumentType]
+                markerIds,  # pyright: ignore[reportArgumentType]
                 dump_debug_frame_directory,
             )
             print(f"Dumped frame: {path=}")
@@ -56,8 +59,8 @@ class Detector:
             print("Didn't detect enough ChArUco corners")
             return None
 
-        obj_points, img_points = self.board.board.matchImagePoints(  # pyright: ignore[reportCallIssue]
-            charucoCorners,  # pyright: ignore[reportArgumentType]
+        obj_points, img_points = self.board.board.matchImagePoints(  # pyright: ignore[reportCallIssue, reportUnknownVariableType]
+            charucoCorners,
             charucoIds,
         )
 
@@ -75,19 +78,19 @@ class Detector:
 
     def dump_debug_frame(
         self,
-        frame: cvt.MatLike,
-        charucoCorners: cvt.MatLike,
-        charucoIds: cvt.MatLike,
-        markerCorners: cvt.MatLike,
-        markerIds: cvt.MatLike,
+        frame: ImageU8,
+        charucoCorners: CornerCoordinates,
+        charucoIds: MarkerIDs,
+        markerCorners: CornerCoordinates,
+        markerIds: MarkerIDs,
         save_directory: pathlib.Path,
     ) -> pathlib.Path:
 
         if frame.ndim == 2:
-            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+            frame = cv.cvtColor( frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
 
         if len(markerIds) > 0:
-            _ = cv.aruco.drawDetectedMarkers(frame, markerCorners, markerIds)  # pyright: ignore[reportCallIssue, reportArgumentType]
+            _ = cv.aruco.drawDetectedMarkers(frame, markerCorners, markerIds)  # pyright: ignore[reportCallIssue, reportArgumentType, reportUnknownVariableType]
 
         if charucoIds is not None and len(charucoIds) > 0:  # pyright: ignore[reportUnnecessaryComparison]
             _ = cv.aruco.drawDetectedCornersCharuco(frame, charucoCorners, charucoIds)
@@ -105,7 +108,7 @@ class Detector:
 
     @staticmethod
     def xform_from_cv(
-        rvec: cvt.MatLike, tvec: cvt.MatLike
+        rvec: npt.NDArray[np.float64], tvec: npt.NDArray[np.float64]
     ) -> compas.geometry.Transformation:
 
         rot, _ = cv.Rodrigues(rvec)

@@ -1,3 +1,4 @@
+import os
 import typing
 from pathlib import Path
 from threading import Event, Thread
@@ -60,6 +61,7 @@ def generate_test_description(rosbag_path: Path, sample_camera_info_path: Path):
 
 # https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
 @pytest.mark.launch(fixture=generate_test_description)
+@pytest.mark.skipif(os.getenv("CI") == "true", reason="Does not have bagfile")
 def test_check_if_msgs_published():
     rclpy.init()
 
