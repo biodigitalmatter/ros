@@ -106,7 +106,14 @@
                 buildInputs = [
                   (pkgs.rosPackages.${rosDistro}.buildEnv {
                     wrapPrograms = false;
-                    paths = builtins.attrValues self'.packages;
+                    paths = builtins.attrValues (
+                      removeAttrs self'.packages [
+                        "biodigitalmatter-ros"
+                        "chess-vision"
+                        "chess-vision-ros"
+                        "material-vision"
+                      ]
+                    );
                   })
                   (pkgs.python3.withPackages (
                     ps: with ps; [
