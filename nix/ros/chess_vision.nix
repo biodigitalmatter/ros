@@ -1,8 +1,6 @@
 {
   lib,
   buildRosPackage,
-  cv-bridge,
-  launch-pytest,
   opencv,
   python3Packages,
 }:
@@ -13,16 +11,17 @@ buildRosPackage {
   src = ../../chess_vision;
 
   buildType = "ament_python";
+
   propagatedBuildInputs = [
-    cv-bridge
     opencv
     python3Packages.numpy
     python3Packages.scipy
-    launch-pytest
   ];
 
+  nativeCheckInputs = [ python3Packages.pytest ];
+
   meta = {
-    description = "detect charco boards";
+    description = "detect charuco boards";
     license = with lib.licenses; [ asl20 ];
   };
 }

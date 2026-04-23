@@ -75,10 +75,8 @@ class CharucoTracker(Node):
                 "Rectified was passed so setting dist coeffs to None"
             )
 
-        # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#ga061ee5b694d30fa2258dd4f13dc98129
         corners, ids, _ = aruco.detectMarkers(frame, self.board.dictionary)
         if ids is not None:
-            # https://docs.opencv.org/4.6.0/d9/d6a/group__aruco.html#gadcc5dc30c9ad33dcf839e84e8638dcd1
             retval, charuco_corners, charuco_ids = aruco.interpolateCornersCharuco(
                 corners, ids, frame, self.board.board
             )

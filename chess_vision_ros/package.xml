@@ -1,15 +1,24 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>chess_vision</name>
+  <name>chess_vision_ros</name>
   <version>0.1.0</version>
-  <description>detect charuco boards</description>
+  <description>ROS wrapper for chess_vision, detecting ChArUco markers</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>Apache-2.0</license>
   <url type="repository">https://github.com/biodigitalmatter/ros/</url>
+  <exec_depend>chess_vision</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
   <exec_depend>python3-opencv</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-scipy</exec_depend>
+  <test_depend>launch_pytest</test_depend>
+  <test_depend>launch_testing</test_depend>
+  <test_depend>launch_testing_ros</test_depend>
   <export>
     <build_type>ament_python</build_type>
   </export>

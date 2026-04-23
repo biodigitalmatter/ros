@@ -1,4 +1,4 @@
-from threading import Event
+from threading import Event, Thread
 
 import launch
 from launch.events import Shutdown
@@ -14,7 +14,7 @@ from geometry_msgs.msg import PoseStamped
 def generate_test_description(rosbag_path, calibration_yaml_path):
     nodes = [
         launch_ros.actions.Node(
-            package="chess_vision",
+            package="chess_vision_ros",
             executable="charuco_tracker_node",
             name="charuco_tracker",
             parameters=[
@@ -28,7 +28,7 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
             ],
         ),
         launch_ros.actions.Node(
-            package="chess_vision",
+            package="chess_vision_ros",
             executable="test_camera_info_publisher",
             parameters=[{"camera_info_file": str(calibration_yaml_path)}],
         ),
@@ -59,29 +59,16 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
 
 
 # https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
-@pytest.mark.skip(reason="Something makes this run forever")
+# @pytest.mark.skip(reason="Something makes this run forever")
 @pytest.mark.launch(fixture=generate_test_description)
 def test_check_if_msgs_published():
     rclpy.init()
-    node = MakeTestNode("test_node")
 
     try:
-        start_time = node.get_clock().now()
-
-        timeout_sec = 5.0
-        received = False
-
-        while (node.get_clock().now() - start_time).nanoseconds < timeout_sec * 1e9:
-            rclpy.spin_once(node, timeout_sec=0.1)
-
-            if node.msg_event_object.is_set():
-                received = True
-                break
-
-        assert received, "Did not receive msgs!"
-
+        node = MakeTestNode("test_node")
+        msgs_received_flag = node.msg_event_object.wait(timeout=5.0)
+        assert msgs_received_flag, "Did not receive msgs!"
     finally:
-        node.destroy_node()
         rclpy.shutdown()
 
 
@@ -96,6 +83,13 @@ class MakeTestNode(Node):
             self.subscriber_callback,
             10,
         )
+
+        self.ros_spin_thread = Thread(
+            target=lambda: rclpy.spin(self),
+            # doesnt keep test waiting after timeout
+            daemon=True,
+        )
+        self.ros_spin_thread.start()
 
     def subscriber_callback(self, data):
         self.msg_event_object.set()
