@@ -1,14 +1,23 @@
+import typing
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import CameraInfo
 import yaml
 
 
+@typing.final
 class DummyCameraInfoPublisher(Node):
     def __init__(self):
         super().__init__("dummy_camera_info_publisher")
 
-        yaml_path = self.declare_parameter("camera_info_file").value
+        _ = self.declare_parameter("camera_info_file", "./calibration.yaml")
+
+        yaml_path = (
+            self.get_parameter("camera_info_file").get_parameter_value().string_value
+        )
+
+        if typing.TYPE_CHECKING:
+            assert isinstance(yaml_path, str)
 
         with open(yaml_path, "r") as f:
             data = yaml.safe_load(f)

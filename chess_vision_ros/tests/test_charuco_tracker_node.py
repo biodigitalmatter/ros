@@ -63,7 +63,7 @@ def test_check_if_msgs_published():
     rclpy.init()
 
     try:
-        node = MakeTestNode("test_node")
+        node = MakeTestNode("test_node", min_recv_msgs=50)
         msgs_received_flag = node.msg_event_object.wait(timeout=5.0)
         assert msgs_received_flag, "Did not receive msgs!"
     finally:
@@ -92,14 +92,16 @@ class MakeTestNode(Node):
         )
         self.ros_spin_thread.start()
 
-        self.get_logger().info("started node")
+        self.logger = self.get_logger()
+
+        self.logger.info("started node")
 
         self.msg_count = 0
 
     def subscriber_callback(self, data):
-        self.get_logger().info(f"{data=}", once=True)
+        self.logger.info(f"{data=}", once=True)
 
-        self.get_logger().info(
+        self.logger.info(
             f"{self.msg_count=}",
         )
 

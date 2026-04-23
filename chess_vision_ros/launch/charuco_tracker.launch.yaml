@@ -1,12 +1,12 @@
 launch:
   - arg:
-      name: board_name
-      default: "large"
-      description: "Name of ChArUco board to track"
+    name: board_name
+    default: "large"
+    description: "Name of ChArUco board to track"
   - node:
-      pkg: chess_vision
-      exec: charuco_tracker_node
-      name: charuco_tracker
-      param:
-        - name: board_name
-          value: "$(var board_name)"
+    pkg: chess_vision
+    exec: charuco_tracker_node
+    name: charuco_tracker
+    param:
+      - name: board_name
+        value: "$(var board_name)"
