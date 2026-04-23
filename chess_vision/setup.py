@@ -20,7 +20,7 @@ setup(
     license="MIT",
     entry_points={
         "console_scripts": [
-            "charuco_tracker_node = charuco_tracker.charuco_tracker:main",
+            "charuco_tracker_node = chess_vision.charuco_tracker_node:main",
         ],
     },
 )
