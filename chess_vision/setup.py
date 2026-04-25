@@ -18,6 +18,11 @@ setup(
     maintainer_email="anton@tetov.se",
     description="detect charco boards",
     license="Apache-2.0",
+    extras_require={
+        "test": [
+            "pytest",
+        ],
+    },
     entry_points={
         "console_scripts": [
             "charuco_tracker_node = chess_vision.charuco_tracker_node:main",
