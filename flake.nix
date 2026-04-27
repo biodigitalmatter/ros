@@ -87,6 +87,7 @@
                     "robot-calibration"
                     "rosbridge-server"
                     "axis-camera"
+                    "foxglove-bridge"
                     docker-compose
                     nixd
                     colcon
