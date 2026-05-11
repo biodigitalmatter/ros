@@ -4,9 +4,9 @@ from sensor_msgs.msg import CameraInfo
 import yaml
 
 
-class CameraInfoPublisher(Node):
+class DummyCameraInfoPublisher(Node):
     def __init__(self):
-        super().__init__("camera_info_publisher")
+        super().__init__("dummy_camera_info_publisher")
 
         yaml_path = self.declare_parameter("camera_info_file").value
 
@@ -33,6 +33,6 @@ class CameraInfoPublisher(Node):
 
 def main():
     rclpy.init()
-    node = CameraInfoPublisher()
+    node = DummyCameraInfoPublisher()
     rclpy.spin(node)
     rclpy.shutdown()

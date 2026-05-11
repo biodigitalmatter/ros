@@ -17,9 +17,7 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
             package="chess_vision_ros",
             executable="charuco_tracker_node",
             name="charuco_tracker",
-            parameters=[
-                {"board_name": "sample_calibration_video_board", "rectified": True}
-            ],
+            parameters=[{"board_name": "sample_calibration_video_board"}],
             remappings=[
                 (
                     "image_raw",
@@ -29,7 +27,7 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
         ),
         launch_ros.actions.Node(
             package="chess_vision_ros",
-            executable="test_camera_info_publisher",
+            executable="dummy_camera_info_publisher",
             parameters=[{"camera_info_file": str(calibration_yaml_path)}],
         ),
     ]
@@ -73,8 +71,11 @@ def test_check_if_msgs_published():
 
 
 class MakeTestNode(Node):
-    def __init__(self, name="test_node"):
+    def __init__(self, name="test_node", min_recv_msgs=10):
         super().__init__(name)
+
+        self.min_recv_msgs = min_recv_msgs
+
         self.msg_event_object = Event()
 
         self.subscription = self.create_subscription(
@@ -91,5 +92,18 @@ class MakeTestNode(Node):
         )
         self.ros_spin_thread.start()
 
+        self.get_logger().info("started node")
+
+        self.msg_count = 0
+
     def subscriber_callback(self, data):
-        self.msg_event_object.set()
+        self.get_logger().info(f"{data=}", once=True)
+
+        self.get_logger().info(
+            f"{self.msg_count=}",
+        )
+
+        if self.msg_count >= self.min_recv_msgs:
+            self.msg_event_object.set()
+
+        self.msg_count += 1
