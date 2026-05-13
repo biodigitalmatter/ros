@@ -94,10 +94,14 @@
                     opencv
                     (pkgs.python3.withPackages (
                       ps: with ps; [
-                        scipy
                         numpy
+                        scipy
                       ]
                     ))
+                    # devtools
+                    ruff
+                    ty
+                    basedpyright
                     config.treefmt.build.wrapper
                   ]
                 );
