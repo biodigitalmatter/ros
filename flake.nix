@@ -11,6 +11,11 @@
     nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    nixpkgs-not-upstreamable = {
+      url = "git+https://git.sr.ht/~tetov/nixpkgs-not-upstreamable";
+      flake = false;
+    };
   };
 
   outputs =
@@ -53,6 +58,7 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               overlays = [
+                (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
                 inputs.ros-dev-flake.overlays.default
                 inputs.self.overlays.default
                 (
@@ -88,21 +94,7 @@
                     "rosbridge-server"
                     "axis-camera"
                     "foxglove-bridge"
-                    docker-compose
-                    nixd
                     colcon
-                    opencv
-                    (pkgs.python3.withPackages (
-                      ps: with ps; [
-                        numpy
-                        scipy
-                      ]
-                    ))
-                    # devtools
-                    ruff
-                    ty
-                    basedpyright
-                    config.treefmt.build.wrapper
                   ]
                 );
               in
@@ -116,8 +108,24 @@
                     wrapPrograms = false;
                     paths = builtins.attrValues self'.packages;
                   })
-                ];
-
+                  (pkgs.python3.withPackages (
+                    ps: with ps; [
+                      compas
+                      numpy
+                      scipy
+                    ]
+                  ))
+                ]
+                ++ (with pkgs; [
+                  nixd
+                  docker-compose
+                  opencv
+                  # devtools
+                  ruff
+                  ty
+                  basedpyright
+                  config.treefmt.build.wrapper
+                ]);
               };
             legacyPackages = pkgs.rosPackages;
             packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
