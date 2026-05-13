@@ -1,3 +1,4 @@
+import pathlib
 import typing
 
 import cv2 as cv
@@ -16,13 +17,36 @@ class Detector:
 
         self._detector = cv.aruco.CharucoDetector(self.board.board)
 
-    def detect_pose(self, frame: cvt.MatLike) -> compas.geometry.Transformation | None:
+        self._debug_save_image_with_drawn_markers_counter = 0
+
+    def detect_pose(
+        self,
+        frame: cvt.MatLike,
+        dump_debug_frame: bool = False,
+        dump_debug_frame_directory: pathlib.Path | None = None,
+    ) -> compas.geometry.Transformation | None:
 
         # detectBoard runs detectMarkers if charucoCorners and charucoIds are
         # not provided
         charucoCorners, charucoIds, markerCorners, markerIds = (
             self._detector.detectBoard(frame)
         )
+
+        if dump_debug_frame:
+            if dump_debug_frame_directory is None:
+                raise RuntimeError(
+                    "Can't dump_debug_frame without a dump_debug_frame_directory."
+                )
+
+            path = self.dump_debug_frame(
+                frame.copy(),
+                charucoCorners,
+                charucoIds,
+                markerCorners,
+                markerIds,
+                dump_debug_frame_directory,
+            )
+            print(f"Dumped frame: {path=}")
 
         if len(markerIds) < 1:
             print("Didn't detect any ArUco markers")
@@ -48,6 +72,36 @@ class Detector:
             return
 
         return self.xform_from_cv(rvec, tvec)
+
+    def dump_debug_frame(
+        self,
+        frame: cvt.MatLike,
+        charucoCorners: cvt.MatLike,
+        charucoIds: cvt.MatLike,
+        markerCorners: cvt.MatLike,
+        markerIds: cvt.MatLike,
+        save_directory: pathlib.Path,
+    ) -> pathlib.Path:
+
+        if frame.ndim == 2:
+            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+
+        if len(markerIds) > 0:
+            _ = cv.aruco.drawDetectedMarkers(frame, markerCorners, markerIds)  # pyright: ignore[reportCallIssue, reportArgumentType]
+
+        if charucoIds is not None and len(charucoIds) > 0:  # pyright: ignore[reportUnnecessaryComparison]
+            _ = cv.aruco.drawDetectedCornersCharuco(frame, charucoCorners, charucoIds)
+
+        path = pathlib.Path(
+            save_directory
+            / f"frame_{self._debug_save_image_with_drawn_markers_counter:03d}.png"
+        )
+
+        self._debug_save_image_with_drawn_markers_counter += 1
+
+        _ = cv.imwrite(str(path), frame)
+
+        return path
 
     @staticmethod
     def xform_from_cv(

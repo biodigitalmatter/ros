@@ -13,7 +13,7 @@ def get_capture(video_path: os.PathLike[str]):
     return cap
 
 
-def test_charuco_markers_detector_with_sample_video(calibration_video_path):
+def test_charuco_markers_detector_with_sample_video(calibration_video_path, tmp_path):
 
     cap = get_capture(calibration_video_path)
 
@@ -38,7 +38,9 @@ def test_charuco_markers_detector_with_sample_video(calibration_video_path):
             print("Can't recieve frame")
             break
 
-        xform = detector.detect_pose(frame)
+        xform = detector.detect_pose(
+            frame, dump_debug_frame=True, dump_debug_frame_directory=tmp_path
+        )
 
         if xform is not None:
             xforms.append(xform)
