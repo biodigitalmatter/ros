@@ -1,5 +1,8 @@
+from typing import final
 import rclpy
 from rclpy.node import Node
+from rclpy.publisher import Publisher
+from rclpy.subscription import Subscription
 from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import PoseStamped
 
@@ -7,18 +10,26 @@ from cv_bridge import CvBridge
 from cv2 import aruco, Rodrigues
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+import numpy.typing as npt
 
 from chess_vision import ChArUcoBoard
 
 
+@final
 class CharucoTracker(Node):
     def __init__(self):
         super().__init__("charuco_tracker")
 
-        self.declare_parameter("board_name", "standard")
-        self.declare_parameter("rectified", False)
+        _ = self.declare_parameter("board_name", "standard")
+        _ = self.declare_parameter("rectified", False)
 
-        board_name = self.get_parameter("board_name").get_parameter_value().string_value
+        board_name = (
+            self.get_parameter(
+                "board_name",
+            )
+            .get_parameter_value()
+            .string_value
+        )
 
         self.board = ChArUcoBoard.from_board_parameters_dict(board_name)
 
@@ -26,7 +37,10 @@ class CharucoTracker(Node):
             self.get_parameter("rectified").get_parameter_value().bool_value
         )
 
-        self.bridge = CvBridge()
+        if not isinstance(self.rectified, bool):
+            raise RuntimeError(f"Parameter rectified not bool: {self.rectified=}")
+
+        self.bridge: CvBridge = CvBridge()
 
         if self.rectified:
             self.camera_info_sub = None
@@ -40,24 +54,29 @@ class CharucoTracker(Node):
                 CameraInfo, "camera_info", self.camera_info_callback, 10
             )
 
-        self.image_sub = self.create_subscription(
+        self.image_sub: Subscription = self.create_subscription(
             Image, "image_raw", self.image_callback, 10
         )
 
-        self.pose_pub = self.create_publisher(PoseStamped, "charuco_pose", 10)
+        self.pose_pub: Publisher = self.create_publisher(
+            PoseStamped, "charuco_pose", 10
+        )
 
-        self.get_logger().debug("__init__ ran")
+        self.logger = self.get_logger()
 
     def camera_info_callback(self, msg: CameraInfo) -> None:
         self.camera_matrix = np.array(msg.k).reshape((3, 3))
         self.dist_coeffs = np.array(msg.d)
-        self.get_logger().info("Camera calibration received and stored.")
-        self.destroy_subscription(self.camera_info_sub)
+
+        _ = self.logger.info("Camera calibration received and stored.")
+
+        if self.camera_info_sub:
+            _ = self.destroy_subscription(self.camera_info_sub)
 
     def image_callback(self, msg: Image) -> None:
         if not self.rectified:
             if not hasattr(self, "camera_matrix") or not hasattr(self, "dist_coeffs"):
-                self.get_logger().warn("Camera calibration not yet received.")
+                self.logger.warn("Camera calibration not yet received.")
                 return
 
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
@@ -103,7 +122,9 @@ class CharucoTracker(Node):
 
     @staticmethod
     def set_pose_from_cv(
-        pose_msg: PoseStamped, rvec: np.ndarray, tvec: np.array
+        pose_msg: PoseStamped,
+        rvec: npt.NDArray[np.float64],
+        tvec: npt.NDArray[np.float64],
     ) -> None:
         pose_msg.pose.position.x = float(tvec[0][0])
         pose_msg.pose.position.y = float(tvec[1][0])
@@ -118,7 +139,7 @@ class CharucoTracker(Node):
         pose_msg.pose.orientation.w = w
 
 
-def main(args=None):
+def main(args: list[str] | None = None):
     rclpy.init(args=args)
     node = CharucoTracker()
     rclpy.spin(node)
