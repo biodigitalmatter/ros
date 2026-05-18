@@ -23,8 +23,8 @@ buildRosPackage {
     geometry-msgs
     launch-pytest
     opencv
+    python3Packages.compas
     python3Packages.numpy
-    python3Packages.scipy
     rclpy
     sensor-msgs
   ];

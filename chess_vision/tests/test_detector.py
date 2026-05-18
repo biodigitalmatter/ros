@@ -1,5 +1,6 @@
 import os
 
+import compas
 import cv2 as cv
 
 from chess_vision import CameraCalibration, ChArUcoBoard, Detector
@@ -29,18 +30,20 @@ def test_charuco_markers_detector_with_sample_video(calibration_video_path):
 
     frames_with_charuco = 0
 
-    poses: list[tuple[float, float, float, float, float, float, float]] = []
+    xforms: list[compas.geometry.Transformation] = []
 
     while cap.isOpened() and frames_with_charuco < 10:
         ret, frame = cap.read()
         if not ret:
             print("Can't recieve frame")
             break
-        pose = detector.detect_pose(frame)
 
-        if pose:
-            poses.append(pose)
+        xform = detector.detect_pose(frame)
+
+        if xform is not None:
+            xforms.append(xform)
 
     cap.release()
 
-    assert len(poses) >= 10, "Less than 10 poses where calculated."
+    assert len(xforms) >= 10, "Less than 10 poses where calculated."
+    assert isinstance(xforms[0], compas.geometry.Transformation)

@@ -1,4 +1,5 @@
 from threading import Event, Thread
+import typing
 
 import launch
 from launch.events import Shutdown
@@ -70,6 +71,7 @@ def test_check_if_msgs_published():
         rclpy.shutdown()
 
 
+@typing.final
 class MakeTestNode(Node):
     def __init__(self, name="test_node", min_recv_msgs=10):
         super().__init__(name)

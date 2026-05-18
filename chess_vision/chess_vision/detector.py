@@ -1,9 +1,9 @@
 import typing
 
-import numpy as np
 import cv2 as cv
 import cv2.typing as cvt
-from scipy.spatial.transform import Rotation
+import compas.geometry
+import numpy as np
 
 from chess_vision import CameraCalibration, ChArUcoBoard
 
@@ -16,9 +16,7 @@ class Detector:
 
         self._detector = cv.aruco.CharucoDetector(self.board.board)
 
-    def detect_pose(
-        self, frame: cvt.MatLike
-    ) -> tuple[float, float, float, float, float, float, float] | None:
+    def detect_pose(self, frame: cvt.MatLike) -> compas.geometry.Transformation | None:
 
         # detectBoard runs detectMarkers if charucoCorners and charucoIds are
         # not provided
@@ -49,15 +47,19 @@ class Detector:
         if not success:
             return
 
-        return self.pose_from_cv(rvec, tvec)
+        return self.xform_from_cv(rvec, tvec)
 
     @staticmethod
-    def pose_from_cv(rvec: np.ndarray, tvec: np.ndarray):
-        x = tvec[0][0]
-        y = tvec[1][0]
-        z = tvec[2][0]
+    def xform_from_cv(
+        rvec: cvt.MatLike, tvec: cvt.MatLike
+    ) -> compas.geometry.Transformation:
 
-        rot_matrix, _ = cv.Rodrigues(rvec)
-        qx, qy, qz, qw = Rotation.from_matrix(rot_matrix).as_quat()
+        rot, _ = cv.Rodrigues(rvec)
 
-        return x, y, z, qx, qy, qz, qw
+        mat = np.eye(4)
+        mat[:3, :3] = rot
+        mat[:3, 3] = np.asarray(tvec).reshape(3)
+
+        # tolist since pytest throws an error since compas upstream uses "if not
+        # matrix"
+        return compas.geometry.Transformation.from_matrix(mat.tolist())

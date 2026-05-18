@@ -14,8 +14,8 @@ buildRosPackage {
 
   propagatedBuildInputs = [
     opencv
+    python3Packages.compas
     python3Packages.numpy
-    python3Packages.scipy
   ];
 
   nativeCheckInputs = [ python3Packages.pytest ];

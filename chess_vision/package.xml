@@ -6,10 +6,10 @@
   <description>detect charuco boards</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>Apache-2.0</license>
-  <url type="repository">https://github.com/biodigitalmatter/ros/</url>
-  <exec_depend>python3-opencv</exec_depend>
+  <url type="repository">https://github.com/biodigitalmatter/ros</url>
+  <exec_depend>python3-compas</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
-  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
   <export>
     <build_type>ament_python</build_type>
   </export>

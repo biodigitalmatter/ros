@@ -84,11 +84,12 @@ class CharucoTracker(Node):
     def image_callback(self, msg: Image) -> None:
         if self.detector is None:
             if self.rectified:
-                self.camera_calibration = (
+                self._camera_calibration = (
                     CameraCalibration.create_dummy_intrinsics_from_image(
                         height=msg.height, width=msg.width
                     )
                 )
+                assert self.detector is not None
             else:
                 _ = self.get_logger().warning("Image gotten before camera info.")  # pyright: ignore[reportUnknownMemberType]
                 return
@@ -97,26 +98,31 @@ class CharucoTracker(Node):
             msg, desired_encoding="bgr8"
         )
 
-        pose = self.detector.detect_pose(frame)
+        xform = self.detector.detect_pose(frame)
 
-        if pose is None:
-            _ = self.get_logger().warning("No poses detected.")
-
-        x, y, z, qx, qy, qz, qw = pose
+        if xform is None:
+            _ = self.logger.warning("No poses detected.")
+            return
 
         pose_msg = PoseStamped()
 
         pose_msg.header.stamp = msg.header.stamp
         pose_msg.header.frame_id = msg.header.frame_id
 
+        _, _, Ro, Tr, _ = xform.decomposed()
+
+        x, y, z = Tr.translation_vector
+
         pose_msg.pose.position.x = x
         pose_msg.pose.position.y = y
         pose_msg.pose.position.z = z
 
-        pose_msg.pose.orientation.x = qx
-        pose_msg.pose.orientation.y = qy
-        pose_msg.pose.orientation.z = qz
-        pose_msg.pose.orientation.w = qw
+        x, y, z, w = Ro.quaternion.xyzw
+
+        pose_msg.pose.orientation.x = x
+        pose_msg.pose.orientation.y = y
+        pose_msg.pose.orientation.z = z
+        pose_msg.pose.orientation.w = w
 
         self.pose_pub.publish(pose_msg)
 
