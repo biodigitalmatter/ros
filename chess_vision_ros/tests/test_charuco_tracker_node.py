@@ -1,3 +1,4 @@
+from pathlib import Path
 from threading import Event, Thread
 import typing
 
@@ -12,7 +13,7 @@ from geometry_msgs.msg import PoseStamped
 
 
 @launch_pytest.fixture
-def generate_test_description(rosbag_path, calibration_yaml_path):
+def generate_test_description(rosbag_path: Path, sample_camera_info_path: Path):
     nodes = [
         launch_ros.actions.Node(
             package="chess_vision_ros",
@@ -29,7 +30,7 @@ def generate_test_description(rosbag_path, calibration_yaml_path):
         launch_ros.actions.Node(
             package="chess_vision_ros",
             executable="dummy_camera_info_publisher",
-            parameters=[{"camera_info_file": str(calibration_yaml_path)}],
+            parameters=[{"camera_info_file": str(sample_camera_info_path)}],
         ),
     ]
     bag_play = launch.actions.ExecuteProcess(
@@ -72,7 +73,7 @@ def test_check_if_msgs_published():
 
 @typing.final
 class MakeTestNode(Node):
-    def __init__(self, name="test_node", min_recv_msgs=10):
+    def __init__(self, name: str = "test_node", min_recv_msgs: int = 10):
         super().__init__(name)
 
         self.min_recv_msgs = min_recv_msgs
@@ -95,14 +96,14 @@ class MakeTestNode(Node):
 
         self.logger = self.get_logger()
 
-        self.logger.info("started node")
+        _ = self.logger.info("started node")
 
         self.msg_count = 0
 
-    def subscriber_callback(self, data):
-        self.logger.info(f"{data=}", once=True)
+    def subscriber_callback(self, data: PoseStamped):
+        _ = self.logger.debug(f"{data=}", once=True)
 
-        self.logger.info(
+        _ = self.logger.debug(
             f"{self.msg_count=}",
         )
 

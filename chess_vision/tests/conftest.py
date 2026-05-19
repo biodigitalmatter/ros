@@ -25,8 +25,3 @@ def rosbag_path(fixture_dir):
         raise RuntimeError("rosbag not found, check README.md on how to create")
 
     return path_
-
-
-@pytest.fixture
-def calibration_yaml_path(fixture_dir):
-    return fixture_dir / "sample_calibration.yaml"
