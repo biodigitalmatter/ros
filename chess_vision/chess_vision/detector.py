@@ -7,10 +7,12 @@ import numpy as np
 import numpy.typing as npt
 
 from chess_vision import CameraCalibration, ChArUcoBoard
+from chess_vision.geometry import xform_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
 MarkerIDs = npt.NDArray[np.uint8]
 CornerCoordinates = npt.NDArray[np.float64]
+
 
 @typing.final
 class Detector:
@@ -28,7 +30,6 @@ class Detector:
         dump_debug_frame: bool = False,
         dump_debug_frame_directory: pathlib.Path | None = None,
     ) -> compas.geometry.Transformation | None:
-
         # detectBoard runs detectMarkers if charucoCorners and charucoIds are
         # not provided
         charucoCorners, charucoIds, markerCorners, markerIds = (
@@ -74,7 +75,7 @@ class Detector:
         if not success:
             return
 
-        return self.xform_from_cv(rvec, tvec)
+        return xform_from_cv(rvec, tvec)
 
     def dump_debug_frame(
         self,
@@ -85,9 +86,8 @@ class Detector:
         markerIds: MarkerIDs,
         save_directory: pathlib.Path,
     ) -> pathlib.Path:
-
         if frame.ndim == 2:
-            frame = cv.cvtColor( frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
+            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
 
         if len(markerIds) > 0:
             _ = cv.aruco.drawDetectedMarkers(frame, markerCorners, markerIds)  # pyright: ignore[reportCallIssue, reportArgumentType, reportUnknownVariableType]
@@ -105,18 +105,3 @@ class Detector:
         _ = cv.imwrite(str(path), frame)
 
         return path
-
-    @staticmethod
-    def xform_from_cv(
-        rvec: npt.NDArray[np.float64], tvec: npt.NDArray[np.float64]
-    ) -> compas.geometry.Transformation:
-
-        rot, _ = cv.Rodrigues(rvec)
-
-        mat = np.eye(4)
-        mat[:3, :3] = rot
-        mat[:3, 3] = np.asarray(tvec).reshape(3)
-
-        # tolist since pytest throws an error since compas upstream uses "if not
-        # matrix"
-        return compas.geometry.Transformation.from_matrix(mat.tolist())
