@@ -1,14 +1,14 @@
 import typing
+
+import numpy as np
+import numpy.typing as npt
 import rclpy
+from cv_bridge import CvBridge
+from geometry_msgs.msg import PoseStamped
 from rclpy.node import Node
 from rclpy.publisher import Publisher
 from rclpy.subscription import Subscription
-from sensor_msgs.msg import Image, CameraInfo
-from geometry_msgs.msg import PoseStamped
-
-from cv_bridge import CvBridge
-import numpy as np
-import numpy.typing as npt
+from sensor_msgs.msg import CameraInfo, Image
 
 from chess_vision import CameraCalibration, ChArUcoBoard, Detector
 

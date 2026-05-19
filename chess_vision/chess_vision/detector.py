@@ -1,9 +1,9 @@
 import pathlib
 import typing
 
+import compas.geometry
 import cv2 as cv
 import cv2.typing as cvt
-import compas.geometry
 import numpy as np
 
 from chess_vision import CameraCalibration, ChArUcoBoard

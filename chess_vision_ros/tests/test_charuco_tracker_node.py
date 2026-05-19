@@ -1,15 +1,15 @@
+import typing
 from pathlib import Path
 from threading import Event, Thread
-import typing
 
 import launch
-from launch.events import Shutdown
 import launch_pytest
 import launch_ros
 import pytest
 import rclpy
-from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
+from launch.events import Shutdown
+from rclpy.node import Node
 
 
 @launch_pytest.fixture

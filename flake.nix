@@ -146,7 +146,10 @@
                 deadnix.enable = true;
                 nixfmt.enable = true;
                 nixf-diagnose.enable = true;
-                ruff-check.enable = true;
+                ruff-check = {
+                  enable = true;
+                  extendSelect = [ "I" ]; # should sort
+                };
                 ruff-format.enable = true;
                 xmllint.enable = true;
                 yamlfmt.enable = true;
