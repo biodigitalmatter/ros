@@ -1,0 +1,30 @@
+name: Build and test with colcon using nix-ros-overlay
+
+on: [push]
+
+jobs:
+  build_and_test_ros2_with_nix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: install nix
+        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          extra_nix_config: |
+            trusted-public-keys = ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+            substituters =  https://ros.cachix.org https://cache.nixos.org
+
+      - name: Pre-build devShell
+        run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
+
+      - name: build
+        shell: 'nix develop -c bash -e {0}'
+        run: colcon build --symlink-install
+
+      - name: test
+        shell: 'nix develop -c bash -e {0}'
+        run: |
+          source install/setup.bash
+          colcon test --event-handlers=console_direct+
