@@ -11,13 +11,7 @@ jobs:
           extra_nix_config: |
             trusted-public-keys = ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
             substituters =  https://ros.cachix.org https://cache.nixos.org
-      - name: Pre-build devShell
+      - name: Build devShell
         run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
-      - name: build
-        shell: 'nix develop -c bash -e {0}'
-        run: colcon build --symlink-install
-      - name: test
-        shell: 'nix develop -c bash -e {0}'
-        run: |
-          source install/setup.bash
-          colcon test --event-handlers=console_direct+
+      - name: nix flake check
+        run: nix flake check --verbose

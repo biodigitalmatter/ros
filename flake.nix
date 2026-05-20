@@ -60,7 +60,21 @@
             ...
           }:
           let
-            workspacePackages = map (name: self'.packages.${name}) workspacePackageNames;
+            workspacePackages = map (
+              name:
+              self'.packages.${name} or (throw "Unknown workspace package '${name}' in workspacePackageNames")
+            ) workspacePackageNames;
+
+            workspaceRosEnv = pkgs.rosPackages.${rosDistro}.buildEnv {
+              wrapPrograms = false;
+              paths =
+                with pkgs.rosPackages.${rosDistro};
+                [
+                  ament-cmake
+                  ament-cmake-core
+                ]
+                ++ workspacePackages;
+            };
           in
           {
             _module.args.pkgs = import inputs.nixpkgs {
@@ -72,20 +86,64 @@
               ];
             };
 
-            checks = self'.packages;
+            checks = self'.packages // {
+              colcon = pkgs.stdenv.mkDerivation {
+                name = "colcon-check";
+                src = inputs.self;
+
+                inputsFrom = [
+                  self'.devShells.default
+                ];
+
+                nativeBuildInputs = with pkgs; [
+                  colcon
+                  pkg-config
+                  workspaceRosEnv
+                ];
+
+                dontConfigure = true;
+                doCheck = true;
+                dontWrapQtApps = true;
+
+                buildPhase = ''
+                  runHook preBuild
+
+                  colcon build --symlink-install
+
+                  runHook postBuild
+                '';
+
+                checkPhase = ''
+                  runHook preCheck
+
+                  source install/setup.bash
+
+                  CI=1 colcon test --return-code-on-test-failure \
+                    --event-handlers=console_direct+
+
+                  runHook postCheck
+                '';
+
+                installPhase = ''
+                  runHook preInstall
+
+                  touch $out
+
+                  runHook postInstall
+                '';
+
+              };
+            };
 
             devShells.default = pkgs.mkShell {
               name = "ros2nix ${rosDistro} shell";
 
               inputsFrom = [
                 config.treefmt.build.devShell
+                workspaceRosEnv
               ];
 
               buildInputs = with pkgs; [
-                (rosPackages.${rosDistro}.buildEnv {
-                  wrapPrograms = false;
-                  paths = workspacePackages;
-                })
                 (python3.withPackages (
                   ps: with ps; [
                     argcomplete
@@ -94,8 +152,10 @@
                     rosbags
                   ]
                 ))
+                colcon
                 docker-compose
                 opencv
+                pkg-config
                 # devtools
                 basedpyright
                 config.treefmt.build.wrapper
