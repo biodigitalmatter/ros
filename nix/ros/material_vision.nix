@@ -1,6 +1,7 @@
 {
   lib,
   buildRosPackage,
+  ament-cmake,
   # industrial-reconstruction,
   tf2-ros,
   pcl-ros,
@@ -15,6 +16,9 @@ buildRosPackage {
   src = ../../material_vision;
 
   buildType = "ament_cmake";
+
+  nativeBuildInputs = [ ament-cmake ];
+
   propagatedBuildInputs = [
     # depthai-ros
     # industrial-reconstruction
