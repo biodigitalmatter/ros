@@ -9,7 +9,6 @@
     flake-parts.follows = "ros-dev-flake/flake-parts";
 
     nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
     nixpkgs-not-upstreamable = {
@@ -154,8 +153,6 @@
                 xmllint.enable = true;
                 yamlfmt.enable = true;
               };
-              pkgs = import inputs.nixpkgs-unstable { inherit system; }; # nixf-diagnose
-              projectRootFile = "flake.nix";
             };
           };
       }
