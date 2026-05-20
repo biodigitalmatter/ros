@@ -14,7 +14,6 @@ def get_capture(video_path: os.PathLike[str]):
 
 
 def test_charuco_markers_detector_with_sample_video(calibration_video_path, tmp_path):
-
     cap = get_capture(calibration_video_path)
 
     ok, frame = cap.read()
