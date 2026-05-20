@@ -11,6 +11,7 @@ in
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };
   chess-vision = callPackage ./chess_vision.nix { };
   chess-vision-ros = callPackage ./chess_vision_ros.nix { };
+  elizabeth-descriptions = callPackage ./elizabeth-descriptions.nix { };
   material-vision = callPackage ./material_vision.nix { };
 
   # patched
