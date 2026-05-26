@@ -12,7 +12,6 @@
   <url type="bugtracker">https://github.com/biodigitalmatter/ros/issues</url>
   <exec_depend>compas_rrc_driver</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
-  <!-- exec_depend>depthai-ros</exec_depend -->
   <exec_depend>axis_camera</exec_depend>
   <exec_depend>abb_bringup</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>

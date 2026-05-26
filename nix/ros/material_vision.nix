@@ -2,7 +2,6 @@
   lib,
   buildRosPackage,
   ament-cmake,
-  # industrial-reconstruction,
   tf2-ros,
   pcl-ros,
   sensor-msgs,
@@ -20,8 +19,6 @@ buildRosPackage {
   nativeBuildInputs = [ ament-cmake ];
 
   propagatedBuildInputs = [
-    # depthai-ros
-    # industrial-reconstruction
     pcl-ros
     realsense2-camera
     realsense2-description

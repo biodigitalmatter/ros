@@ -41,8 +41,10 @@
                 _rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
               ) rosPackages;
           in
-          _final: prev: {
+          final: prev: {
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath prev) prev.rosPackages;
+            abb_libegm = final.callPackage ./nix/abb_libegm/package.nix { };
+            abb_librws = final.callPackage ./nix/abb_librws/package.nix { };
           };
 
         perSystem =
@@ -60,25 +62,10 @@
                 (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
                 inputs.ros-dev-flake.overlays.default
                 inputs.self.overlays.default
-                (
-                  final: _:
-                  let
-                    inherit (final) callPackage;
-                  in
-                  {
-
-                    abb_libegm = callPackage ./nix/abb_libegm/package.nix { };
-                    abb_librws = callPackage ./nix/abb_librws/package.nix { };
-                    open3d = callPackage ./nix/open3d.nix { };
-                    inherit (inputs.nixpkgs-depthai-core.legacyPackages.${final.stdenv.hostPlatform.system})
-                      cpr
-                      fp16
-                      libnop
-                      ;
-                  }
-                )
               ];
             };
+
+            checks = self'.packages;
 
             devShells.default =
               let
@@ -94,6 +81,7 @@
                     "axis-camera"
                     "foxglove-bridge"
                     colcon
+
                   ]
                 );
               in
@@ -133,13 +121,13 @@
                   config.treefmt.build.wrapper
                 ]);
               };
-            legacyPackages = pkgs.rosPackages;
+
+            legacyPackages = self'.packages;
+
             packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
               null
             ) pkgs.rosPackages.${rosDistro};
-            checks = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
-              null
-            ) pkgs.rosPackages.${rosDistro};
+
             treefmt = {
               programs = {
                 deadnix.enable = true;

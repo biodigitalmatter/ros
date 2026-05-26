@@ -6,7 +6,6 @@
   axis-camera,
   compas-rrc-driver,
   cv-bridge,
-  # depthai-ros,
   docker-compose,
   robot-calibration,
   rosbridge-server,
@@ -24,7 +23,6 @@ buildRosPackage {
     axis-camera
     compas-rrc-driver
     cv-bridge
-    # depthai-ros
     docker-compose
     robot-calibration
     rosbridge-server
