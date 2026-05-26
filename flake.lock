@@ -57,6 +57,22 @@
         "type": "github"
       }
     },
+    "nix-ros-workspace": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749001346,
+        "narHash": "sha256-q2xrIUD+kgyxGXp6oi7QW0QzxL6PsOODRoj/ru9P9ig=",
+        "owner": "hacker1024",
+        "repo": "nix-ros-workspace",
+        "rev": "e341a5fd27af73be15bc0396c5745c54398193aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hacker1024",
+        "repo": "nix-ros-workspace",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1771369470,
@@ -124,6 +140,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "nix-ros-overlay": "nix-ros-overlay",
+        "nix-ros-workspace": "nix-ros-workspace",
         "nixpkgs": [
           "nix-ros-overlay",
           "nixpkgs"

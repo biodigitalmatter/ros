@@ -8,6 +8,11 @@
     systems.url = "github:nix-systems/default-linux";
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
+    nix-ros-workspace = {
+      url = "github:hacker1024/nix-ros-workspace";
+      flake = false;
+    };
+
     nixpkgs-not-upstreamable = {
       url = "git+https://git.sr.ht/~tetov/nixpkgs-not-upstreamable";
       flake = false;
@@ -21,13 +26,6 @@
       let
         rosDistro = "jazzy";
         localRosPkgsOverlayPath = ./nix/ros/overlay.nix;
-        workspacePackageNames = [
-          "biodigitalmatter-ros"
-          "chess-vision"
-          "chess-vision-ros"
-          "elizabeth-descriptions"
-          "material-vision"
-        ];
       in
       {
         imports = [
@@ -60,21 +58,7 @@
             ...
           }:
           let
-            workspacePackages = map (
-              name:
-              self'.packages.${name} or (throw "Unknown workspace package '${name}' in workspacePackageNames")
-            ) workspacePackageNames;
-
-            workspaceRosEnv = pkgs.rosPackages.${rosDistro}.buildEnv {
-              wrapPrograms = false;
-              paths =
-                with pkgs.rosPackages.${rosDistro};
-                [
-                  ament-cmake
-                  ament-cmake-core
-                ]
-                ++ workspacePackages;
-            };
+            rosPkgScope = pkgs.rosPackages.${rosDistro};
           in
           {
             _module.args.pkgs = import inputs.nixpkgs {
@@ -82,6 +66,7 @@
               overlays = [
                 (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
                 inputs.nix-ros-overlay.overlays.default
+                (import inputs.nix-ros-workspace { }).overlay
                 inputs.self.overlays.default
               ];
             };
@@ -91,15 +76,20 @@
                 name = "colcon-check";
                 src = inputs.self;
 
-                inputsFrom = [
-                  self'.devShells.default
-                ];
-
-                nativeBuildInputs = with pkgs; [
-                  colcon
-                  pkg-config
-                  workspaceRosEnv
-                ];
+                nativeBuildInputs =
+                  with pkgs;
+                  [
+                    colcon
+                  ]
+                  ++ (
+                    with rosPkgScope;
+                    [
+                      ament-cmake
+                      ament-cmake-core
+                      workspace
+                    ]
+                    ++ workspace.propagatedBuildInputs
+                  );
 
                 dontConfigure = true;
                 doCheck = true;
@@ -137,39 +127,15 @@
 
             devShells.default = pkgs.mkShell {
               name = "ros2nix ${rosDistro} shell";
-
               inputsFrom = [
+                rosPkgScope.workspace.env
                 config.treefmt.build.devShell
-                workspaceRosEnv
-              ];
-
-              buildInputs = with pkgs; [
-                (python3.withPackages (
-                  ps: with ps; [
-                    argcomplete
-                    compas
-                    numpy
-                    rosbags
-                  ]
-                ))
-                colcon
-                docker-compose
-                opencv
-                pkg-config
-                # devtools
-                basedpyright
-                config.treefmt.build.wrapper
-                nixd
-                ruff
-                ty
               ];
             };
 
             legacyPackages = self'.packages;
 
-            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null
-              null
-            ) pkgs.rosPackages.${rosDistro};
+            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null null) rosPkgScope;
 
             treefmt = {
               programs = {

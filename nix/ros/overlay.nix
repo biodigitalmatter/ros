@@ -8,10 +8,11 @@ let
 in
 {
   # own
+  workspace = callPackage ./workspace.nix { };
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };
   chess-vision = callPackage ./chess_vision.nix { };
   chess-vision-ros = callPackage ./chess_vision_ros.nix { };
-  elizabeth-descriptions = callPackage ./elizabeth-descriptions.nix { };
+  elizabeth-descriptions = callPackage ./elizabeth_descriptions.nix { };
   material-vision = callPackage ./material_vision.nix { };
 
   # patched

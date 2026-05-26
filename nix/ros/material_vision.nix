@@ -2,11 +2,12 @@
   lib,
   buildRosPackage,
   ament-cmake,
-  tf2-ros,
+  launch-ros,
   pcl-ros,
-  sensor-msgs,
   realsense2-camera,
   realsense2-description,
+  sensor-msgs,
+  tf2-ros,
 }:
 buildRosPackage {
   pname = "ros-jazzy-material-vision";
@@ -19,6 +20,7 @@ buildRosPackage {
   nativeBuildInputs = [ ament-cmake ];
 
   propagatedBuildInputs = [
+    launch-ros
     pcl-ros
     realsense2-camera
     realsense2-description

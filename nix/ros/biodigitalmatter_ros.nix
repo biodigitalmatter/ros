@@ -1,13 +1,12 @@
 {
   lib,
   buildRosPackage,
+
   abb-bringup,
   abb-rws-client,
   axis-camera,
   compas-rrc-driver,
-  cv-bridge,
   docker-compose,
-  robot-calibration,
   rosbridge-server,
 }:
 buildRosPackage {
@@ -17,16 +16,17 @@ buildRosPackage {
   src = ../../src/biodigitalmatter_ros;
 
   buildType = "ament_python";
-  propagatedBuildInputs = [
-    abb-bringup
-    abb-rws-client
-    axis-camera
-    compas-rrc-driver
-    cv-bridge
-    docker-compose
-    robot-calibration
-    rosbridge-server
-  ];
+
+  passthru.workspacePackages = {
+    inherit
+      abb-bringup
+      abb-rws-client
+      axis-camera
+      compas-rrc-driver
+      docker-compose
+      rosbridge-server
+      ;
+  };
 
   meta = {
     description = "ROS setup for biodigital matter lab";
