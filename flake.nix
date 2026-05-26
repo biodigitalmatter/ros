@@ -2,13 +2,10 @@
   description = "ROS 2 research setup";
 
   inputs = {
-    ros-dev-flake.url = "git+https://git.sr.ht/~tetov/ros-dev-flake";
-    nixpkgs.follows = "ros-dev-flake/nixpkgs";
-    nix-ros-overlay.follows = "ros-dev-flake/nix-ros-overlay";
-    systems.follows = "ros-dev-flake/systems";
-    flake-parts.follows = "ros-dev-flake/flake-parts";
-
-    nixpkgs-depthai-core.url = "github:tetov/nixpkgs/depthai-core";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    nixpkgs.follows = "nix-ros-overlay/nixpkgs"; # IMPORTANT!!!
+    systems.url = "github:nix-systems/default-linux";
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
     nixpkgs-not-upstreamable = {
@@ -24,6 +21,13 @@
       let
         rosDistro = "jazzy";
         localRosPkgsOverlayPath = ./nix/ros/overlay.nix;
+        workspacePackageNames = [
+          "biodigitalmatter-ros"
+          "chess-vision"
+          "chess-vision-ros"
+          "elizabeth-descriptions"
+          "material-vision"
+        ];
       in
       {
         imports = [
@@ -55,72 +59,51 @@
             system,
             ...
           }:
+          let
+            workspacePackages = map (name: self'.packages.${name}) workspacePackageNames;
+          in
           {
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               overlays = [
                 (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
-                inputs.ros-dev-flake.overlays.default
+                inputs.nix-ros-overlay.overlays.default
                 inputs.self.overlays.default
               ];
             };
 
             checks = self'.packages;
 
-            devShells.default =
-              let
-                extendedShell = inputs.ros-dev-flake.lib.extendShell system rosDistro (
-                  with pkgs;
-                  [
-                    "cv-bridge"
-                    "robot-calibration"
-                    "ament-cmake-core"
-                    "python-cmake-module"
-                    "robot-calibration"
-                    "rosbridge-server"
-                    "axis-camera"
-                    "foxglove-bridge"
-                    colcon
+            devShells.default = pkgs.mkShell {
+              name = "ros2nix ${rosDistro} shell";
 
+              inputsFrom = [
+                config.treefmt.build.devShell
+              ];
+
+              buildInputs = with pkgs; [
+                (rosPackages.${rosDistro}.buildEnv {
+                  wrapPrograms = false;
+                  paths = workspacePackages;
+                })
+                (python3.withPackages (
+                  ps: with ps; [
+                    argcomplete
+                    compas
+                    numpy
+                    rosbags
                   ]
-                );
-              in
-              pkgs.mkShell {
-                inputsFrom = [
-                  config.treefmt.build.devShell
-                  extendedShell
-                ];
-                buildInputs = [
-                  (pkgs.rosPackages.${rosDistro}.buildEnv {
-                    wrapPrograms = false;
-                    paths = builtins.attrValues (
-                      removeAttrs self'.packages [
-                        "biodigitalmatter-ros"
-                        "chess-vision"
-                        "chess-vision-ros"
-                        "material-vision"
-                      ]
-                    );
-                  })
-                  (pkgs.python3.withPackages (
-                    ps: with ps; [
-                      compas
-                      numpy
-                      scipy
-                    ]
-                  ))
-                ]
-                ++ (with pkgs; [
-                  nixd
-                  docker-compose
-                  opencv
-                  # devtools
-                  ruff
-                  ty
-                  basedpyright
-                  config.treefmt.build.wrapper
-                ]);
-              };
+                ))
+                docker-compose
+                opencv
+                # devtools
+                basedpyright
+                config.treefmt.build.wrapper
+                nixd
+                ruff
+                ty
+              ];
+            };
 
             legacyPackages = self'.packages;
 
