@@ -12,7 +12,7 @@ buildRosPackage {
   pname = "ros-jazzy-material-vision";
   version = "0.1.0";
 
-  src = ../../material_vision;
+  src = ../../src/material_vision;
 
   buildType = "ament_cmake";
 

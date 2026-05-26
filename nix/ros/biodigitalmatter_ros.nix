@@ -14,7 +14,7 @@ buildRosPackage {
   pname = "ros-jazzy-biodigitalmatter-ros";
   version = "0.1.0";
 
-  src = ../../biodigitalmatter_ros;
+  src = ../../src/biodigitalmatter_ros;
 
   buildType = "ament_python";
   propagatedBuildInputs = [
