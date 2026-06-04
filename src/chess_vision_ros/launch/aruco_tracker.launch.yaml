@@ -1,0 +1,29 @@
+launch:
+  - arg:
+      name: namespace
+      default: rob1
+  - arg:
+      name: input_topic
+      default: mounted/color/image_raw
+      description: Input image topic.
+  - arg:
+      name: output_topic
+      default: mounted/color/image_raw_markers
+      description: Output image topic with detected ArUco markers drawn.
+  - arg:
+      name: dictionary
+      default: DICT_5X5_100
+      description: OpenCV ArUco dictionary name.
+  - node:
+      pkg: chess_vision_ros
+      exec: aruco_tracker_node
+      name: aruco_tracker
+      namespace: $(var namespace)
+      param:
+        - name: dictionary
+          value: $(var dictionary)
+      remap:
+        - from: /image_raw
+          to: $(var input_topic)
+        - from: /image_raw_markers
+          to: $(var output_topic)
