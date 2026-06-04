@@ -1,0 +1,8 @@
+/rob1/rgbd/extruder:
+  ros__parameters:
+    enable_color: true
+    enable_depth: true
+    depth_module:
+      depth_profile: 848x480x30
+      color_profile: 848x480x30
+      infra_profile: 848x480x30

@@ -13,6 +13,7 @@ in
   chess-vision = callPackage ./chess_vision.nix { };
   chess-vision-ros = callPackage ./chess_vision_ros.nix { };
   elizabeth-descriptions = callPackage ./elizabeth_descriptions.nix { };
+  elizabeth-perception = callPackage ./elizabeth_perception.nix { };
   material-vision = callPackage ./material_vision.nix { };
 
   # patched

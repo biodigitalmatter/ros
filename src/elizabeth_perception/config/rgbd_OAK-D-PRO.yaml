@@ -1,0 +1,7 @@
+/rgbd_camera:
+  ros__parameters:
+    camera:
+      i_nn_type: none
+      i_mx_id: 18443010C10B361300
+    stereo:
+      subpixel: true

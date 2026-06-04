@@ -1,18 +1,22 @@
 launch:
   - arg:
-      name: name
-      default: rgbd_camera
+      name: camera_model
+      default: OAK-D-S2-POE
+  - arg:
+      name: camera_name
+      default: extruder_$(var camera_model)
+  - arg:
+      name: camera_namespace
+      default: rob1/rgbd
   - arg:
       name: parent_frame
       default: tool0
-  - arg:
-      name: camera_model
-      default: OAK-D-S2-POE
   - include:
+      namespace: $(var camera_namespace)
       file: "$(find-pkg-share depthai_ros_driver)/launch/rgbd_pcl.launch.py"
       arg:
         - name: name
-          value: $(var name)
+          value: $(var camera_name)
         - name: parent_frame
           value: $(var parent_frame)
         - name: cam_pos_x
@@ -31,6 +35,6 @@ launch:
         - name: camera_model
           value: $(var camera_model)
         - name: params_file
-          value: "$(find-pkg-share biodigitalmatter_ros)/config/$(var camera_model).yaml"
+          value: "$(find-pkg-share elizabeth_perception)/config/$(var camera_model).yaml"
         - name: rectify_rgb
           value: "true"

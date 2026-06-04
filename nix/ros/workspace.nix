@@ -5,6 +5,7 @@
   chess-vision,
   chess-vision-ros,
   elizabeth-descriptions,
+  elizabeth-perception,
   material-vision,
 
   # shellPackages
@@ -25,6 +26,7 @@ buildROSWorkspace {
       chess-vision
       chess-vision-ros
       elizabeth-descriptions
+      elizabeth-perception
       material-vision
       ;
   };
