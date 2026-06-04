@@ -2,23 +2,19 @@
   ros__parameters:
     enable_color: true
     enable_depth: true
-    enable_infra2: false
-    enable_infra1: false
-    enable_sync: true
-    clip_distance: 1.0
     depth_module:
-      depth_profile: 848x480x5
-    rgb_camera:
-      color_profile: 848x480x5
+      depth_profile: 848x480x30
+      color_profile: 848x480x30
+      infra_profile: 848x480x30
     # decimation_filter:
     #   enable: true
     # hole_filling_filter:
     #   enable: true
     # spatial_filter:
     #   enable: true
-    pointcloud:
-      enable: false
-      stream_filter: 3
+    # pointcloud:
+    #   enable: false
+    #   stream_filter: 3
     # enable_color: true
     # pointcloud:
     #   enable: true

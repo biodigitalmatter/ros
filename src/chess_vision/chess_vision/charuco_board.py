@@ -42,7 +42,7 @@ class BoardParameters:
 
 
 BOARD_PARAMETERS = {
-    "large": BoardParameters(9, 14, 0.04, 0.03, aruco.DICT_5X5_100),
+    "large": BoardParameters(14, 9, 0.04, 0.031, aruco.DICT_5X5_100),
     # https://github.com/yumashino/Camera-Calibration-with-ChArUco-Board/blob/main/sample_calibration_input.yaml
     "sample_calibration_video_board": BoardParameters(
         9, 5, 0.038, 0.03, aruco.DICT_6X6_250
