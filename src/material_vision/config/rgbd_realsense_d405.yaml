@@ -1,4 +1,4 @@
-/rgbd/d405:
+/rgbd/mounted:
   ros__parameters:
     enable_color: true
     enable_depth: true

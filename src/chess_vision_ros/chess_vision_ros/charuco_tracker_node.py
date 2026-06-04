@@ -91,7 +91,7 @@ class CharucoTracker(Node):
                 )
                 assert self.detector is not None
             else:
-                _ = self.get_logger().warning("Image gotten before camera info.")  # pyright: ignore[reportUnknownMemberType]
+                _ = self.logger.warning("Image gotten before camera info.")  # pyright: ignore[reportUnknownMemberType]
                 return
 
         frame: npt.NDArray[np.uint8] = self.bridge.imgmsg_to_cv2(

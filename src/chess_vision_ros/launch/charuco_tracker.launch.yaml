@@ -1,12 +1,19 @@
 launch:
   - arg:
+      name: namespace
+      default: rob1
+  - arg:
       name: board_name
       default: "large"
       description: "Name of ChArUco board to track"
   - arg:
-      name: input_topic
-      default: "/rgbd/stereo/image_raw"
-      description: "Input topic"
+      name: image_topic
+      default: "mounted/color/image_raw"
+      description: "Image topic"
+  - arg:
+      name: camera_info_topic
+      default: "mounted/color/camera_info"
+      description: "Camera info topic"
   - arg:
       name: rectified
       default: "false"
@@ -15,6 +22,7 @@ launch:
       pkg: chess_vision_ros
       exec: charuco_tracker_node
       name: charuco_tracker
+      namespace: $(var namespace)
       param:
         - name: board_name
           value: "$(var board_name)"
@@ -22,4 +30,6 @@ launch:
           value: "$(var rectified)"
       remap:
         - from: "/image_raw"
-          to: "$(var input_topic)"
+          to: "$(var image_topic)"
+        - from: "/camera_info"
+          to: "$(var camera_info_topic)"
