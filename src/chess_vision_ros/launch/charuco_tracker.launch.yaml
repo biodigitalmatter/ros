@@ -31,5 +31,7 @@ launch:
       remap:
         - from: "/image_raw"
           to: "$(var image_topic)"
+        - from: "/image_raw_markers"
+          to: "$(var image_topic)_markers"
         - from: "/camera_info"
           to: "$(var camera_info_topic)"

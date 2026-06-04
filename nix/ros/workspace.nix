@@ -14,6 +14,7 @@
   python3,
   ros2-utils-tool,
   ruff,
+  rviz2,
   ty,
 }:
 buildROSWorkspace {
@@ -36,6 +37,7 @@ buildROSWorkspace {
       nixd
       ros2-utils-tool
       ruff
+      rviz2
       ty
       ;
     python3 = python3.withPackages (

@@ -25,7 +25,7 @@ def test_charuco_markers_detector_with_sample_video(calibration_video_path, tmp_
 
     camera_calibration = CameraCalibration.create_dummy_intrinsics_from_image(w, h)
     board = ChArUcoBoard.from_board_parameters_dict("sample_calibration_video_board")
-    detector = Detector(board, camera_calibration)
+    detector = Detector(board, camera_calibration, debug_frame_dump_directory=tmp_path)
 
     frames_with_charuco = 0
 
@@ -37,9 +37,7 @@ def test_charuco_markers_detector_with_sample_video(calibration_video_path, tmp_
             print("Can't recieve frame")
             break
 
-        xform = detector.detect_pose(
-            frame, dump_debug_frame=True, dump_debug_frame_directory=tmp_path
-        )
+        _marked_frame, _markerIds, xform = detector.detect_pose(frame)
 
         if xform is not None:
             xforms.append(xform)

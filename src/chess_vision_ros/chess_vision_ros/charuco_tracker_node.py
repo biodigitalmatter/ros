@@ -38,6 +38,10 @@ class CharucoTracker(Node):
             PoseStamped, "charuco_pose", 10
         )
 
+        self.marker_img_pub: Publisher = self.create_publisher(
+            Image, "image_raw_markers", 10
+        )
+
         self.logger = self.get_logger()
 
     @property
@@ -98,10 +102,24 @@ class CharucoTracker(Node):
             msg, desired_encoding="bgr8"
         )
 
-        xform = self.detector.detect_pose(frame)
+        marked_frame, marker_ids, xform = self.detector.detect_pose(frame)
+
+        out_msg = self.bridge.cv2_to_imgmsg(
+            marked_frame,
+            encoding="bgr8",
+        )
+
+        out_msg.header = msg.header
+
+        self.marker_img_pub.publish(out_msg)
+
+        if marker_ids is not None:
+            _ = self.logger.debug(
+                f"Detected marker IDs: {marker_ids.flatten().tolist()}"
+            )
 
         if xform is None:
-            _ = self.logger.warning("No poses detected.")
+            _ = self.logger.debug("No poses detected.")
             return
 
         pose_msg = PoseStamped()
