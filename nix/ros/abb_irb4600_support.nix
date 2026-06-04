@@ -3,6 +3,8 @@
   fetchFromGitHub,
   buildRosPackage,
   ament-cmake,
+
+  abb-resources,
 }:
 buildRosPackage {
   pname = "ros-jazzy-abb-irb4600-support";
@@ -20,6 +22,12 @@ buildRosPackage {
   buildType = "ament_cmake";
   buildInputs = [ ament-cmake ];
   nativeBuildInputs = [ ament-cmake ];
+
+  passthru.workspacePackages = {
+    inherit
+      abb-resources
+      ;
+  };
 
   meta = {
     description = "

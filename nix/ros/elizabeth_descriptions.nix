@@ -3,8 +3,9 @@
   buildRosPackage,
   ament-cmake,
 
-  xacro,
+  abb-irb4600-support,
   robot-state-publisher,
+  xacro,
 }:
 buildRosPackage {
   pname = "ros-jazzy-elizabeth-descriptions";
@@ -18,6 +19,7 @@ buildRosPackage {
 
   passthru.workspacePackages = {
     inherit
+      abb-irb4600-support
       robot-state-publisher
       xacro
       ;
