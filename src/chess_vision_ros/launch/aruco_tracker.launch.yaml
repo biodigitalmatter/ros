@@ -2,7 +2,6 @@ launch:
   - arg:
       name: namespace
       default: rob1/rgbd/mounted_d405/color
-
   - arg:
       name: input_topic
       default: "/$(var namespace)/image_raw"

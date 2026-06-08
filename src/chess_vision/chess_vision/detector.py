@@ -31,9 +31,50 @@ class Detector:
             if not self.debug_frame_dump_directory.exists():
                 raise RuntimeError(f"{self.debug_frame_dump_directory=} doesn't exist.")
 
-        self._detector = cv.aruco.CharucoDetector(self.board.board)
+        # introduced in 4.7
+        self._has_charuco_detector = hasattr(cv.aruco, "CharucoDetector")
+
+        if hasattr(cv.aruco, "CharucoDetector"):
+            self._detector = cv.aruco.CharucoDetector(self.board.board)
+            self._detector_params = None
+        else:
+            self._detector = None
+            self._detector_params = cv.aruco.DetectorParameters_create()
+
+            # works for old/new board wrappers depending on binding version.
+            if hasattr(self.board.board, "getDictionary"):
+                self._dictionary = self.board.board.getDictionary()
+            else:
+                self._dictionary = self.board.board.dictionary
 
         self._debug_save_image_with_drawn_markers_counter = 0
+
+    def _detect_board(self, frame: ImageU8):
+        if self._detector is not None:
+            # detectBoard runs detectMarkers if charucoCorners and charucoIds
+            # are not provided
+            return self._detector.detectBoard(frame)
+
+        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(
+            frame,
+            self._dictionary,
+            parameters=self._detector_params,
+        )
+
+        charucoCorners = None
+        charucoIds = None
+
+        if markerIds is not None and len(markerIds) > 0:
+            _count, charucoCorners, charucoIds = cv.aruco.interpolateCornersCharuco(
+                markerCorners,
+                markerIds,
+                frame,
+                self.board.board,
+                cameraMatrix=self.camera_calibration.matrix,
+                distCoeffs=self.camera_calibration.dist_coeffs,
+            )
+
+        return charucoCorners, charucoIds, markerCorners, markerIds
 
     def detect_pose(
         self,
@@ -43,11 +84,7 @@ class Detector:
         MarkerIDs | None,
         compas.geometry.Transformation | None,
     ]:
-        # detectBoard runs detectMarkers if charucoCorners and charucoIds are
-        # not provided
-        charucoCorners, charucoIds, markerCorners, markerIds = (
-            self._detector.detectBoard(frame)
-        )
+        charucoCorners, charucoIds, markerCorners, markerIds = self._detect_board(frame)
 
         marked_frame = self.draw_debug_frame(
             frame.copy(),
@@ -71,17 +108,31 @@ class Detector:
             print("Didn't detect enough ChArUco corners")
             return marked_frame, markerIds, None
 
-        obj_points, img_points = self.board.board.matchImagePoints(  # pyright: ignore[reportCallIssue, reportUnknownVariableType]
-            charucoCorners,
-            charucoIds,
-        )
+        if hasattr(self.board.board, "matchImagePoints"):
+            obj_points, img_points = self.board.board.matchImagePoints(  # pyright: ignore[reportCallIssue, reportUnknownVariableType]
+                charucoCorners,
+                charucoIds,
+            )
 
-        success, rvec, tvec = cv.solvePnP(
-            obj_points,
-            img_points,
-            self.camera_calibration.matrix,
-            self.camera_calibration.dist_coeffs,
-        )
+            success, rvec, tvec = cv.solvePnP(
+                obj_points,
+                img_points,
+                self.camera_calibration.matrix,
+                self.camera_calibration.dist_coeffs,
+            )
+        else:
+            rvec = np.zeros((3, 1), dtype=np.float64)
+            tvec = np.zeros((3, 1), dtype=np.float64)
+
+            success, rvec, tvec = cv.aruco.estimatePoseCharucoBoard(
+                charucoCorners,
+                charucoIds,
+                self.board.board,
+                self.camera_calibration.matrix,
+                self.camera_calibration.dist_coeffs,
+                rvec,
+                tvec,
+            )
 
         if not success:
             return marked_frame, markerIds, None
