@@ -1,4 +1,4 @@
-/rgbd_camera:
+/rob1/rgbd/extruder_OAK-D-S2-POE:
   ros__parameters:
     camera:
       i_enable_imu: false

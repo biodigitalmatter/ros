@@ -1,8 +1,25 @@
-/rob1/rgbd/extruder:
+/rob1/rgbd/extruder_d405:
   ros__parameters:
     enable_color: true
     enable_depth: true
+    enable_infra1: false
+    enable_infra2: false
+    enable_sync: false
+    enable_rgbd: false
     depth_module:
-      depth_profile: 848x480x30
-      color_profile: 848x480x30
-      infra_profile: 848x480x30
+      depth_profile: 640x480x15
+      color_profile: 640x480x15
+      infra_profile: 640x480x15
+      frames_queue_size: 4
+    align_depth:
+      enable: false
+      frames_queue_size: 4
+    extruder_d405:
+      color:
+        image_raw:
+          enable_pub_plugins:
+            - image_transport/raw
+      depth:
+        image_rect_raw:
+          enable_pub_plugins:
+            - image_transport/raw
