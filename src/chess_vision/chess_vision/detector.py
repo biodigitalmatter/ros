@@ -5,9 +5,9 @@ import compas.geometry
 import cv2 as cv
 import numpy as np
 import numpy.typing as npt
+from chess_vision.geometry import xform_from_cv
 
 from chess_vision import CameraCalibration, ChArUcoBoard
-from chess_vision.geometry import xform_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
 MarkerIDs = npt.NDArray[np.uint8]
@@ -100,13 +100,6 @@ class Detector:
     ) -> ImageU8:
         if frame.ndim == 2:
             frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
-
-        # if markerIds is not None and len(markerIds) > 0:
-        #     _ = cv.aruco.drawDetectedMarkers(
-        #         frame,
-        #         markerCorners,
-        #         markerIds,
-        #     )
 
         if charucoIds is not None and len(charucoIds) > 0:
             _ = cv.aruco.drawDetectedCornersCharuco(
