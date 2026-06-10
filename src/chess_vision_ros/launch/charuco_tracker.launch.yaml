@@ -1,7 +1,7 @@
 launch:
   - arg:
       name: namespace
-      default: rob1
+      default: rob1/rgbd/extruder_d405/color
   - arg:
       name: board_name
       default: "large"

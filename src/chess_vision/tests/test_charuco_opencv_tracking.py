@@ -10,7 +10,9 @@ def test_charuco_markers_detect_in_sample_video(calibration_video_path):
 
     # read first frame to test
     ok, frame = cap.read()
-    assert ok and frame is not None, f"Could not read first frame from: {video_path}"
+    assert ok and frame is not None, (
+        f"Could not read first frame from: {calibration_video_path}"
+    )
 
     board = ChArUcoBoard.from_board_parameters_dict("sample_calibration_video_board")
     dictionary = board.dictionary

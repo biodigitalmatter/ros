@@ -1,7 +1,7 @@
 launch:
   - arg:
       name: namespace
-      default: rob1/rgbd/mounted_d405/color
+      default: rob1/rgbd/extruder_d405/color
   - arg:
       name: input_topic
       default: "/$(var namespace)/image_raw"
@@ -23,5 +23,5 @@ launch:
       remap:
         - from: /image_raw
           to: $(var input_topic)
-        - from: /image_raw/markers
+        - from: /image_raw_markers
           to: $(var output_topic)
