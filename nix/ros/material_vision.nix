@@ -2,6 +2,8 @@
   lib,
   buildRosPackage,
   ament-cmake,
+
+  depth-image-proc,
   launch-ros,
   pcl-ros,
   realsense2-camera,
@@ -19,14 +21,17 @@ buildRosPackage {
 
   nativeBuildInputs = [ ament-cmake ];
 
-  propagatedBuildInputs = [
-    launch-ros
-    pcl-ros
-    realsense2-camera
-    realsense2-description
-    sensor-msgs
-    tf2-ros
-  ];
+  passthru.workspacePackages = {
+    inherit
+      depth-image-proc
+      launch-ros
+      pcl-ros
+      realsense2-camera
+      realsense2-description
+      sensor-msgs
+      tf2-ros
+      ;
+  };
 
   meta = {
     description = "Build a model of what you're building";

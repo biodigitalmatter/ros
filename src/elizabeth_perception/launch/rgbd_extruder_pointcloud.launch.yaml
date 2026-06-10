@@ -1,0 +1,12 @@
+launch:
+  - arg:
+      name: camera_name
+      default: extruder_d405
+  - node:
+      pkg: depth_image_proc
+      exec: point_cloud_xyz_node
+      namespace: /rob1/rgbd/$(var camera_name)/depth
+      name: depth_to_pointcloud
+      remap:
+        - from: image_rect
+          to: image_rect_raw

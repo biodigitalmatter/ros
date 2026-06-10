@@ -3,6 +3,7 @@
   buildRosPackage,
   ament-cmake,
 
+  depth-image-proc,
   # depthai
   realsense2-camera,
   realsense2-description,
@@ -21,6 +22,7 @@ buildRosPackage {
 
   passthru.workspacePackages = {
     inherit
+      depth-image-proc
       # depthai
       realsense2-camera
       realsense2-description
