@@ -18,6 +18,9 @@ jobs:
               pip:
                 packages: [compas]
           EOF
+      - name: Explicitly install numpy<2 to system python so compas doesnt bring in numpy v2
+        run: |
+          PIP_BREAK_SYSTEM_PACKAGES=1 pip install numpy<2
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@3a640b10f09b756dabe556dac5413aba369f71b0 # v0.4.8
         with:
