@@ -1,0 +1,16 @@
+[Unit]
+Description=Elizabeth Perception ROS 2 launch, start attached camera (%i)
+Wants=systemd-udev-settle.service
+After=systemd-udev-settle.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/ros2_ws
+Environment=ROS_DOMAIN_ID=55
+ExecStart=/bin/bash -lc 'source install/setup.bash && exec ros2 launch elizabeth_perception rgbd_%i.launch.yaml'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

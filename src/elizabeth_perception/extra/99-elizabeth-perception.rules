@@ -1,0 +1,3 @@
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="8086", TAG+="systemd", ENV{SYSTEMD_WANTS}+="elizabeth-perception@realsense.service"
+
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", TAG+="systemd", ENV{SYSTEMD_WANTS}+="elizabeth-perception@oak_usb.service"
