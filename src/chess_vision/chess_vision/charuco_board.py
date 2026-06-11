@@ -15,9 +15,17 @@ class ChArUcoBoard:
     ):
         self.dictionary: aruco.Dictionary = aruco.getPredefinedDictionary(dictionary)
 
-        self.board: aruco.CharucoBoard = aruco.CharucoBoard(
-            (squaresX, squaresY), squareLength, markerLength, self.dictionary
-        )
+        # OpenCV <4.7
+        self.board: aruco.CharucoBoard = aruco.CharucoBoard_create(  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
+                squaresX,
+                squaresY,
+                squareLength,
+                markerLength,
+                self.dictionary,
+            ) if hasattr(aruco, "CharucoBoard_create") else aruco.CharucoBoard(
+                (squaresX, squaresY), squareLength, markerLength, self.dictionary
+            )
+
 
     @classmethod
     def from_board_parameters_dict(cls, key: str):
