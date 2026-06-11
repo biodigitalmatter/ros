@@ -39,13 +39,13 @@ class ChArUcoTracker:
             self._detector_params = None
         else:
             self._detector = None
-            self._detector_params = cv.aruco.DetectorParameters_create()
+            self._detector_params = cv.aruco.DetectorParameters_create()  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
 
             # works for old/new board wrappers depending on binding version.
             if hasattr(self.board.board, "getDictionary"):
                 self._dictionary = self.board.board.getDictionary()
             else:
-                self._dictionary = self.board.board.dictionary
+                self._dictionary = self.board.board.dictionary  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
 
         self._debug_save_image_with_drawn_markers_counter = 0
 
@@ -55,7 +55,7 @@ class ChArUcoTracker:
             # are not provided
             return self._detector.detectBoard(frame)
 
-        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(
+        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue]
             frame,
             self._dictionary,
             parameters=self._detector_params,
@@ -86,12 +86,10 @@ class ChArUcoTracker:
     ]:
         charucoCorners, charucoIds, markerCorners, markerIds = self._detect_board(frame)
 
-        marked_frame = self.draw_debug_frame(
+        marked_frame: ImageU8 = self.draw_debug_frame(
             frame.copy(),
-            charucoCorners,  # pyright: ignore[reportArgumentType]
-            charucoIds,  # pyright: ignore[reportArgumentType]
-            markerCorners,  # pyright: ignore[reportArgumentType]
-            markerIds,  # pyright: ignore[reportArgumentType]
+            charucoCorners,
+            charucoIds,
         )
 
         if self.debug_frame_dump_directory is not None:
@@ -124,7 +122,7 @@ class ChArUcoTracker:
             rvec = np.zeros((3, 1), dtype=np.float64)
             tvec = np.zeros((3, 1), dtype=np.float64)
 
-            success, rvec, tvec = cv.aruco.estimatePoseCharucoBoard(
+            success, rvec, tvec = cv.aruco.estimatePoseCharucoBoard(  # pyright: ignore[reportCallIssue]
                 charucoCorners,
                 charucoIds,
                 self.board.board,
@@ -146,13 +144,15 @@ class ChArUcoTracker:
         frame: ImageU8,
         charucoCorners: CornerCoordinates | None,
         charucoIds: MarkerIDs | None,
-        markerCorners: CornerCoordinates | None,
-        markerIds: MarkerIDs | None,
     ) -> ImageU8:
         if frame.ndim == 2:
             frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
 
-        if charucoIds is not None and len(charucoIds) > 0:
+        if (
+            charucoIds is not None
+            and len(charucoIds) > 0
+            and charucoCorners is not None
+        ):
             _ = cv.aruco.drawDetectedCornersCharuco(
                 frame,
                 charucoCorners,
@@ -165,6 +165,11 @@ class ChArUcoTracker:
         self,
         frame: ImageU8,
     ):
+
+        if self.debug_frame_dump_directory is None:
+            raise RuntimeError(
+                "dump debug frame called without debug_frame_dump_directory set"
+            )
 
         path = pathlib.Path(
             self.debug_frame_dump_directory

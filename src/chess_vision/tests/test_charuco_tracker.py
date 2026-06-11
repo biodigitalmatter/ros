@@ -1,6 +1,6 @@
 import os
 
-import compas
+import compas.geometry
 import cv2 as cv
 
 from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
