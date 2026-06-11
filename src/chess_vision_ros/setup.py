@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 package_name = "chess_vision_ros"
 
-setup(
+_ = setup(
     name=package_name,
     version="0.1.0",
     packages=find_packages(),
@@ -15,7 +15,7 @@ setup(
     ],
     install_requires=["setuptools"],
     zip_safe=True,
-    maintainer="tetov",
+    maintainer="Anton Tetov Johansson",
     maintainer_email="anton@tetov.se",
     description="ROS wrapper for chess_vision",
     license="Apache-2.0",

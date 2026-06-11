@@ -7,6 +7,8 @@
   geometry-msgs,
   launch-pytest,
   launch-ros,
+  launch-testing,
+  launch-testing-ros,
   opencv,
   python3Packages,
   rclpy,
@@ -25,8 +27,6 @@ buildRosPackage {
     chess-vision
     cv-bridge
     geometry-msgs
-    launch-pytest
-    launch-ros
     opencv
     python3Packages.compas
     python3Packages.numpy
@@ -36,6 +36,11 @@ buildRosPackage {
 
   passthru.workspacePackages = {
     inherit
+      launch-pytest
+      launch-ros
+
+      launch-testing
+      launch-testing-ros
       ros2bag
       ;
   };
