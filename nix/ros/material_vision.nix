@@ -4,7 +4,10 @@
   ament-cmake,
 
   depth-image-proc,
+  launch-pytest,
   launch-ros,
+  launch-testing,
+  launch-testing-ros,
   pcl-ros,
   realsense2-camera,
   realsense2-description,
@@ -17,14 +20,17 @@ buildRosPackage {
 
   src = ../../src/material_vision;
 
-  buildType = "ament_cmake";
+  buildType = "ament_python";
 
   nativeBuildInputs = [ ament-cmake ];
 
   passthru.workspacePackages = {
     inherit
       depth-image-proc
+      launch-pytest
       launch-ros
+      launch-testing
+      launch-testing-ros
       pcl-ros
       realsense2-camera
       realsense2-description

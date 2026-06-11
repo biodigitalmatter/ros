@@ -4,9 +4,9 @@
   <name>material_vision</name>
   <version>0.1.0</version>
   <description>Build a model of what you're building</description>
-  <maintainer email="anton@tetov.se">tetov</maintainer>
+  <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>Apache-2.0</license>
-  <buildtool_depend>ament_cmake</buildtool_depend>
+  <url type="repository">https://github.com/biodigitalmatter/ros/</url>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>realsense2_camera</exec_depend>
@@ -14,10 +14,11 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>pcl_ros</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>industrial_reconstruction</exec_depend>
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <exec_depend>vdb_mapping_ros2</exec_depend>
+  <test_depend>launch_pytest</test_depend>
+  <test_depend>launch_testing</test_depend>
+  <test_depend>launch_testing_ros</test_depend>
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>
