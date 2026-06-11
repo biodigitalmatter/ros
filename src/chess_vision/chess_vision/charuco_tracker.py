@@ -15,7 +15,7 @@ CornerCoordinates = npt.NDArray[np.float64]
 
 
 @typing.final
-class Detector:
+class ChArUcoTracker:
     def __init__(
         self,
         board: ChArUcoBoard,

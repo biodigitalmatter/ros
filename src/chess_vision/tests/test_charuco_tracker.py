@@ -3,7 +3,7 @@ import os
 import compas
 import cv2 as cv
 
-from chess_vision import CameraCalibration, ChArUcoBoard, Detector
+from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
 
 
 def get_capture(video_path: os.PathLike[str]):
@@ -25,7 +25,9 @@ def test_charuco_markers_detector_with_sample_video(calibration_video_path, tmp_
 
     camera_calibration = CameraCalibration.create_dummy_intrinsics_from_image(w, h)
     board = ChArUcoBoard.from_board_parameters_dict("sample_calibration_video_board")
-    detector = Detector(board, camera_calibration, debug_frame_dump_directory=tmp_path)
+    detector = ChArUcoTracker(
+        board, camera_calibration, debug_frame_dump_directory=tmp_path
+    )
 
     frames_with_charuco = 0
 

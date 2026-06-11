@@ -10,18 +10,18 @@ from rclpy.publisher import Publisher
 from rclpy.subscription import Subscription
 from sensor_msgs.msg import CameraInfo, Image
 
-from chess_vision import CameraCalibration, ChArUcoBoard, Detector
+from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
 
 
 @typing.final
-class CharucoTracker(Node):
+class ChArUcoTrackerNode(Node):
     def __init__(self):
         super().__init__("charuco_tracker")
 
         _ = self.declare_parameter("board_name", "large")
         _ = self.declare_parameter("rectified", False)
 
-        self._detector: Detector | None = None
+        self._tracker: ChArUcoTracker | None = None
         self._camera_calibration: CameraCalibration | None = None
 
         self.bridge: CvBridge = CvBridge()
@@ -63,17 +63,17 @@ class CharucoTracker(Node):
         return rectified
 
     @property
-    def detector(self):
-        if self._detector is None:
+    def tracker(self):
+        if self._tracker is None:
             if self._camera_calibration is None:
                 _ = self.logger.warning(
-                    "Trying to set up chess_vision detector but camera_calibration is not set."
+                    "Trying to set up chess_vision ChArUco tracker but camera_calibration is not set."
                 )
                 return
             else:
                 board = ChArUcoBoard.from_board_parameters_dict(self.board_name)
-                self._detector = Detector(board, self._camera_calibration)
-        return self._detector
+                self._tracker = ChArUcoTracker(board, self._camera_calibration)
+        return self._tracker
 
     def camera_info_callback(self, msg: CameraInfo) -> None:
         self._camera_calibration = CameraCalibration.from_camera_info_msg_k_msg_d(
@@ -86,14 +86,14 @@ class CharucoTracker(Node):
             _ = self.destroy_subscription(self.camera_info_sub)
 
     def image_callback(self, msg: Image) -> None:
-        if self.detector is None:
+        if self.tracker is None:
             if self.rectified:
                 self._camera_calibration = (
                     CameraCalibration.create_dummy_intrinsics_from_image(
                         height=msg.height, width=msg.width
                     )
                 )
-                assert self.detector is not None
+                assert self.tracker is not None
             else:
                 _ = self.logger.warning("Image gotten before camera info.")  # pyright: ignore[reportUnknownMemberType]
                 return
@@ -102,7 +102,7 @@ class CharucoTracker(Node):
             msg, desired_encoding="bgr8"
         )
 
-        marked_frame, marker_ids, xform = self.detector.detect_pose(frame)
+        marked_frame, marker_ids, xform = self.tracker.detect_pose(frame)
 
         out_msg = self.bridge.cv2_to_imgmsg(
             marked_frame,
@@ -147,7 +147,7 @@ class CharucoTracker(Node):
 
 def main(args: list[str] | None = None):
     rclpy.init(args=args)
-    node = CharucoTracker()
+    node = ChArUcoTrackerNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
