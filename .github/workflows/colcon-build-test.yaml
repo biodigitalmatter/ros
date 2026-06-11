@@ -8,6 +8,7 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest@sha256:c597524065d7f76ecee5524d4bbc10f7895b4a36ffc8ce64657d113067dd2d40
     steps:
+      - uses: actions/checkout@v6
       - run: >
           echo "yaml file:///etc/ros/rosdep/compas_rule.yaml" >> /etc/ros/rosdep/sources.list.d/30-custom.list
 
@@ -18,10 +19,11 @@ jobs:
               pip:
                 packages: [compas]
           EOF
-      - name: Explicitly install numpy<2 to system python so compas doesnt bring in numpy v2
+      - name: compas deps
         run: |
-          python3 -m pip install "numpy<2"
+          sudo apt-get install -y python3-jsonschema python3-numpy python3-pip python3-scipy python3-watchdog --no-install-recommends
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@3a640b10f09b756dabe556dac5413aba369f71b0 # v0.4.8
         with:
           target-ros2-distro: jazzy
+          vcs-repo-file-url: dependencies.repos
