@@ -14,4 +14,4 @@ jobs:
       - name: Build devShell
         run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
       - name: nix flake check
-        run: nix flake check --verbose
+        run: nix flake check --verbose --keep-going
