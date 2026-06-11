@@ -34,7 +34,7 @@ class ChArUcoTracker:
         # introduced in 4.7
         self._has_charuco_detector = hasattr(cv.aruco, "CharucoDetector")
 
-        if hasattr(cv.aruco, "CharucoDetector"):
+        if self._has_charuco_detector:
             self._detector = cv.aruco.CharucoDetector(self.board.board)
             self._detector_params = None
         else:
