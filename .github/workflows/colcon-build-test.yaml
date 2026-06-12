@@ -27,3 +27,17 @@ jobs:
         with:
           target-ros2-distro: jazzy
           vcs-repo-file-url: dependencies.repos
+          # dont test all repos from dependencies.repos
+          colcon-defaults: |
+            {
+              "test": {
+                "packages-select": [
+                  "biodigitalmatter_ros",
+                  "chess_vision",
+                  "chess_vision_ros",
+                  "elizabeth_description",
+                  "elizabeth_perception",
+                  "material_vision"
+                ]
+              }
+            }
