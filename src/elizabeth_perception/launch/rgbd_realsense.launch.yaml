@@ -17,28 +17,33 @@ launch:
   - let:
       name: robot_description
       value: "$(command '$(find-exec xacro) $(var robot_xacro) camera_name:=$(var camera_name) parent_link:=$(var parent_frame)')"
-  - node:
-      name: $(var camera_name)_robot_state_publisher
-      pkg: robot_state_publisher
-      exec: robot_state_publisher
-      namespace: $(var camera_namespace)
-      param:
-        - name: robot_description
-          value: $(var robot_description)
-  - node:
-      pkg: tf2_ros
-      exec: static_transform_publisher
-      namespace: $(var camera_namespace)
-      name: $(var camera_name)_tool0_tf_publisher
-      args: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0 --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
-  - node:
-      pkg: realsense2_camera
-      exec: realsense2_camera_node
-      namespace: $(var camera_namespace)
-      name: $(var camera_name)
-      param:
-        - from: "$(find-pkg-share elizabeth_perception)/config/rgbd_realsense_$(var camera_model).yaml"
-        - name: camera_name
-          value: $(var camera_name)
-        - name: device_type
-          value: $(var camera_model)
+  # FIXME: This is hard coded for d405 right now
+  - let:
+      name: static_transform
+      value: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0 --roll 0"
+  - group:
+      - push_ros_namespace:
+          namespace: $(var camera_namespace)
+      - node:
+          name: $(var camera_name)_robot_state_publisher
+          pkg: robot_state_publisher
+          exec: robot_state_publisher
+          param:
+            - name: robot_description
+              value: $(var robot_description)
+      - node:
+          pkg: tf2_ros
+          exec: static_transform_publisher
+          namespace: $(var camera_namespace)
+          name: $(var camera_name)_tool0_tf_publisher
+          args: "$(var static_transform) --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
+      - node:
+          pkg: realsense2_camera
+          exec: realsense2_camera_node
+          name: $(var camera_name)
+          param:
+            - from: "$(find-pkg-share elizabeth_perception)/config/rgbd_realsense_$(var camera_model).yaml"
+            - name: camera_name
+              value: $(var camera_name)
+            - name: device_type
+              value: $(var camera_model)
