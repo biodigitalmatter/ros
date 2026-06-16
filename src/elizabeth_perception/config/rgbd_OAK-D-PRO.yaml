@@ -1,4 +1,4 @@
-/rob1/rgbd/extruder_OAK-D-PRO:
+/rob1/rgbd/extruder_OAK_D_PRO:
   ros__parameters:
     camera:
       i_nn_type: none

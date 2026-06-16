@@ -3,38 +3,40 @@ launch:
       name: camera_model
       default: OAK-D-S2-POE
   - arg:
-      name: camera_name
-      default: extruder_$(var camera_model)
+      name: name
+      default: extruder_$(eval '"$(var camera_model)".replace("-","_")')
   - arg:
       name: camera_namespace
       default: rob1/rgbd
   - arg:
       name: parent_frame
       default: tool0
-  - include:
-      namespace: $(var camera_namespace)
-      file: "$(find-pkg-share depthai_ros_driver)/launch/rgbd_pcl.launch.py"
-      arg:
-        - name: name
-          value: $(var camera_name)
-        - name: parent_frame
-          value: $(var parent_frame)
-        - name: cam_pos_x
-          value: "0.270721"
-        - name: cam_pos_y
-          value: "0.072498"
-        - name: cam_pos_z
-          value: "0.077085"
-        - name: cam_yaw
-          value: "0.2617994"
-          #value: "-0.2617994"
-        - name: cam_pitch
-          value: "0"
-        - name: cam_roll
-          value: "0"
-        - name: camera_model
-          value: $(var camera_model)
-        - name: params_file
-          value: "$(find-pkg-share elizabeth_perception)/config/$(var camera_model).yaml"
-        - name: rectify_rgb
-          value: "true"
+  - group:
+      - push_ros_namespace:
+          namespace: $(var camera_namespace)
+      - include:
+          file: "$(find-pkg-share depthai_ros_driver_v3)/launch/driver_as_part_of_a_robot.launch.py"
+          arg:
+            - name: name
+              value: $(var name)
+            - name: parent_frame
+              value: $(var parent_frame)
+            - name: camera_model
+              value: $(var camera_model)
+            - name: cam_pos_x
+              value: "0.270721"
+            - name: cam_pos_y
+              value: "0.072498"
+            - name: cam_pos_z
+              value: "0.077085"
+            - name: cam_yaw
+              value: "0.2617994"
+              #value: "-0.2617994"
+            - name: cam_pitch
+              value: "0"
+            - name: cam_roll
+              value: "0"
+            - name: params_file
+              value: "$(find-pkg-share elizabeth_perception)/config/rgbd_$(var camera_model).yaml"
+            - name: rectify_rgb
+              value: "true"

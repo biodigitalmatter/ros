@@ -1,19 +1,11 @@
-/rob1/rgbd/extruder_OAK-D-S2-POE:
+/rob1/rgbd/extruder_OAK_D_S2_POE:
   ros__parameters:
-    camera:
-      i_enable_imu: false
-      i_nn_type: none
-      i_ip: 192.168.8.10
+    driver:
+      i_low_bandwidth: true
+    pipeline_gen:
+      i_pipeline_type: RGBD
     stereo:
       i_align_depth: true
       i_low_bandwidth: true
-      i_fps: 5.0
     rgb:
       i_low_bandwidth: true
-      i_fps: 5.0
-    left:
-      i_low_bandwidth: true
-      i_fps: 5.0
-    right:
-      i_low_bandwidth: true
-      i_fps: 5.0
