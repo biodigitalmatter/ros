@@ -10,3 +10,7 @@ launch:
       remap:
         - from: image_rect
           to: image_rect_raw
+      param:
+        # fix mismatch between depth_proc and realsense
+        - name: qos_overrides./rob1/rgbd/$(var camera_name)/depth/camera_info.subscription.durability
+          value: volatile
