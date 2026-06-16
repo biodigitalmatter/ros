@@ -11,12 +11,6 @@ launch:
           name: base_footprint_broadcaster
           args: >-
             --frame-id map --child-frame-id base_footprint
-      - node:
-          pkg: tf2_ros
-          exec: static_transform_publisher
-          name: base_link_broadcaster
-          args: >-
-            --z 0.45 --frame-id base_footprint --child-frame-id base_link
       - include:
           file: $(find-pkg-share elizabeth_descriptions)/launch/urdf_description.launch.yaml
           arg:

@@ -2,4 +2,11 @@
 <robot name="elizabeth" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find abb_irb4600_support)/urdf/irb4600_40_255.xacro"/>
   <xacro:include filename="$(find elizabeth_descriptions)/urdf/t25_incl_all.xacro"/>
+
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.45" rpy="0 0 0"/>
+  </joint>
 </robot>
