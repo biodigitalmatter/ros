@@ -36,7 +36,7 @@ launch:
           exec: static_transform_publisher
           namespace: $(var camera_namespace)
           name: $(var camera_name)_tool0_tf_publisher
-          args: "$(var static_transform) --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_link"
+          args: "$(var static_transform) --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_bottom_screw_frame"
       - node:
           pkg: realsense2_camera
           exec: realsense2_camera_node
