@@ -5,9 +5,9 @@ import compas.geometry
 import cv2 as cv
 import numpy as np
 import numpy.typing as npt
-from chess_vision.geometry import xform_from_cv
 
 from chess_vision import CameraCalibration, ChArUcoBoard
+from chess_vision.geometry import xform_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
 MarkerIDs = npt.NDArray[np.uint8]
