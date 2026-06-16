@@ -14,6 +14,16 @@
   nixd,
   python3,
   ros2-utils-tool,
+  rqt,
+  rqt-action,
+  rqt-bag,
+  rqt-bag-plugins,
+  rqt-graph,
+  rqt-image-view,
+  rqt-reconfigure,
+  rqt-service-caller,
+  rqt-tf-tree,
+  rqt-topic,
   ruff,
   rviz2,
   ty,
@@ -38,6 +48,16 @@ buildROSWorkspace {
       colcon
       nixd
       ros2-utils-tool
+      rqt
+      rqt-action
+      rqt-bag
+      rqt-bag-plugins
+      rqt-graph
+      rqt-image-view
+      rqt-reconfigure
+      rqt-service-caller
+      rqt-tf-tree
+      rqt-topic
       ruff
       rviz2
       ty
