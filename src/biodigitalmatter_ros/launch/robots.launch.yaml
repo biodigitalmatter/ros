@@ -12,20 +12,15 @@ launch:
           args: >-
             --frame-id map --child-frame-id base_footprint
       - include:
-          file: $(find-pkg-share elizabeth_descriptions)/launch/urdf_description.launch.yaml
-          arg:
-            - name: joint_states_topic
-              value: /rob1/rws_client/joint_states
+          file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
       - include:
           file: $(find-pkg-share abb_bringup)/launch/abb_rws_client.launch.py
           arg:
             - name: robot_ip
               value: $(var robot_ip)
-      - executable:
-          cmd: "docker compose -f $(find-pkg-share biodigitalmatter_ros)/launch/extra/ros1_compas_rrc/compose.yaml up"
-          name: docker_compose
-          shell: true
-          output: screen
+          remap:
+            - from: rws_client/joint_states
+              to: joint_states
     # - include:
     #     file: $(find-pkg-share compas_rrc_driver)/launch/bringup-common.launch.xml
     #     arg:
