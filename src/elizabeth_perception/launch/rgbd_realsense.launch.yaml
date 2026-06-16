@@ -17,10 +17,6 @@ launch:
   - let:
       name: robot_description
       value: "$(command '$(find-exec xacro) $(var robot_xacro) camera_name:=$(var camera_name) parent_link:=$(var parent_frame)')"
-  # FIXME: This is hard coded for d405 right now
-  - let:
-      name: static_transform
-      value: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0 --roll 0"
   - group:
       - push_ros_namespace:
           namespace: $(var camera_namespace)
@@ -34,9 +30,8 @@ launch:
       - node:
           pkg: tf2_ros
           exec: static_transform_publisher
-          namespace: $(var camera_namespace)
           name: $(var camera_name)_tool0_tf_publisher
-          args: "$(var static_transform) --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_bottom_screw_frame"
+          args: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0  --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_bottom_screw_frame"
       - node:
           pkg: realsense2_camera
           exec: realsense2_camera_node
