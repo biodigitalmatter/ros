@@ -1,0 +1,25 @@
+/rob1/recorder:
+  ros__parameters:
+    use_sim_time: false
+    record:
+      topics:
+        - /rob1/joint_states
+        - /rob1/robot_description
+        - /rob1/rgbd/extruder_d405/
+        - /rob1/rgbd/extruder_d405/color/camera_info
+        - /rob1/rgbd/extruder_d405/color/image_raw
+        - /rob1/rgbd/extruder_d405/color/metadata
+        - /rob1/rgbd/extruder_d405/depth/camera_info
+        - /rob1/rgbd/extruder_d405/depth/image_rect_raw
+        - /rob1/rgbd/extruder_d405/depth/metadata
+        - /rob1/rgbd/extruder_d405/depth/points
+        - /rob1/rgbd/extruder_d405/extrinsics/depth_to_color
+        - /rob1/rgbd/extruder_d405/extrinsics/depth_to_depth
+        - /rob1/rgbd/joint_states
+        - /rob1/rgbd/robot_description
+        - /tf
+        - /tf_static
+    storage:
+      uri: "/home/tetov/.cache/rosbags"
+      max_bagfile_size: 5e09
+      custom_data: ["experiment=8"]
