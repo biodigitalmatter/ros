@@ -11,16 +11,17 @@ launch:
           name: base_footprint_broadcaster
           args: >-
             --frame-id map --child-frame-id base_footprint
-      - include:
-          file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
-      - include:
-          file: $(find-pkg-share abb_bringup)/launch/abb_rws_client.launch.py
-          arg:
-            - name: robot_ip
-              value: $(var robot_ip)
+      - node:
+          pkg: abb_rws_client
+          exec: rws_client
+          name: rws_client
+          params:
+            robot_nickname: elizabeth
           remap:
             - from: rws_client/joint_states
               to: joint_states
+      - include:
+          file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
     # - include:
     #     file: $(find-pkg-share compas_rrc_driver)/launch/bringup-common.launch.xml
     #     arg:

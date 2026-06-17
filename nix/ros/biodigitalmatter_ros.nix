@@ -2,7 +2,6 @@
   lib,
   buildRosPackage,
 
-  abb-bringup,
   abb-rws-client,
   axis-camera,
   compas-rrc-driver,
@@ -19,7 +18,6 @@ buildRosPackage {
 
   passthru.workspacePackages = {
     inherit
-      abb-bringup
       abb-rws-client
       axis-camera
       compas-rrc-driver

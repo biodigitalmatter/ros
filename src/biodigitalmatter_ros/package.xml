@@ -13,7 +13,6 @@
   <exec_depend>compas_rrc_driver</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
   <exec_depend>axis_camera</exec_depend>
-  <exec_depend>abb_bringup</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>
   <exec_depend>chess_vision_ros</exec_depend>
   <exec_depend>material_vision</exec_depend>
