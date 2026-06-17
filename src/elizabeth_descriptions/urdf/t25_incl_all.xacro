@@ -5,14 +5,14 @@
   <link name="t25_incl_all">
     <visual>
       <geometry>
-        <mesh filename="file://$(find elizabeth_descriptions)/urdf/models/t25_incl_all.stl"/>
+        <mesh filename="package://elizabeth_descriptions/urdf/models/t25_incl_all.stl"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </visual>
 
     <collision>
       <geometry>
-        <mesh filename="file://$(find elizabeth_descriptions)/urdf/models/t25_incl_all.stl"/>
+        <mesh filename="package://elizabeth_descriptions/urdf/models/t25_incl_all.stl"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </collision>
