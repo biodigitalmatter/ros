@@ -8,7 +8,7 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest@sha256:c597524065d7f76ecee5524d4bbc10f7895b4a36ffc8ce64657d113067dd2d40
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: >
           echo "yaml file:///etc/ros/rosdep/compas_rule.yaml" >> /etc/ros/rosdep/sources.list.d/30-custom.list
 
