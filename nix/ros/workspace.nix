@@ -11,6 +11,7 @@
   # shellPackages
   basedpyright,
   colcon,
+  lemminx,
   nixd,
   python3,
   ros2-utils-tool,
@@ -46,6 +47,7 @@ buildROSWorkspace {
     inherit
       basedpyright
       colcon
+      lemminx
       nixd
       ros2-utils-tool
       rqt
