@@ -4,6 +4,7 @@
   ament-cmake,
 
   abb-irb4600-support,
+  joint-state-publisher,
   robot-state-publisher,
   xacro,
 }:
@@ -20,6 +21,7 @@ buildRosPackage {
   passthru.workspacePackages = {
     inherit
       abb-irb4600-support
+      joint-state-publisher
       robot-state-publisher
       xacro
       ;
