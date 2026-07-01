@@ -15,8 +15,11 @@ launch:
           pkg: abb_rws_client
           exec: rws_client
           name: rws_client
-          params:
-            robot_nickname: elizabeth
+          param:
+            - name: robot_nickname
+              value: elizabeth
+            - name: robot_ip
+              value: $(var robot_ip)
           remap:
             - from: rws_client/joint_states
               to: joint_states

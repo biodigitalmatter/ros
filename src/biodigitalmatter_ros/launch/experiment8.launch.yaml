@@ -3,7 +3,7 @@ launch:
       pkg: rosbag2_transport
       exec: recorder
       namespace: /rob1
-      name: experiment8_recorder
+      name: recorder
       param:
         - from: $(find-pkg-share biodigitalmatter_ros)/config/experiment8.yaml
   - include:
