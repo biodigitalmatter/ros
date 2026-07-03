@@ -14,6 +14,7 @@ in
   chess-vision-ros = callPackage ./chess_vision_ros.nix { };
   elizabeth-descriptions = callPackage ./elizabeth_descriptions.nix { };
   elizabeth-perception = callPackage ./elizabeth_perception.nix { };
+  elizabeth-perception-filters = callPackage ./elizabeth_perception_filters.nix { };
   material-vision = callPackage ./material_vision.nix { };
 
   # patched
