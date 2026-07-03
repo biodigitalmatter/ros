@@ -7,10 +7,44 @@ from cv_bridge import CvBridge
 from geometry_msgs.msg import PoseStamped
 from rclpy.node import Node
 from rclpy.publisher import Publisher
+from rclpy.qos import (
+    QoSDurabilityPolicy,
+    QoSHistoryPolicy,
+    QoSProfile,
+    QoSReliabilityPolicy,
+)
 from rclpy.subscription import Subscription
 from sensor_msgs.msg import CameraInfo, Image
 
 from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
+
+CAMERA_INFO_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=1,
+)
+
+IMAGE_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=1,
+)
+
+POSE_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.RELIABLE,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=10,
+)
+
+MARKER_IMAGE_QOS = QoSProfile(
+    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+    durability=QoSDurabilityPolicy.VOLATILE,
+    history=QoSHistoryPolicy.KEEP_LAST,
+    depth=1,
+)
 
 
 @typing.final
@@ -27,19 +61,19 @@ class ChArUcoTrackerNode(Node):
         self.bridge: CvBridge = CvBridge()
 
         self.camera_info_sub: Subscription = self.create_subscription(
-            CameraInfo, "camera_info", self.camera_info_callback, 10
+            CameraInfo, "camera_info", self.camera_info_callback, CAMERA_INFO_QOS
         )
 
         self.image_sub: Subscription = self.create_subscription(
-            Image, "image_raw", self.image_callback, 10
+            Image, "image_raw", self.image_callback, IMAGE_QOS
         )
 
         self.pose_pub: Publisher = self.create_publisher(
-            PoseStamped, "charuco_pose", 10
+            PoseStamped, "charuco_pose", POSE_QOS
         )
 
         self.marker_img_pub: Publisher = self.create_publisher(
-            Image, "charuco_markers", 10
+            Image, "charuco_markers", MARKER_IMAGE_QOS
         )
 
         self.logger = self.get_logger()
