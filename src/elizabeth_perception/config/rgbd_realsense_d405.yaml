@@ -14,6 +14,17 @@
     align_depth:
       enable: false
       frames_queue_size: 4
+    pointcloud:
+      enable: false
+    spatial_filter:
+      enable: false
+    temporal_filter:
+      enable: false
+    hole_filling_filter:
+      enable: false
+    decimation_filter:
+      enable: false
+      filter_magnitude: 2
     extruder_d405:
       color:
         image_raw:
