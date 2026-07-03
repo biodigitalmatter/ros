@@ -3,8 +3,9 @@ import math
 import cv2 as cv
 import numpy as np
 import pytest
-from chess_vision.geometry import camera_transform_from_cv, xform_from_cv
 from compas.geometry import Frame, Rotation, Transformation, Vector
+
+from chess_vision.geometry import camera_transform_from_cv, xform_from_cv
 
 
 def test_camera_transform_from_cv_identity() -> None:
