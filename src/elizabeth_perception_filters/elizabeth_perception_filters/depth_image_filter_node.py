@@ -10,7 +10,7 @@ from rclpy.qos import (
 )
 from sensor_msgs.msg import Image
 
-from elizabeth_perception_filters.depth_image_filters import clip_depth_image
+from elizabeth_perception_filters.clip_distance import clip_distance
 
 DEPTH_IMAGE_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,
@@ -25,8 +25,8 @@ class DepthImageFilterNode(Node):
     def __init__(self):
         super().__init__("depth_image_filter")
 
-        _ = self.declare_parameter("min_distance_m", value=0.2)
-        _ = self.declare_parameter("max_distance_m", value=1.0)
+        self.declare_parameter("min_distance_m", value=0.2)
+        self.declare_parameter("max_distance_m", value=1.0)
 
         self.subscription = self.create_subscription(
             Image,
@@ -48,7 +48,7 @@ class DepthImageFilterNode(Node):
         max_distance_m = float(self.get_parameter("max_distance_m").value)  # pyright: ignore[reportUnknownMemberType, reportArgumentType]
 
         try:
-            out = clip_depth_image(msg, min_distance_m, max_distance_m)
+            out = clip_distance(msg, min_distance_m, max_distance_m)
         except ValueError as exc:
             _ = self.logger.warning(str(exc))
             return
