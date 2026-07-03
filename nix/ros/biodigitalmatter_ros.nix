@@ -7,6 +7,7 @@
   compas-rrc-driver,
   docker-compose,
   rosbridge-server,
+  python3Packages,
 }:
 buildRosPackage {
   pname = "ros-jazzy-biodigitalmatter-ros";
@@ -25,6 +26,10 @@ buildRosPackage {
       rosbridge-server
       ;
   };
+
+  nativeCheckInputs = [
+    python3Packages.pytest
+  ];
 
   meta = {
     description = "ROS setup for biodigital matter lab";

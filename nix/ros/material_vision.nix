@@ -4,11 +4,9 @@
   ament-cmake,
 
   depth-image-proc,
-  launch-pytest,
   launch-ros,
-  launch-testing,
-  launch-testing-ros,
   pcl-ros,
+  python3Packages,
   realsense2-camera,
   realsense2-description,
   sensor-msgs,
@@ -27,10 +25,7 @@ buildRosPackage {
   passthru.workspacePackages = {
     inherit
       depth-image-proc
-      launch-pytest
       launch-ros
-      launch-testing
-      launch-testing-ros
       pcl-ros
       realsense2-camera
       realsense2-description
@@ -38,6 +33,10 @@ buildRosPackage {
       tf2-ros
       ;
   };
+
+  nativeCheckInputs = [
+    python3Packages.pytest
+  ];
 
   meta = {
     description = "Build a model of what you're building";

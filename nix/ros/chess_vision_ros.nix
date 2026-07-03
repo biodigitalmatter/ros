@@ -38,12 +38,15 @@ buildRosPackage {
     inherit
       launch-pytest
       launch-ros
-
       launch-testing
       launch-testing-ros
       ros2bag
       ;
   };
+
+  nativeCheckInputs = [
+    python3Packages.pytest
+  ];
 
   meta = {
     description = "ROS wrapper for chess_vision";

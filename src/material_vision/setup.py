@@ -25,5 +25,4 @@ _ = setup(
             "pytest",
         ],
     },
-    entry_points={},
 )
