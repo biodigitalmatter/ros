@@ -34,14 +34,12 @@ class ArucoTracker(Node):
             self.detector_params,
         )
 
-        self.sub = self.create_subscription(Image, "/image_raw", self.image_cb, 10)
+        self.sub = self.create_subscription(Image, "image_raw", self.image_cb, 10)
 
-        self.pub = self.create_publisher(Image, "/image_raw_markers", 10)
+        self.pub = self.create_publisher(Image, "aruco_markers", 10)
 
         self.logger.info("ArUco detector started")
         self.logger.info(f"Dictionary: {dictionary_name}")
-        self.logger.info("Subscribing to: /image_raw")
-        self.logger.info("Publishing to: /image_raw_markers")
 
     def image_cb(self, msg):
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")

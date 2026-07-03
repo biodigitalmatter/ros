@@ -3,12 +3,6 @@ launch:
       name: namespace
       default: rob1/rgbd/extruder_d405/color
   - arg:
-      name: input_topic
-      default: "/$(var namespace)/image_raw"
-  - arg:
-      name: output_topic
-      default: "/$(var namespace)/image_raw/markers"
-  - arg:
       name: dictionary
       default: DICT_5X5_100
       description: OpenCV ArUco dictionary name.
@@ -20,8 +14,3 @@ launch:
       param:
         - name: dictionary
           value: $(var dictionary)
-      remap:
-        - from: /image_raw
-          to: $(var input_topic)
-        - from: /image_raw_markers
-          to: $(var output_topic)

@@ -7,14 +7,6 @@ launch:
       default: "large"
       description: "Name of ChArUco board to track"
   - arg:
-      name: image_topic
-      default: "mounted/color/image_raw"
-      description: "Image topic"
-  - arg:
-      name: camera_info_topic
-      default: "mounted/color/camera_info"
-      description: "Camera info topic"
-  - arg:
       name: rectified
       default: "false"
       description: "Set if (stereo) image topic (image_raw) is already rectified"
@@ -28,10 +20,3 @@ launch:
           value: "$(var board_name)"
         - name: rectified
           value: "$(var rectified)"
-      remap:
-        - from: "/image_raw"
-          to: "$(var image_topic)"
-        - from: "/image_raw_markers"
-          to: "$(var image_topic)_markers"
-        - from: "/camera_info"
-          to: "$(var camera_info_topic)"

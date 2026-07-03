@@ -39,7 +39,7 @@ class ChArUcoTrackerNode(Node):
         )
 
         self.marker_img_pub: Publisher = self.create_publisher(
-            Image, "image_raw_markers", 10
+            Image, "charuco_markers", 10
         )
 
         self.logger = self.get_logger()
