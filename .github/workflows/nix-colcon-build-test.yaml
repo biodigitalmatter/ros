@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: install nix
-        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31.11.0
         with:
           extra_nix_config: |
             trusted-public-keys = binarycache.tetov.se:84dA6GWAIObxcK+7BhlVreVThNAXELdtTX+i2fRipyE= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo=
