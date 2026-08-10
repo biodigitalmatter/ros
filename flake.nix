@@ -3,8 +3,17 @@
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:denful/import-tree";
     nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.follows = "nix-ros-overlay/nixpkgs"; # IMPORTANT!!!
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     systems.url = "github:nix-systems/default-linux";
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
@@ -29,7 +38,9 @@
       in
       {
         imports = [
+          inputs.flake-parts.flakeModules.modules
           inputs.treefmt-nix.flakeModule
+          (inputs.import-tree ./nix/modules)
         ];
 
         systems = import inputs.systems;
@@ -147,6 +158,7 @@
                 xmllint.enable = true;
                 yamlfmt.enable = true;
               };
+              settings.excludes = [ "*.sops.yaml" ];
             };
           };
       }
