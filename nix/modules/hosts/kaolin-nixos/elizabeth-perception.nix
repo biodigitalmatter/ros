@@ -23,16 +23,27 @@
           {
             description = "Elizabeth Perception ROS 2 launch, start attached realsense camera (%i)";
 
-            environment.ROS_DOMAIN_ID = "55";
+            environment = {
+              ROS_DOMAIN_ID = "55";
+              ROS_LOG_DIR = "%t/elizabeth-perception/%i";
+
+              RCUTILS_LOGGING_USE_STDOUT = "1";
+              RCUTILS_COLORIZED_OUTPUT = "0";
+            };
 
             bindsTo = [ "dev-elizabeth-realsense_%i.device" ];
             after = [ "dev-elizabeth-realsense_%i.device" ];
 
             serviceConfig = {
               DynamicUser = true;
-              SupplementaryGroups = [ "video" ];
+
               Restart = "on-failure";
               RestartSec = 3;
+
+              RuntimeDirectory = "elizabeth-perception/%i";
+
+              SupplementaryGroups = [ "video" ];
+
               ExecStart = "${lib.getExe' perceptionEnv "ros2"} launch elizabeth_perception rgbd_realsense.launch.yaml camera_model:=%i";
             };
 
