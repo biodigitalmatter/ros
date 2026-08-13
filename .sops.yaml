@@ -1,8 +1,9 @@
 keys:
   - &tetov_age age1xv6x97jjzp222csf73m5782aj9lqj8tudqjzdj0sj28y3u6n9gmqunmyfz
-  # - &kaolin-nixos_host
+  - &kaolin-nixos_host age1kavwy35c5f0lyxgyneananswmnfhzlncnlg9kqhmklpk7xfkp50qtenjyt
 creation_rules:
   - path_regex: .*\.sops\.yaml$
     key_groups:
       - age:
         - *tetov_age
+        - *kaolin-nixos_host
