@@ -12,10 +12,11 @@
         users.tetov = {
           isNormalUser = true;
           extraGroups = [
-            "wheel"
             "networkmanager"
-            "wireshark"
+            "plugdev"
             "video"
+            "wheel"
+            "wireshark"
           ];
 
           openssh.authorizedKeys.keys = [

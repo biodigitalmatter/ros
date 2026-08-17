@@ -42,7 +42,10 @@
 
               RuntimeDirectory = "elizabeth-perception/%i";
 
-              SupplementaryGroups = [ "video" ];
+              SupplementaryGroups = [
+                "plugdev"
+                "video"
+              ];
 
               ExecStart = "${lib.getExe' perceptionEnv "ros2"} launch elizabeth_perception rgbd_realsense.launch.yaml camera_model:=%i";
             };
@@ -69,5 +72,6 @@
         '';
         packages = [ pkgs.librealsense ];
       };
+      users.groups.plugdev = { }; # realsense udev rules uses plugdev
     };
 }
