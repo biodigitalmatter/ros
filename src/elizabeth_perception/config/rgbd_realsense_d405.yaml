@@ -17,9 +17,9 @@
     pointcloud:
       enable: false
     spatial_filter:
-      enable: false
+      enable: true
     temporal_filter:
-      enable: false
+      enable: true
     hole_filling_filter:
       enable: false
     decimation_filter:
