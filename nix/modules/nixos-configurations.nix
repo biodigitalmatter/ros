@@ -33,7 +33,10 @@
       kaolin-nixos = mkHost {
         hostName = "kaolin-nixos";
         system = "aarch64-linux";
-        extraModules = [ self.modules.nixos.rpi4 ];
+        extraModules = [
+          self.modules.nixos.rpi4
+          self.modules.nixos.ros
+        ];
       };
     };
 
