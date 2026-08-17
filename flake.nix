@@ -120,7 +120,10 @@
 
                   source install/setup.bash
 
-                  CI=1 colcon test --return-code-on-test-failure \
+                  export CI=1
+                  export ROS_LOG_DIR=$(mktemp -d)
+
+                  colcon test --return-code-on-test-failure \
                     --event-handlers=console_direct+
 
                   runHook postCheck
