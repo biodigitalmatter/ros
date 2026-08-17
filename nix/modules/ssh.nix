@@ -1,0 +1,9 @@
+{
+  ...
+}:
+{
+  flake.modules.nixos.ssh =
+    { ... }:
+    {
+    };
+}

@@ -1,4 +1,5 @@
 {
+  self,
   ...
 }:
 
@@ -6,6 +7,14 @@
   flake.modules.nixos.core =
     { ... }:
     {
+      imports = with self.modules.nixos; [
+        networking
+        nix
+        secrets
+        ssh
+        users
+      ];
+
       hardware.enableRedistributableFirmware = true;
 
       i18n.defaultLocale = "en_US.UTF-8";

@@ -1,6 +1,6 @@
 { ... }:
 {
-  flake.modules.nixos.core =
+  flake.modules.nixos.users =
     { ... }:
     {
       nix.settings.trusted-users = [

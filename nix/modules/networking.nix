@@ -8,7 +8,7 @@ let
 in
 {
   flake.modules.nixos = {
-    core = {
+    networking = {
       sops.secrets.${sopsKey} = { };
 
       networking = {

@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   flake.modules = {
-    nixos.core =
+    nixos.secrets =
       { ... }:
       {
         imports = [
