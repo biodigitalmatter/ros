@@ -1,6 +1,5 @@
 {
   lib,
-  self,
   ...
 }:
 let
@@ -9,21 +8,13 @@ in
 {
   flake.modules.nixos = {
     networking = {
-      sops.secrets.${sopsKey} = { };
-
       networking = {
         useDHCP = true;
       };
     };
 
-    rpi4 = {
-      imports = [
-        self.modules.nixos."networking/wpa_supplicant"
-      ];
-
-      networking = {
-        usePredictableInterfaceNames = false;
-      };
+    "networking/wifiCredentials" = {
+      sops.secrets.${sopsKey} = { };
     };
 
     "networking/wpa_supplicant" =

@@ -1,6 +1,7 @@
 {
   inputs,
   lib,
+  self,
   ...
 }:
 
@@ -17,7 +18,11 @@
       imports = [
         "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
         inputs.nixos-hardware.nixosModules.raspberry-pi-4
-      ];
+      ]
+      ++ (with self.modules; [
+        nixos."networking/wifiCredentials"
+        nixos."networking/wpa_supplicant"
+      ]);
 
       boot.supportedFilesystems.zfs = lib.mkForce false;
 
@@ -44,6 +49,10 @@
             makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
           })
         ];
+      };
+
+      networking = {
+        usePredictableInterfaceNames = false;
       };
 
       sdImage.compressImage = false;
