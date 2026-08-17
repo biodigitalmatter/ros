@@ -16,19 +16,16 @@
       };
     nixos.ros =
       { config, ... }:
+      let
+        inherit (config.data.ros) environmentVariables;
+      in
       {
-        data.ros.envVars = {
-          ROS_DOMAIN_ID = "55";
-          RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
-          FASTDDS_BUILTIN_TRANSPORTS = "LARGE_DATA";
-        };
-
-        environment.variables = config.data.ros.envVars;
+        environment.variables = environmentVariables;
 
         networking.firewall.allowedUDPPortRanges = [
           (
             let
-              domainId = lib.toInt config.data.ros.envVars.ROS_DOMAIN_ID;
+              domainId = lib.toInt environmentVariables.ROS_DOMAIN_ID;
               from = 7400 + 250 * domainId;
               to = from + 200;
             in

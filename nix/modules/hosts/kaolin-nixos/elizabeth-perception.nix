@@ -7,6 +7,8 @@
   flake.modules.nixos."hosts/kaolin-nixos" =
     { config, pkgs, ... }:
     {
+      # TODO: Remove after debugging
+      networking.firewall.enable = false;
       systemd.services = {
         "elizabeth-perception-realsense@" =
           let
@@ -23,7 +25,7 @@
           {
             description = "Elizabeth Perception ROS 2 launch, start attached realsense camera (%i)";
 
-            environment = config.data.ros.envVars // {
+            environment = config.data.ros.environmentVariables // {
               ROS_LOG_DIR = "%t/elizabeth-perception/%i";
 
               RCUTILS_LOGGING_USE_STDOUT = "1";

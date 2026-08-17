@@ -52,6 +52,7 @@
               rosPackages
               // builtins.mapAttrs (
                 _rosDistro: rosPkgs: if rosPkgs ? overrideScope then rosPkgs.overrideScope rosOverlay else rosPkgs
+
               ) rosPackages;
           in
           final: prev: {
@@ -142,6 +143,10 @@
                 rosPkgScope.workspace.env
                 config.treefmt.build.devShell
               ];
+
+              NRWS_DOMAIN_ID = "55";
+              RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
+              FASTDDS_BUILTIN_TRANSPORTS = "LARGE_DATA";
             };
 
             legacyPackages = self'.packages;
