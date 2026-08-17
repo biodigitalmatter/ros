@@ -24,7 +24,11 @@
             description = "Elizabeth Perception ROS 2 launch, start attached realsense camera (%i)";
 
             environment = {
-              # ROS_DOMAIN_ID = "55"; # set in flake.modules.nixos.ros
+              ROS_DOMAIN_ID = "55"; # set in flake.modules.nixos.ros
+
+              FASTDDS_BUILTIN_TRANSPORTS = "UDPv4";
+              RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
+
               ROS_LOG_DIR = "%t/elizabeth-perception/%i";
 
               RCUTILS_LOGGING_USE_STDOUT = "1";

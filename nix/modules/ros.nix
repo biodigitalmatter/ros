@@ -16,7 +16,11 @@ in
   flake.modules.nixos.ros =
     { ... }:
     {
-      environment.variables = { inherit ROS_DOMAIN_ID; };
+      environment.variables = {
+        inherit ROS_DOMAIN_ID;
+        FASTDDS_BUILTIN_TRANSPORTS = "UDPv4";
+        RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
+      };
       networking.firewall.allowedUDPPortRanges = [
         udpPortRange
       ];
