@@ -5,7 +5,7 @@
 
 {
   flake.modules.nixos."hosts/kaolin-nixos" =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       systemd.services = {
         "elizabeth-perception-realsense@" =
@@ -23,12 +23,7 @@
           {
             description = "Elizabeth Perception ROS 2 launch, start attached realsense camera (%i)";
 
-            environment = {
-              ROS_DOMAIN_ID = "55"; # set in flake.modules.nixos.ros
-
-              FASTDDS_BUILTIN_TRANSPORTS = "UDPv4";
-              RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
-
+            environment = config.data.ros.envVars // {
               ROS_LOG_DIR = "%t/elizabeth-perception/%i";
 
               RCUTILS_LOGGING_USE_STDOUT = "1";

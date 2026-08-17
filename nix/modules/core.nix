@@ -13,6 +13,7 @@
         secrets
         ssh
         users
+        self.modules.generic.data
       ];
 
       hardware.enableRedistributableFirmware = true;
