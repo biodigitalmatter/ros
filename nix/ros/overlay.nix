@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 # toplevel packages
 _pkgs:
 # ros scope
@@ -15,6 +18,7 @@ in
   elizabeth-perception = callPackage ./elizabeth_perception.nix { };
   elizabeth-perception-filters = callPackage ./elizabeth_perception_filters.nix { };
   material-vision = callPackage ./material_vision.nix { };
+  world-builder = callPackage ./world_builder.nix { };
 
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };

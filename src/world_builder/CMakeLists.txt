@@ -1,0 +1,164 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
+# https://reps.openrobotics.org/rep-2000/#jazzy-jalisco-may-2024---may-2029
+cmake_minimum_required(VERSION 3.28.3)
+project(world_builder VERSION 0.1.0)
+
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+#
+# dependencies
+#
+
+# for openvdb
+list(APPEND CMAKE_MODULE_PATH
+  "${CMAKE_CURRENT_SOURCE_DIR}/vendor/OpenVDB/cmake"
+)
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+
+find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(tf2_ros REQUIRED)
+
+find_package(OpenVDB REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+#
+# srv/msg
+#
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/SaveVolume.srv"
+)
+
+rosidl_get_typesupport_target(
+  cpp_typesupport_target
+  ${PROJECT_NAME}
+  "rosidl_typesupport_cpp"
+)
+
+#
+# targets
+#
+
+add_library(vdb_volume
+  src/vdb_volume.cpp
+)
+
+target_include_directories(vdb_volume
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(vdb_volume
+  PUBLIC
+    OpenVDB::openvdb
+    Eigen3::Eigen
+)
+
+add_library(world_builder_node_lib
+  src/world_builder_node.cpp
+)
+
+target_include_directories(world_builder_node_lib
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(world_builder_node_lib
+  vdb_volume
+  Eigen3::Eigen
+  "${cpp_typesupport_target}"
+)
+
+ament_target_dependencies(world_builder_node_lib
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+  std_srvs
+  tf2
+  tf2_eigen
+  tf2_ros
+)
+
+add_executable(world_builder_node
+  src/main.cpp
+)
+
+target_link_libraries(world_builder_node
+  PRIVATE
+    world_builder_node_lib
+)
+
+#
+# install
+#
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(
+  TARGETS
+    vdb_volume
+    world_builder_node_lib
+    world_builder_node
+
+  EXPORT export_world_builder
+
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
+#
+# tests
+#
+
+if(BUILD_TESTING)
+endif()
+
+#
+# export
+#
+
+ament_export_targets(
+  export_world_builder
+  HAS_LIBRARY_TARGET
+)
+
+ament_export_dependencies(
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_eigen
+  OpenVDB
+  Eigen3
+)
+
+ament_package()

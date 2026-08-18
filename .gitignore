@@ -3,9 +3,9 @@ result
 result-*
 
 # ROS-specific ignores
-build/
-install/
-log/
+/build/
+/install/
+/log/
 
 # Python ignores
 __pycache__/

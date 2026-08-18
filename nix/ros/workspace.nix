@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 {
   buildROSWorkspace,
 
@@ -8,6 +11,7 @@
   elizabeth-perception,
   elizabeth-perception-filters,
   material-vision,
+  world-builder,
 
   # shellPackages
   basedpyright,
@@ -42,6 +46,7 @@ buildROSWorkspace {
       elizabeth-perception
       elizabeth-perception-filters
       material-vision
+      world-builder
       ;
   };
   prebuiltPackages = { };
