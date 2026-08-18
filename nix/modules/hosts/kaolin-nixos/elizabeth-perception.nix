@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+#
 {
   lib,
   ...
@@ -9,6 +12,7 @@
     {
       # TODO: Remove after debugging
       networking.firewall.enable = false;
+
       systemd.services = {
         "elizabeth-perception-realsense@" =
           let
@@ -32,7 +36,6 @@
               RCUTILS_COLORIZED_OUTPUT = "0";
             };
 
-            wantedBy = [ "dev-elizabeth-realsense_%i.device" ];
             bindsTo = [ "dev-elizabeth-realsense_%i.device" ];
             after = [ "dev-elizabeth-realsense_%i.device" ];
 
@@ -58,6 +61,7 @@
             };
           };
       };
+
       services.udev = {
         extraRules = ''
           ACTION=="add", \
@@ -66,7 +70,8 @@
             ATTR{idVendor}=="8086", \
             ATTR{idProduct}=="0b5b", \
             TAG+="systemd", \
-            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d405"
+            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d405", \
+            ENV{SYSTEMD_WANTS}+="elizabeth-perception-realsense@d405.service"
 
           ACTION=="add", \
             SUBSYSTEM=="usb", \
@@ -74,7 +79,8 @@
             ATTR{idVendor}=="8086", \
             ATTR{idProduct}=="0b3a", \
             TAG+="systemd", \
-            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d435i"
+            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d435i", \
+            ENV{SYSTEMD_WANTS}+="elizabeth-perception-realsense@d435i.service"
         '';
         packages = [ pkgs.librealsense ];
       };
