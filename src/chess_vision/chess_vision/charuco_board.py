@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 from dataclasses import dataclass
 
 from cv2 import aruco
@@ -15,9 +18,21 @@ class ChArUcoBoard:
     ):
         self.dictionary: aruco.Dictionary = aruco.getPredefinedDictionary(dictionary)
 
-        self.board: aruco.CharucoBoard = aruco.CharucoBoard(
-            (squaresX, squaresY), squareLength, markerLength, self.dictionary
-        )
+        if hasattr(aruco, "CharucoBoard_create"):
+            self.board: aruco.CharucoBoard = aruco.CharucoBoard_create(
+                squaresX,
+                squaresY,
+                squareLength,
+                markerLength,
+                self.dictionary,
+            )
+        else:
+            self.board: aruco.CharucoBoard = aruco.CharucoBoard(
+                (squaresX, squaresY),
+                squareLength,
+                markerLength,
+                self.dictionary,
+            )
 
     @classmethod
     def from_board_parameters_dict(cls, key: str):
