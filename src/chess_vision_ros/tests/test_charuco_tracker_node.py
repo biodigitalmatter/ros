@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 import typing
 from pathlib import Path
@@ -59,20 +62,6 @@ def generate_test_description(rosbag_path: Path, sample_camera_info_path: Path):
     )
 
 
-# https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
-@pytest.mark.launch(fixture=generate_test_description)
-@pytest.mark.skipif("CI" in os.environ, reason="Does not have bagfile")
-def test_check_if_msgs_published():
-    rclpy.init()
-
-    try:
-        node = MakeTestNode("test_node", min_recv_msgs=50)
-        msgs_received_flag = node.msg_event_object.wait(timeout=5.0)
-        assert msgs_received_flag, "Did not receive msgs!"
-    finally:
-        rclpy.shutdown()
-
-
 @typing.final
 class MakeTestNode(Node):
     def __init__(self, name: str = "test_node", min_recv_msgs: int = 10):
@@ -113,3 +102,23 @@ class MakeTestNode(Node):
             self.msg_event_object.set()
 
         self.msg_count += 1
+
+
+@pytest.fixture
+def ros_node(request):
+    rclpy.init()
+    node = MakeTestNode(f"test_{request.node.name}")
+
+    try:
+        yield node
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+# https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
+@pytest.mark.launch(fixture=generate_test_description)
+@pytest.mark.skipif("CI" in os.environ, reason="Does not have bagfile")
+def test_check_if_msgs_published(ros_node):
+    msgs_received_flag = ros_node.msg_event_object.wait(timeout=5.0)
+    assert msgs_received_flag, "Did not receive msgs!"
