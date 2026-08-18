@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
 {
   description = "ROS 2 research setup";
 
@@ -158,6 +160,12 @@
 
             treefmt = {
               programs = {
+                clang-format.enable = true;
+                clang-tidy = {
+                  enable = true;
+                  compileCommandsPath = "build/";
+                };
+                cmake-format.enable = true;
                 deadnix.enable = true;
                 nixfmt.enable = true;
                 nixf-diagnose.enable = true;
@@ -166,7 +174,10 @@
                 xmllint.enable = true;
                 yamlfmt.enable = true;
               };
-              settings.excludes = [ "*.sops.yaml" ];
+              settings.excludes = [
+                "src/*/vendor/*"
+                "*.sops.yaml"
+              ];
             };
           };
       }
