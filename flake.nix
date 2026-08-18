@@ -146,8 +146,56 @@
               name = "ros2nix ${rosDistro} shell";
               inputsFrom = [
                 rosPkgScope.workspace.env
-                config.treefmt.build.devShell
               ];
+
+              packages = [ config.treefmt.build.wrapper ];
+
+              shellHook =
+                let
+                  # https://github.com/lopsided98/nix-ros-overlay/issues/810
+                  # https://github.com/lopsided98/nix-ros-overlay/issues/544
+                  # https://github.com/NixOS/nixpkgs/issues/41340
+                  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111527
+                  dedupeNixCflags = pkgs.writers.writePython3 "dedupe_nix_cflags" { } ''
+                    import os
+                    import shlex
+                    import sys
+
+                    name = sys.argv[1]
+                    args = shlex.split(os.environ.get(name, ""))
+
+                    paired = {"-isystem", "-idirafter", "-include", "-imacros"}
+
+                    seen = set()
+                    out = []
+                    i = 0
+
+                    while i < len(args):
+                        arg = args[i]
+
+                        if arg in paired and i + 1 < len(args):
+                            item = (arg, args[i + 1])
+                            if item not in seen:
+                                seen.add(item)
+                                out.extend(item)
+                            i += 2
+                            continue
+
+                        if arg not in seen:
+                            seen.add(arg)
+                            out.append(arg)
+
+                        i += 1
+
+                    print(" ".join(shlex.quote(x) for x in out))
+                  '';
+                in
+                ''
+                  export NIX_CFLAGS_COMPILE="$(${dedupeNixCflags} NIX_CFLAGS_COMPILE)"
+                  export NIX_CFLAGS_COMPILE_FOR_TARGET="$(${dedupeNixCflags} NIX_CFLAGS_COMPILE_FOR_TARGET)"
+
+                  addToSearchPath CMAKE_MODULE_PATH "${pkgs.openvdb.dev}/lib/cmake/OpenVDB"
+                '';
 
               NRWS_DOMAIN_ID = "55";
               RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
