@@ -18,6 +18,11 @@
   c-blosc,
   tbb,
   zlib,
+
+  # test
+  ament-cmake-clang-format,
+  ament-cmake-gtest,
+  ament-cmake-pytest,
 }:
 buildRosPackage {
   pname = "ros-jazzy-world-builder";
@@ -46,7 +51,13 @@ buildRosPackage {
     tf2-eigen
   ];
 
-  passthru.workspacePackages = { };
+  passthru.workspacePackages = {
+    inherit
+      ament-cmake-clang-format
+      ament-cmake-gtest
+      ament-cmake-pytest
+      ;
+  };
 
   meta = {
     description = "Collect and combine depth maps to voxel models";

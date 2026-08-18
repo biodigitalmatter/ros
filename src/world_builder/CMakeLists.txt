@@ -139,6 +139,35 @@ install(
 #
 
 if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  file(GLOB_RECURSE AMENT_LINT_AUTO_FILE_EXCLUDE
+    vendor/**/*
+  )
+
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_pytest REQUIRED)
+  set(_pytest_tests
+    tests/test_world_builder_node.py
+  )
+  foreach(_test_path ${_pytest_tests})
+    get_filename_component(_test_name ${_test_path} NAME_WE)
+    ament_add_pytest_test(${_test_name} ${_test_path}
+      APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}
+      TIMEOUT 60
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+  endforeach()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ament_add_gtest(test_vdb_volume
+    tests/test_vdb_volume.cpp
+  )
+
+  target_link_libraries(test_vdb_volume
+    vdb_volume
+  )
 endif()
 
 #
