@@ -32,6 +32,7 @@
               RCUTILS_COLORIZED_OUTPUT = "0";
             };
 
+            wantedBy = [ "dev-elizabeth-realsense_%i.device" ];
             bindsTo = [ "dev-elizabeth-realsense_%i.device" ];
             after = [ "dev-elizabeth-realsense_%i.device" ];
 
@@ -59,17 +60,21 @@
       };
       services.udev = {
         extraRules = ''
-          ACTION=="add", SUBSYSTEM=="usb", \
-            ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b5b", \
+          ACTION=="add", \
+            SUBSYSTEM=="usb", \
+            ENV{DEVTYPE}=="usb_device", \
+            ATTR{idVendor}=="8086", \
+            ATTR{idProduct}=="0b5b", \
             TAG+="systemd", \
-            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d405", \
-            ENV{SYSTEMD_WANTS}+="elizabeth-perception-realsense@d405.service"
+            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d405"
 
-          ACTION=="add", SUBSYSTEM=="usb", \
-            ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b3a", \
+          ACTION=="add", \
+            SUBSYSTEM=="usb", \
+            ENV{DEVTYPE}=="usb_device", \
+            ATTR{idVendor}=="8086", \
+            ATTR{idProduct}=="0b3a", \
             TAG+="systemd", \
-            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d435i", \
-            ENV{SYSTEMD_WANTS}+="elizabeth-perception-realsense@d435i.service"
+            ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d435i"
         '';
         packages = [ pkgs.librealsense ];
       };
