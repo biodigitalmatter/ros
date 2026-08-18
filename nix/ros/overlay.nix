@@ -1,10 +1,9 @@
 # toplevel packages
-pkgs:
+_pkgs:
 # ros scope
-final: prev:
+final: _prev:
 let
   inherit (final) callPackage;
-  inherit (pkgs) fetchpatch2;
 in
 {
   # own
@@ -16,19 +15,6 @@ in
   elizabeth-perception = callPackage ./elizabeth_perception.nix { };
   elizabeth-perception-filters = callPackage ./elizabeth_perception_filters.nix { };
   material-vision = callPackage ./material_vision.nix { };
-
-  # patched
-  launch-pytest = prev.launch-pytest.overrideAttrs (
-    _finalAttrs: previousAttrs: {
-      patches = (previousAttrs.patches or [ ]) ++ [
-        (fetchpatch2 {
-          relative = "launch_pytest";
-          url = "https://github.com/ros2/launch/pull/967.patch";
-          hash = "sha256-x1NJ10I/mzU88hs+xnkI0sA/bv1PCjo9XLq4pC9CYeg=";
-        })
-      ];
-    }
-  );
 
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };
