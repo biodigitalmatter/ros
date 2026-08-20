@@ -6,6 +6,7 @@
 #include <Eigen/Geometry>
 #include <image_geometry/pinhole_camera_model.hpp>
 #include <memory>
+#include <message_filters/subscriber.hpp>
 #include <mutex>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
@@ -13,6 +14,7 @@
 #include <std_srvs/srv/trigger.hpp>
 #include <string>
 #include <tf2_ros/buffer.hpp>
+#include <tf2_ros/message_filter.hpp>
 #include <tf2_ros/transform_listener.hpp>
 
 #include "world_builder/srv/save_volume.hpp"
@@ -54,13 +56,16 @@ private:
 
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;
 
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr depth_sub_;
+  message_filters::Subscriber<sensor_msgs::msg::Image> depth_sub_;
+
+  std::shared_ptr<tf2_ros::MessageFilter<sensor_msgs::msg::Image>> depth_filter_;
 
   rclcpp::Service<world_builder::srv::SaveVolume>::SharedPtr save_service_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr clear_service_;
 
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener tf_listener_;
+  std::uint32_t tf_filter_queue_size_{10};
 
   std::unique_ptr<VdbVolume> volume_;
   std::mutex volume_mutex_;
@@ -69,6 +74,7 @@ private:
   bool have_camera_model_{false};
   std::uint32_t camera_width_{0};
   std::uint32_t camera_height_{0};
+  CameraIntrinsics intrinsics_;
 
   std::string world_frame_;
   std::string depth_topic_;

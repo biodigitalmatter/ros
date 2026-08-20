@@ -34,6 +34,7 @@ find_package(rclcpp REQUIRED)
 
 find_package(geometry_msgs REQUIRED)
 find_package(image_geometry REQUIRED)
+find_package(message_filters REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -98,6 +99,7 @@ ament_target_dependencies(world_builder_node_lib
   rclcpp
   geometry_msgs
   image_geometry
+  message_filters
   sensor_msgs
   std_srvs
   tf2
