@@ -4,6 +4,7 @@
 #pragma once
 
 #include <Eigen/Geometry>
+#include <image_geometry/pinhole_camera_model.hpp>
 #include <memory>
 #include <mutex>
 #include <rclcpp/rclcpp.hpp>
@@ -32,9 +33,9 @@ private:
 
   void createSubscriptions();
 
-  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr msg);
+  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr msg);
 
-  void depthCallback(const sensor_msgs::msg::Image::SharedPtr msg);
+  void depthCallback(const sensor_msgs::msg::Image::ConstSharedPtr msg);
 
   void createServices();
 
@@ -49,6 +50,8 @@ private:
   Eigen::Isometry3d lookupCameraPose(
     const std::string & camera_frame, const rclcpp::Time & timestamp);
 
+  CameraIntrinsics cameraIntrinsics() const;
+
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;
 
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr depth_sub_;
@@ -62,8 +65,10 @@ private:
   std::unique_ptr<VdbVolume> volume_;
   std::mutex volume_mutex_;
 
-  CameraIntrinsics intrinsics_;
-  bool have_intrinsics_{false};
+  image_geometry::PinholeCameraModel camera_model_;
+  bool have_camera_model_{false};
+  std::uint32_t camera_width_{0};
+  std::uint32_t camera_height_{0};
 
   std::string world_frame_;
   std::string depth_topic_;

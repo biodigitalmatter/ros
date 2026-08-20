@@ -72,67 +72,53 @@ void WorldBuilderNode::createSubscriptions()
     std::bind(&WorldBuilderNode::cameraInfoCallback, this, std::placeholders::_1));
 }
 
-void WorldBuilderNode::cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr msg)
+void WorldBuilderNode::cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr msg)
 {
-  /*
-   * CameraInfo::k contains the intrinsic matrix:
-   *
-   * fx   0  cx
-   *  0  fy  cy
-   *  0   0   1
-   */
-  intrinsics_.fx = msg->k[0];
-  intrinsics_.fy = msg->k[4];
-  intrinsics_.cx = msg->k[2];
-  intrinsics_.cy = msg->k[5];
+  camera_model_.fromCameraInfo(msg);
 
-  intrinsics_.width = static_cast<int>(msg->width);
-  intrinsics_.height = static_cast<int>(msg->height);
+  have_camera_model_ = camera_model_.initialized();
 
-  if (
-    intrinsics_.fx <= 0.0 || intrinsics_.fy <= 0.0 || intrinsics_.width <= 0 ||
-    intrinsics_.height <= 0) {
-    RCLCPP_WARN(get_logger(), "Received invalid camera intrinsics");
-    have_intrinsics_ = false;
-    return;
+  if (have_camera_model_) {
+    camera_width_ = msg->width;
+    camera_height_ = msg->height;
+  } else {
+    RCLCPP_WARN(get_logger(), "Received invalid CameraInfo");
   }
-
-  if (!have_intrinsics_) {
-    RCLCPP_INFO(
-      get_logger(),
-      "Received camera intrinsics: "
-      "%dx%d, fx=%.2f fy=%.2f cx=%.2f cy=%.2f",
-      intrinsics_.width, intrinsics_.height, intrinsics_.fx, intrinsics_.fy, intrinsics_.cx,
-      intrinsics_.cy);
-  }
-
-  have_intrinsics_ = true;
 }
 
-void WorldBuilderNode::depthCallback(const sensor_msgs::msg::Image::SharedPtr msg)
+void WorldBuilderNode::depthCallback(const sensor_msgs::msg::Image::ConstSharedPtr msg)
 {
-  if (!have_intrinsics_) {
+  if (!have_camera_model_) {
     RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "Waiting for camera info");
     return;
   }
 
-  // NOTE: Currently assumes OpenCV 16UC1 (uint16_t)
+  if (msg->width != camera_width_ || msg->height != camera_height_) {
+    RCLCPP_WARN_THROTTLE(
+      get_logger(), *get_clock(), 5000,
+      "Depth image dimensions %ux%u do not match "
+      "CameraInfo dimensions %ux%u",
+      msg->width, msg->height, camera_width_, camera_height_);
+
+    return;
+  }
+
+  // NOTE: Currently accepts uint16_t single-channel depth (OpenCV 16UC1)
+  // Metric conversion is controlled seprately by depth_scale_
   if (msg->encoding != sensor_msgs::image_encodings::TYPE_16UC1) {
     RCLCPP_WARN_THROTTLE(
       get_logger(), *get_clock(), 5000, "Unsupported depth encoding: %s", msg->encoding.c_str());
     return;
   }
 
-  if (
-    msg->width != static_cast<std::uint32_t>(intrinsics_.width) ||
-    msg->height != static_cast<std::uint32_t>(intrinsics_.height)) {
-    RCLCPP_WARN_THROTTLE(
-      get_logger(), *get_clock(), 5000,
-      "Depth image dimensions (%ux%u) do not match "
-      "CameraInfo dimensions (%ux%u)",
-      msg->width, msg->height, intrinsics_.width, intrinsics_.height);
+  const std::size_t minimum_step = static_cast<std::size_t>(msg->width) * sizeof(std::uint16_t);
+
+  if (msg->step < minimum_step) {
+    RCLCPP_ERROR(
+      get_logger(), "Invalid depth image step: %u, expected at least %zu", msg->step, minimum_step);
     return;
   }
+
   const std::size_t required_size =
     static_cast<std::size_t>(msg->step) * static_cast<std::size_t>(msg->height);
 
@@ -155,6 +141,9 @@ void WorldBuilderNode::depthCallback(const sensor_msgs::msg::Image::SharedPtr ms
     return;
   }
 
+  const auto intrinsics = cameraIntrinsics();
+
+  // FIXME: Assumes native-endian, suitably aligned 16UC1 data.
   const auto * depth_data = reinterpret_cast<const std::uint16_t *>(msg->data.data());
 
   try {
@@ -162,7 +151,7 @@ void WorldBuilderNode::depthCallback(const sensor_msgs::msg::Image::SharedPtr ms
 
     volume_->integrateDepthImage(
       depth_data, static_cast<int>(msg->width), static_cast<int>(msg->height),
-      static_cast<std::size_t>(msg->step), depth_scale_, intrinsics_, T_world_camera);
+      static_cast<std::size_t>(msg->step), depth_scale_, intrinsics, T_world_camera);
 
   } catch (const std::exception & e) {
     RCLCPP_ERROR(get_logger(), "Failed to integrate depth image: %s", e.what());
@@ -237,6 +226,17 @@ Eigen::Isometry3d WorldBuilderNode::lookupCameraPose(
     world_frame_, camera_frame, timestamp, rclcpp::Duration::from_seconds(0.05));
 
   return tf2::transformToEigen(T);
+}
+
+CameraIntrinsics WorldBuilderNode::cameraIntrinsics() const
+{
+  return CameraIntrinsics{
+    camera_model_.fx(),
+    camera_model_.fy(),
+    camera_model_.cx(),
+    camera_model_.cy(),
+    static_cast<int>(camera_width_),
+    static_cast<int>(camera_height_)};
 }
 
 }  // namespace world_builder

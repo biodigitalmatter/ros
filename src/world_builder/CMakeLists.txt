@@ -33,6 +33,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
 find_package(geometry_msgs REQUIRED)
+find_package(image_geometry REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -96,6 +97,7 @@ target_link_libraries(world_builder_node_lib
 ament_target_dependencies(world_builder_node_lib
   rclcpp
   geometry_msgs
+  image_geometry
   sensor_msgs
   std_srvs
   tf2

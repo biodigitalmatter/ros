@@ -10,6 +10,7 @@
   <depend>rclcpp</depend>
   <depend>eigen</depend>
   <depend>geometry_msgs</depend>
+  <depend>image_geometry</depend>
   <depend>libopenvdb</depend>
   <depend>sensor_msgs</depend>
   <depend>std_srvs</depend>
