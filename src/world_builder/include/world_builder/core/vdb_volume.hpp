@@ -9,18 +9,10 @@
 #include <cstdint>
 #include <string>
 
+#include "world_builder/core/camera_intrinsics.hpp"
+
 namespace world_builder
 {
-struct CameraIntrinsics
-{
-  double fx{};
-  double fy{};
-  double cx{};
-  double cy{};
-  int width{};
-  int height{};
-};
-
 struct VdbVolumeConfig
 {
   double voxel_size{0.005};
