@@ -5,14 +5,10 @@
 
 #include <Eigen/Geometry>
 #include <image_geometry/pinhole_camera_model.hpp>
-#include <memory>
 #include <message_filters/subscriber.hpp>
-#include <mutex>
-#include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <std_srvs/srv/trigger.hpp>
-#include <string>
 #include <tf2_ros/buffer.hpp>
 #include <tf2_ros/message_filter.hpp>
 #include <tf2_ros/transform_listener.hpp>

@@ -32,7 +32,6 @@ list(APPEND CMAKE_MODULE_PATH
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
-find_package(geometry_msgs REQUIRED)
 find_package(image_geometry REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -97,7 +96,6 @@ target_link_libraries(world_builder_ros
 
 ament_target_dependencies(world_builder_ros
   rclcpp
-  geometry_msgs
   image_geometry
   message_filters
   sensor_msgs
@@ -185,11 +183,13 @@ ament_export_targets(
 
 ament_export_dependencies(
   rclcpp
+  image_geometry
+  message_filters
   sensor_msgs
-  geometry_msgs
+  std_srvs
   tf2
-  tf2_ros
   tf2_eigen
+  tf2_ros
   OpenVDB
   Eigen3
 )

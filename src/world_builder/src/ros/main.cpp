@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
 // SPDX-License-Identifier: Apache-2.0
 
-#include <memory>
 #include <rclcpp/rclcpp.hpp>
 
 #include "world_builder/ros/world_builder_node.hpp"

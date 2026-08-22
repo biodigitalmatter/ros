@@ -3,19 +3,8 @@
 
 #include "world_builder/ros/world_builder_node.hpp"
 
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
-#include <functional>
-#include <limits>
-#include <memory>
-#include <mutex>
-#include <rclcpp/rclcpp/logging.hpp>
 #include <sensor_msgs/image_encodings.hpp>
-#include <stdexcept>
-#include <tf2/tf2/exceptions.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
-#include <tf2_ros/message_filter.hpp>
 
 #include "world_builder/core/vdb_volume.hpp"
 
