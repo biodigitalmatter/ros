@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
 // SPDX-License-Identifier: Apache-2.0
 
-#include "world_builder/vdb_volume.hpp"
+#include "world_builder/core/vdb_volume.hpp"
 
 namespace world_builder
 {

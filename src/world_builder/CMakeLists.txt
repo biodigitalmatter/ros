@@ -63,39 +63,39 @@ rosidl_get_typesupport_target(
 # targets
 #
 
-add_library(vdb_volume
-  src/vdb_volume.cpp
+add_library(world_builder_core
+  src/core/vdb_volume.cpp
 )
 
-target_include_directories(vdb_volume
+target_include_directories(world_builder_core
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(vdb_volume
+target_link_libraries(world_builder_core
   PUBLIC
     OpenVDB::openvdb
     Eigen3::Eigen
 )
 
-add_library(world_builder_node_lib
-  src/world_builder_node.cpp
+add_library(world_builder_ros
+  src/ros/world_builder_node.cpp
 )
 
-target_include_directories(world_builder_node_lib
+target_include_directories(world_builder_ros
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(world_builder_node_lib
-  vdb_volume
+target_link_libraries(world_builder_ros
+  world_builder_core
   Eigen3::Eigen
   "${cpp_typesupport_target}"
 )
 
-ament_target_dependencies(world_builder_node_lib
+ament_target_dependencies(world_builder_ros
   rclcpp
   geometry_msgs
   image_geometry
@@ -108,12 +108,12 @@ ament_target_dependencies(world_builder_node_lib
 )
 
 add_executable(world_builder_node
-  src/main.cpp
+  src/ros/main.cpp
 )
 
 target_link_libraries(world_builder_node
   PRIVATE
-    world_builder_node_lib
+    world_builder_ros
 )
 
 #
@@ -127,8 +127,8 @@ install(
 
 install(
   TARGETS
-    vdb_volume
-    world_builder_node_lib
+    world_builder_core
+    world_builder_ros
     world_builder_node
 
   EXPORT export_world_builder
@@ -152,7 +152,7 @@ if(BUILD_TESTING)
 
   find_package(ament_cmake_pytest REQUIRED)
   set(_pytest_tests
-    tests/test_world_builder_node.py
+    tests/ros/test_world_builder_node.py
   )
   foreach(_test_path ${_pytest_tests})
     get_filename_component(_test_name ${_test_path} NAME_WE)
@@ -166,11 +166,11 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
 
   ament_add_gtest(test_vdb_volume
-    tests/test_vdb_volume.cpp
+    tests/core/test_vdb_volume.cpp
   )
 
   target_link_libraries(test_vdb_volume
-    vdb_volume
+    world_builder_core
   )
 endif()
 

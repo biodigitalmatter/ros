@@ -17,8 +17,8 @@
 #include <tf2_ros/message_filter.hpp>
 #include <tf2_ros/transform_listener.hpp>
 
+#include "world_builder/core/vdb_volume.hpp"
 #include "world_builder/srv/save_volume.hpp"
-#include "world_builder/vdb_volume.hpp"
 
 namespace world_builder
 {

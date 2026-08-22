@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#include "world_builder/vdb_volume.hpp"
+#include "world_builder/core/vdb_volume.hpp"
 
 namespace world_builder
 {

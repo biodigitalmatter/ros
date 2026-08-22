@@ -4,7 +4,7 @@
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 
-#include "world_builder/world_builder_node.hpp"
+#include "world_builder/ros/world_builder_node.hpp"
 
 int main(int argc, char ** argv)
 {

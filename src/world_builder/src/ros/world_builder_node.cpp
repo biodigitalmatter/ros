@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
 // SPDX-License-Identifier: Apache-2.0
 
-#include "world_builder/world_builder_node.hpp"
+#include "world_builder/ros/world_builder_node.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -17,7 +17,7 @@
 #include <tf2_eigen/tf2_eigen.hpp>
 #include <tf2_ros/message_filter.hpp>
 
-#include "world_builder/vdb_volume.hpp"
+#include "world_builder/core/vdb_volume.hpp"
 
 namespace world_builder
 {
@@ -68,6 +68,7 @@ void WorldBuilderNode::declareParameters()
   }
 
   depth_scale_ = declare_parameter<double>("depth_scale", 0.001);
+
   if (depth_scale_ <= 0.0 || !std::isfinite(depth_scale_)) {
     throw std::invalid_argument("depth scale must be finite and > 0");
   }
