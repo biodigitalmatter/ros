@@ -4,18 +4,46 @@
 
 ROS 2 Jazzy installation on Ubuntu 24.04 (Noble) assumed.
 
-```sh
-sudo apt install python3-vcstool
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws
-git clone https://github.com/biodigitalmatter/ros.git src/biodigitalmatter_ros
-vcs import src < src/biodigitalmatter_ros/dependencies.repos
+### 0. Preparations
+
+``` sh
+mkdir -p ~/biod_underlay/src
+mkdir -p ~/biod_overlay/src
+
+sudo apt update
+sudo apt install git python3-vcstool -y
+
 rosdep update
+
+git clone https://github.com/biodigitalmatter/ros.git ~/biod_overlay/src/biodigitalmatter_ros
+```
+
+### 1. Underlay for dependencies
+
+``` sh
+cd ~/biod_underlay
+vcs import src < ~/biod_overlay/src/biodigitalmatter_ros/dependencies.repos
+
+source /opt/ros/jazzy/setup.bash
+
+rosdep install --from-paths src --ignore-src -y
+colcon build
+```
+
+### 2. Overlay
+
+Create an `.env` file based on `.env.example` adding the passwords needed.
+
+```sh
+cd ~/biod_overlay
+
+source ~/biod_underlay/install/setup.bash
+
 PIP_BREAK_SYSTEM_PACKAGES=1 rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
 ```
 
-Create an `.env` file based on `.env.example` adding the passwords needed.
+## Troubleshooting
 
 If CMAKE can't find PCL when installing vdb_mapping:
 
