@@ -43,6 +43,8 @@ find_package(tf2_ros REQUIRED)
 
 find_package(OpenVDB REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(Microsoft.GSL CONFIG REQUIRED)
+find_package(tl-expected CONFIG REQUIRED)
 
 #
 # srv/msg
@@ -92,6 +94,8 @@ target_link_libraries(world_builder_ros
   world_builder_core
   Eigen3::Eigen
   "${cpp_typesupport_target}"
+  Microsoft.GSL::GSL
+  tl::expected
 )
 
 ament_target_dependencies(world_builder_ros

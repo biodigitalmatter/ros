@@ -20,6 +20,9 @@ in
   material-vision = callPackage ./material_vision.nix { };
   world-builder = callPackage ./world_builder.nix { };
 
+  # name collision
+  tl-expected = _pkgs.tl-expected;
+
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };
   abb-egm-rws-managers = callPackage ./abb_egm_rws_managers.nix { };

@@ -12,6 +12,8 @@
   tf2-eigen,
   openvdb,
   eigen,
+  microsoft-gsl,
+  tl-expected,
 
   # from openvdb
   boost,
@@ -38,8 +40,10 @@ buildRosPackage {
     boost
     c-blosc
     eigen
+    microsoft-gsl
     openvdb.dev
     tbb.dev
+    tl-expected
     zlib.dev
   ];
 
