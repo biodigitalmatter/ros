@@ -3,21 +3,23 @@
 
 #include "world_builder/core/vdb_volume.hpp"
 
+#include <cmath>
+
 namespace world_builder
 {
 
 VdbVolume::VdbVolume(const VdbVolumeConfig & config) : config_(config)
 {
-  if (config_.voxel_size <= 0.0) {
-    throw std::invalid_argument("voxel_size must be > 0");
+  if (config_.voxel_size <= 0.0 || !std::isfinite(config_.voxel_size)) {
+    throw std::invalid_argument("voxel_size must be finite and > 0");
   }
 
-  if (config_.truncation_distance <= 0.0) {
-    throw std::invalid_argument("truncation_distance must be > 0");
+  if (config_.truncation_distance <= 0.0 || !std::isfinite(config_.voxel_size)) {
+    throw std::invalid_argument("truncation_distance must be finite and > 0");
   }
 
-  if (config_.max_weight <= 0.0F) {
-    throw std::invalid_argument("max_weight must be > 0");
+  if (config_.max_weight <= 0.0F || !std::isfinite(config_.max_weight)) {
+    throw std::invalid_argument("max_weight must be finite and > 0");
   }
 
   openvdb::initialize();

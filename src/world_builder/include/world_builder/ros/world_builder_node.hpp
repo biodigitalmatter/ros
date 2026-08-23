@@ -14,6 +14,7 @@
 #include <tf2_ros/transform_listener.hpp>
 
 #include "world_builder/core/vdb_volume.hpp"
+#include "world_builder/ros/world_builder_config.hpp"
 #include "world_builder/srv/save_volume.hpp"
 
 namespace world_builder
@@ -50,6 +51,8 @@ private:
 
   CameraIntrinsics cameraIntrinsics() const;
 
+  WorldBuilderConfig config_;
+
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;
 
   message_filters::Subscriber<sensor_msgs::msg::Image> depth_sub_;
@@ -71,14 +74,6 @@ private:
   std::uint32_t camera_width_{0};
   std::uint32_t camera_height_{0};
   CameraIntrinsics intrinsics_;
-
-  std::string world_frame_;
-  std::string depth_topic_;
-  std::string camera_info_topic_;
-
-  double depth_scale_{0.001};
-
-  VdbVolumeConfig volume_config_;
 };
 
 }  // namespace world_builder

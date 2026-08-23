@@ -4,9 +4,11 @@
 #include "world_builder/ros/world_builder_node.hpp"
 
 #include <sensor_msgs/image_encodings.hpp>
+#include <stdexcept>
 #include <tf2_eigen/tf2_eigen.hpp>
 
 #include "world_builder/core/vdb_volume.hpp"
+#include "world_builder/ros/world_builder_config.hpp"
 
 namespace world_builder
 {
@@ -14,82 +16,49 @@ namespace world_builder
 WorldBuilderNode::WorldBuilderNode(const rclcpp::NodeOptions & options)
 : Node("world_builder", options), tf_buffer_(this->get_clock()), tf_listener_(tf_buffer_)
 {
-  declareParameters();
+  auto config_result = loadWorldBuilderConfigFromRosParameters(*this);
+  if (!config_result) {
+    throw std::invalid_argument(
+      "Invalid argument in world builder configuration " + config_result.error());
+  }
+
+  config_ = std::move(*config_result);
+
+  RCLCPP_INFO(get_logger(), "World builder node started");
+  RCLCPP_INFO(get_logger(), " world frame: %s", config_.world_frame.c_str());
+  RCLCPP_INFO(get_logger(), " depth topic: %s", config_.depth_topic.c_str());
+  RCLCPP_INFO(get_logger(), " camera info: %s", config_.camera_info_topic.c_str());
+  RCLCPP_INFO(get_logger(), " voxel size: %.4f m", config_.volume.voxel_size);
+  RCLCPP_INFO(get_logger(), " truncation distance: %.4f m", config_.volume.truncation_distance);
+
   createVolume();
   createSubscriptions();
   createServices();
-
-  RCLCPP_INFO(get_logger(), "World builder node started");
-  RCLCPP_INFO(get_logger(), " world frame: %s", world_frame_.c_str());
-  RCLCPP_INFO(get_logger(), " depth topic: %s", depth_topic_.c_str());
-  RCLCPP_INFO(get_logger(), " camera info: %s", camera_info_topic_.c_str());
-  RCLCPP_INFO(get_logger(), " voxel size: %.4f m", volume_config_.voxel_size);
-  RCLCPP_INFO(get_logger(), " truncation distance: %.4f m", volume_config_.truncation_distance);
-}
-
-void WorldBuilderNode::declareParameters()
-{
-  camera_info_topic_ =
-    declare_parameter<std::string>("camera_info_topic", "/camera/depth/camera_info");
-
-  if (camera_info_topic_.empty()) {
-    throw std::invalid_argument("camera_info_topic must not be empty");
-  }
-
-  world_frame_ = declare_parameter<std::string>("world_frame", "map");
-
-  if (world_frame_.empty()) {
-    throw std::invalid_argument("world_frame must not be empty");
-  }
-
-  const auto tf_filter_queue_size = declare_parameter<int>("tf_filter_queue_size", 10);
-
-  if (tf_filter_queue_size <= 0) {
-    throw std::invalid_argument("tf_filter_queue_size must be larger than zero");
-  }
-
-  tf_filter_queue_size_ = static_cast<std::uint32_t>(tf_filter_queue_size);
-
-  depth_topic_ = declare_parameter<std::string>("depth_topic", "/camera/depth/image_rect_raw");
-
-  if (depth_topic_.empty()) {
-    throw std::invalid_argument("depth_topic must not be empty");
-  }
-
-  depth_scale_ = declare_parameter<double>("depth_scale", 0.001);
-
-  if (depth_scale_ <= 0.0 || !std::isfinite(depth_scale_)) {
-    throw std::invalid_argument("depth scale must be finite and > 0");
-  }
-
-  volume_config_.voxel_size = declare_parameter<double>("voxel_size", 0.005);
-  volume_config_.truncation_distance = declare_parameter<double>("truncation_distance", 0.02);
-  volume_config_.max_weight = static_cast<float>(declare_parameter<double>("max_weight", 100.0));
 }
 
 void WorldBuilderNode::createVolume()
 {
-  volume_ = std::make_unique<VdbVolume>(volume_config_);
+  volume_ = std::make_unique<VdbVolume>(config_.volume);
 
   RCLCPP_INFO(
     get_logger(),
     "Created VDB volume: voxel_size=%.4f m, "
     "truncation=%.4f m, "
     "max_weight=%.1f",
-    volume_config_.voxel_size, volume_config_.truncation_distance, volume_config_.max_weight);
+    config_.volume.voxel_size, config_.volume.truncation_distance, config_.volume.max_weight);
 }
 
 void WorldBuilderNode::createSubscriptions()
 {
   camera_info_sub_ = create_subscription<sensor_msgs::msg::CameraInfo>(
-    camera_info_topic_, rclcpp::SensorDataQoS(),
+    config_.camera_info_topic, rclcpp::SensorDataQoS(),
     std::bind(&WorldBuilderNode::cameraInfoCallback, this, std::placeholders::_1));
 
-  depth_sub_.subscribe(this, depth_topic_, rmw_qos_profile_sensor_data);
+  depth_sub_.subscribe(this, config_.depth_topic, rmw_qos_profile_sensor_data);
 
   depth_filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::Image>>(
-    depth_sub_, tf_buffer_, world_frame_, tf_filter_queue_size_, this->get_node_logging_interface(),
-    this->get_node_clock_interface());
+    depth_sub_, tf_buffer_, config_.world_frame, config_.tf_filter_queue_size,
+    this->get_node_logging_interface(), this->get_node_clock_interface());
 
   depth_filter_->registerCallback(
     std::bind(&WorldBuilderNode::depthCallback, this, std::placeholders::_1));
@@ -198,7 +167,7 @@ void WorldBuilderNode::depthCallback(const sensor_msgs::msg::Image::ConstSharedP
 
     volume_->integrateDepthImage(
       depth_data, static_cast<int>(msg->width), static_cast<int>(msg->height),
-      static_cast<std::size_t>(msg->step), depth_scale_, intrinsics_, T_world_camera);
+      static_cast<std::size_t>(msg->step), config_.depth_scale, intrinsics_, T_world_camera);
 
   } catch (const std::exception & e) {
     RCLCPP_ERROR(get_logger(), "Failed to integrate depth image: %s", e.what());
@@ -269,7 +238,7 @@ void WorldBuilderNode::clearCallback(
 Eigen::Isometry3d WorldBuilderNode::lookupCameraPose(
   const std::string & camera_frame, const rclcpp::Time & timestamp)
 {
-  const auto xform = tf_buffer_.lookupTransform(world_frame_, camera_frame, timestamp);
+  const auto xform = tf_buffer_.lookupTransform(config_.world_frame, camera_frame, timestamp);
 
   return tf2::transformToEigen(xform);
 }

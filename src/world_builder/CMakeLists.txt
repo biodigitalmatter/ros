@@ -82,6 +82,7 @@ target_link_libraries(world_builder_core
 
 add_library(world_builder_ros
   src/ros/world_builder_node.cpp
+  src/ros/world_builder_config.cpp
 )
 
 target_include_directories(world_builder_ros
@@ -174,6 +175,15 @@ if(BUILD_TESTING)
   target_link_libraries(test_vdb_volume
     world_builder_core
   )
+
+  ament_add_gtest(test_world_builder_config
+    tests/ros/test_world_builder_config.cpp
+  )
+
+  target_link_libraries(test_world_builder_config
+    world_builder_ros
+  )
+
 endif()
 
 #
