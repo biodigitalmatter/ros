@@ -61,6 +61,7 @@
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath final) prev.rosPackages;
             abb_libegm = final.callPackage ./nix/abb_libegm/package.nix { };
             abb_librws = final.callPackage ./nix/abb_librws/package.nix { };
+            open3d = final.callPackage ./nix/open3d-bin/package.nix { };
           };
 
         perSystem =
