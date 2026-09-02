@@ -58,7 +58,7 @@
               ) rosPackages;
           in
           final: prev: {
-            rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath prev) prev.rosPackages;
+            rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath final) prev.rosPackages;
             abb_libegm = final.callPackage ./nix/abb_libegm/package.nix { };
             abb_librws = final.callPackage ./nix/abb_librws/package.nix { };
           };
