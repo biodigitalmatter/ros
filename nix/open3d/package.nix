@@ -6,6 +6,7 @@
   fetchFromGitHub,
   fetchpatch2,
   runCommand,
+  writeTextDir,
 
   assimp,
   cmake,
@@ -74,6 +75,16 @@ let
     tag = "may2022";
     hash = "sha256-BP2hkEexo1E0sL43pYKsPhCsP+t7ffupVad06ZctvXs=";
   };
+
+  cmakeFindLibLzf = writeTextDir "cmake/Findliblzf.cmake" ''
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(liblzf QUIET IMPORTED_TARGET liblzf)
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(liblzf REQUIRED_VARS liblzf_FOUND)
+    if(NOT TARGET liblzf::liblzf)
+      add_library(liblzf::liblzf ALIAS PkgConfig::liblzf)
+     endif()
+  '';
 in
 stdenv.mkDerivation (_finalAttrs: {
   pname = "open3d";
@@ -186,6 +197,10 @@ stdenv.mkDerivation (_finalAttrs: {
     zeromq
     zlib
   ];
+
+  preConfigure = ''
+    cmakeFlagsArray+=("-DCMAKE_MODULE_PATH=${cmakeFindLibLzf}/cmake")
+  '';
 
   cmakeFlags =
     let
