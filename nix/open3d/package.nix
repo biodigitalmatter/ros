@@ -5,6 +5,7 @@
   callPackage,
   fetchFromGitHub,
   fetchpatch2,
+  replaceVars,
   runCommand,
   writeTextDir,
 
@@ -69,6 +70,8 @@ let
     ln -s ${poissonRecon} $out/PoissonRecon
   '';
 
+  stdgpu = callPackage ./stdgpu.nix { };
+
   tinygltf = callPackage ./tinygltf-v2.nix { };
 
   uvatlas = fetchFromGitHub {
@@ -102,36 +105,27 @@ stdenv.mkDerivation (_finalAttrs: {
     hash = "sha256-jWjtfDcjDBOQHH4s2e1P8ye19JlucYIZPi0pgvOsdcA=";
   };
 
-  postPatch = ''
-    substituteInPlace 3rdparty/uvatlas/uvatlas.cmake \
-      --replace-fail 'set(UVATLAS_LIB_DIR ''${INSTALL_DIR}/''${Open3D_INSTALL_LIB_DIR})' 'set(UVATLAS_LIB_DIR ''${CMAKE_INSTALL_PREFIX}/lib)' \
-      --replace-fail '<INSTALL_DIR>/''${Open3D_INSTALL_LIB_DIR}/''${CMAKE_STATIC_LIBRARY_PREFIX}UVAtlas''${CMAKE_STATIC_LIBRARY_SUFFIX}' ' ''${CMAKE_INSTALL_PREFIX}/lib/''${CMAKE_STATIC_LIBRARY_PREFIX}UVAtlas''${CMAKE_STATIC_LIBRARY_SUFFIX}' \
-      --replace-fail "GIT_REPOSITORY https://github.com/microsoft/DirectX-Headers.git" "SOURCE_DIR ${directxHeaders}" \
-      --replace-fail "GIT_TAG v1.606.3" "" \
-      --replace-fail "GIT_REPOSITORY https://github.com/microsoft/DirectXMath.git" "SOURCE_DIR ${directxMath}" \
-      --replace-fail "GIT_TAG may2022" "" \
-      --replace-fail "URL https://github.com/microsoft/UVAtlas/archive/refs/tags/may2022.tar.gz" "URL ${uvatlas}" \
-      --replace-fail "URL_HASH SHA256=591516913a0f3c381f1fd01647cb1b8d1eeade575d1c726ae8f5dd9f83b81754" ""
-
-    substituteInPlace 3rdparty/possionrecon/possionrecon.cmake \
-      --replace-fail "URL https://github.com/isl-org/Open3D-PoissonRecon/archive/90f3f064e275b275cff445881ecee5a7c495c9e0.tar.gz" "" \
-      --replace-fail "URL_HASH SHA256=1310df0c80ff0616b8fcf9b2fb568aa9b2190d0e071b0ead47dba339c146b1d3" "" \
-      --replace-fail "SOURCE_DIR \"poisson/src/ext_poisson/PoissonRecon\"" "SOURCE_DIR ${poissonRecon}" \
-      --replace-fail 'set(POISSON_INCLUDE_DIRS ''${SOURCE_DIR})' "set(POISSON_INCLUDE_DIRS ${poissonReconInclude}/)"
-  '';
-
   patches =
     let
       condaRecipeRev = "e8a6c47d141f605d0f0773a35337f58bb81790fa";
       fetchCondaRecipePatch =
+        let
+          baseUrl = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock";
+        in
         { name, hash }:
         fetchpatch2 {
           inherit hash;
-          url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/${condaRecipeRev}/recipe/${name}.patch";
+          url = "${baseUrl}/${condaRecipeRev}/recipe/${name}.patch";
         };
     in
     [
       ./find_tinygltf.patch
+      (replaceVars ./fix-uvatlas-sources.patch {
+        inherit directxHeaders directxMath uvatlas;
+      })
+      (replaceVars ./use-system-poissonrecon.patch {
+        inherit poissonReconInclude;
+      })
       (fetchCondaRecipePatch {
         name = "fix-unzip";
         hash = "sha256-1oBzWpusl7NkbhLKBpC8gaROEG6+0kgGZKEPm5rVbk4=";
@@ -186,6 +180,7 @@ stdenv.mkDerivation (_finalAttrs: {
     openblas
     openssl
     qhull
+    stdgpu
     tbb
     tinygltf
     tinyobjloader
@@ -228,11 +223,14 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "USE_SYSTEM_ASSIMP" true)
       (cmakeBool "USE_SYSTEM_BLAS" true)
       (cmakeBool "USE_SYSTEM_CURL" true)
+      (cmakeBool "USE_SYSTEM_CUTLASS" true)
       (cmakeBool "USE_SYSTEM_EIGEN3" true)
       (cmakeBool "USE_SYSTEM_EMBREE" true)
       (cmakeBool "USE_SYSTEM_FMT" true)
       (cmakeBool "USE_SYSTEM_GLEW" true)
       (cmakeBool "USE_SYSTEM_GLFW" true)
+      (cmakeBool "USE_SYSTEM_GOOGLETEST" true)
+      (cmakeBool "USE_SYSTEM_IMGUI" true)
       (cmakeBool "USE_SYSTEM_JPEG" true)
       (cmakeBool "USE_SYSTEM_JSONCPP" true)
       (cmakeBool "USE_SYSTEM_LIBLZF" true)
@@ -241,7 +239,9 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "USE_SYSTEM_NANOFLANN" true)
       (cmakeBool "USE_SYSTEM_OPENSSL" true)
       (cmakeBool "USE_SYSTEM_PNG" true)
+      (cmakeBool "USE_SYSTEM_PYBIND11" true)
       (cmakeBool "USE_SYSTEM_QHULLCPP" true)
+      (cmakeBool "USE_SYSTEM_STDGPU" true)
       (cmakeBool "USE_SYSTEM_TBB" true)
       (cmakeBool "USE_SYSTEM_TINYGLTF" true)
       (cmakeBool "USE_SYSTEM_TINYOBJLOADER" true)

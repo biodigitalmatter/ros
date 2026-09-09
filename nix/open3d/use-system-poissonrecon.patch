@@ -1,0 +1,19 @@
+diff --git a/3rdparty/find_dependencies.cmake b/3rdparty/find_dependencies.cmake
+index 13f6501c8d..e006609c33 100644
+--- a/3rdparty/find_dependencies.cmake
++++ b/3rdparty/find_dependencies.cmake
+@@ -1130,11 +1130,9 @@
+ endif()
+ 
+ # PoissonRecon
+-include(${Open3D_3RDPARTY_DIR}/possionrecon/possionrecon.cmake)
+-open3d_import_3rdparty_library(3rdparty_poisson
+-    INCLUDE_DIRS ${POISSON_INCLUDE_DIRS}
+-    DEPENDS      ext_poisson
+-)
++add_library(3rdparty_poisson INTERFACE)
++target_include_directories(3rdparty_poisson INTERFACE @poissonReconInclude@)
++add_library(Open3D::3rdparty_poisson ALIAS 3rdparty_poisson)
+ list(APPEND Open3D_3RDPARTY_PRIVATE_TARGETS_FROM_CUSTOM Open3D::3rdparty_poisson)
+ 
+ # Minizip
