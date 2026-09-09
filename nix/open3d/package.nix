@@ -18,7 +18,6 @@
   git,
   glew,
   glfw,
-  imgui,
   jsoncpp,
   libjpeg,
   liblzf,
@@ -139,10 +138,6 @@ stdenv.mkDerivation (_finalAttrs: {
         hash = "sha256-hYB64FzfdLhVUSuFj4Uad/Q9aSdOqDFqsifKGViE8W0=";
       })
       (fetchCondaRecipePatch {
-        name = "fix-find-imgui";
-        hash = "sha256-h8JOdb5Uy0qXuthuIfA+4UyTF/oRMWbkXDYNLrli8iE=";
-      })
-      (fetchCondaRecipePatch {
         name = "7249";
         hash = "sha256-5ApyjFMAFk5wEQmKHz4A86khFKd3lf0tEFSVDl+h5wc=";
       })
@@ -176,7 +171,6 @@ stdenv.mkDerivation (_finalAttrs: {
     fmt
     glew
     glfw
-    imgui
     jsoncpp
     libjpeg
     liblzf.dev
