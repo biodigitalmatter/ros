@@ -59,6 +59,8 @@ let
     hash = "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=";
   };
 
+  openblas32 = openblas.override { blas64 = false; };
+
   poissonRecon = fetchFromGitHub {
     owner = "isl-org";
     repo = "Open3D-PoissonRecon";
@@ -178,7 +180,7 @@ stdenv.mkDerivation (_finalAttrs: {
     minizip
     msgpack-cxx
     nanoflann
-    openblas
+    openblas32
     openssl
     qhull
     stdgpu
@@ -206,7 +208,7 @@ stdenv.mkDerivation (_finalAttrs: {
     let
       inherit (lib)
         cmakeBool
-        # cmakeFeature
+        cmakeFeature
         # cmakeOptionType
         ;
     in
@@ -227,9 +229,7 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "BUILD_WEBRTC" false)
       (cmakeBool "BUNDLE_OPEN3D_ML" false)
       (cmakeBool "DEVELOPER_BUILD" false)
-      (cmakeBool "USE_BLAS" true)
       (cmakeBool "USE_SYSTEM_ASSIMP" true)
-      (cmakeBool "USE_SYSTEM_BLAS" true)
       (cmakeBool "USE_SYSTEM_CURL" true)
       (cmakeBool "USE_SYSTEM_CUTLASS" true)
       (cmakeBool "USE_SYSTEM_EIGEN3" true)
@@ -256,6 +256,12 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "USE_SYSTEM_VTK" true)
       (cmakeBool "USE_SYSTEM_ZEROMQ" true)
       (cmakeBool "WITH_IPP" false)
+
+      # BLAS
+      (cmakeBool "USE_BLAS" true)
+      (cmakeBool "USE_SYSTEM_BLAS" true)
+      (cmakeFeature "BLA_VENDOR" "OpenBLAS")
+      (cmakeFeature "BLA_SIZEOF_INTEGER" "4")
     ];
 
   dontWrapQtApps = true; # gui uses glfw/filament, not qt. But something brings in qt
