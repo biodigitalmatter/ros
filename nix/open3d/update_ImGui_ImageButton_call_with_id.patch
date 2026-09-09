@@ -1,0 +1,64 @@
+diff --git a/cpp/open3d/visualization/gui/Button.cpp b/cpp/open3d/visualization/gui/Button.cpp
+index f87a3456d8..27c60ee9a9 100644
+--- a/cpp/open3d/visualization/gui/Button.cpp
++++ b/cpp/open3d/visualization/gui/Button.cpp
+@@ -40,6 +40,7 @@
+ }
+ 
+ Button::Button(std::shared_ptr<UIImage> image) : impl_(new Button::Impl()) {
++    impl_->id_ = std::string("##button") + std::to_string(g_next_button_id++);
+     impl_->image_ = image;
+ }
+ 
+@@ -142,9 +143,10 @@
+     if (impl_->image_) {
+         auto params = impl_->image_->CalcDrawParams(context.renderer, frame);
+         ImTextureID image_id =
+-                reinterpret_cast<ImTextureID>(params.texture.GetId());
++                static_cast<ImTextureID>(params.texture.GetId());
+         pressed = ImGui::ImageButton(
+-                image_id, ImVec2(params.width, params.height),
++                impl_->id_.c_str(), image_id,
++                ImVec2(params.width, params.height),
+                 ImVec2(params.u0, params.v0), ImVec2(params.u1, params.v1));
+     } else {
+         pressed = ImGui::Button(
+diff --git a/cpp/open3d/visualization/gui/ImageWidget.cpp b/cpp/open3d/visualization/gui/ImageWidget.cpp
+index 5287791e85..bf60d94836 100644
+--- a/cpp/open3d/visualization/gui/ImageWidget.cpp
++++ b/cpp/open3d/visualization/gui/ImageWidget.cpp
+@@ -100,7 +100,7 @@
+ 
+     if (params.texture != visualization::rendering::TextureHandle::kBad) {
+         ImTextureID image_id =
+-                reinterpret_cast<ImTextureID>(params.texture.GetId());
++                static_cast<ImTextureID>(params.texture.GetId());
+         ImGui::SetCursorScreenPos(
+                 ImVec2(params.pos_x, params.pos_y - ImGui::GetScrollY()));
+         ImGui::Image(image_id, ImVec2(params.width, params.height),
+diff --git a/cpp/open3d/visualization/gui/ImguiFilamentBridge.cpp b/cpp/open3d/visualization/gui/ImguiFilamentBridge.cpp
+index 21a81a77b4..5e7630fbfb 100644
+--- a/cpp/open3d/visualization/gui/ImguiFilamentBridge.cpp
++++ b/cpp/open3d/visualization/gui/ImguiFilamentBridge.cpp
+@@ -312,7 +312,7 @@
+             // as the default when we created this material.
+         } else {
+             pair.second = impl_->image_pool_.pull();
+-            auto tex_id_long = reinterpret_cast<uintptr_t>(pair.first.id_);
++            auto tex_id_long = static_cast<uintptr_t>(pair.first.id_);
+             auto tex_id = std::uint16_t(tex_id_long);
+             auto tex_handle = visualization::rendering::TextureHandle(tex_id);
+             auto tex = visualization::rendering::EngineInstance::
+diff --git a/cpp/open3d/visualization/gui/SceneWidget.cpp b/cpp/open3d/visualization/gui/SceneWidget.cpp
+index d0df7af860..179e854e00 100644
+--- a/cpp/open3d/visualization/gui/SceneWidget.cpp
++++ b/cpp/open3d/visualization/gui/SceneWidget.cpp
+@@ -1125,7 +1125,7 @@
+                          ImGuiWindowFlags_NoBackground);
+ 
+     auto render_tex = impl_->scene_->GetView()->GetColorBuffer();
+-    ImTextureID image_id = reinterpret_cast<ImTextureID>(render_tex.GetId());
++    ImTextureID image_id = static_cast<ImTextureID>(render_tex.GetId());
+     ImGui::Image(image_id, ImVec2(f.width, f.height), ImVec2(0.0f, 1.0f),
+                  ImVec2(1.0f, 0.0f));
+ 

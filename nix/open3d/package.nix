@@ -147,6 +147,7 @@ stdenv.mkDerivation (finalAttrs: {
     [
       ./find_tinygltf.patch
       ./qhull-link-qhullstatic_r.patch
+      ./update_ImGui_ImageButton_call_with_id.patch
       (replaceVars ./fix-uvatlas-sources.patch {
         inherit directxHeaders directxMath uvatlas;
       })
