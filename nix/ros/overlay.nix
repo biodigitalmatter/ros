@@ -40,7 +40,7 @@ in
   world-builder = callPackage ./world_builder.nix { };
 
   # name collision
-  tl-expected = toplevelPackages.tl-expected;
+  # tl-expected = toplevelPackages.tl-expected;
 
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };

@@ -7,6 +7,7 @@
   fetchpatch2,
   replaceVars,
   runCommand,
+  testers,
   writeTextDir,
 
   debug ? false,
@@ -22,6 +23,7 @@
   git,
   glew,
   glfw,
+  gtest,
   jsoncpp,
   libjpeg,
   liblzf,
@@ -94,7 +96,7 @@ let
      endif()
   '';
 in
-stdenv.mkDerivation (_finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "open3d";
   version = "0.19.0";
 
@@ -191,7 +193,17 @@ stdenv.mkDerivation (_finalAttrs: {
     zeromq
     zlib
   ]
-  ++ lib.optional realsenseSupport librealsense;
+  ++ lib.optional realsenseSupport librealsense
+  ++ lib.optional finalAttrs.finalPackage.doCheck gtest;
+
+  propagatedBuildInputs = [
+    eigen
+    fmt
+  ];
+
+  nativeCheckInputs = [
+    gtest
+  ];
 
   preConfigure =
     let
@@ -203,6 +215,14 @@ stdenv.mkDerivation (_finalAttrs: {
       # https://discourse.nixos.org/t/qt-resetting-cmake-build-type/33468/3
       cmakeBuildType=${cmakeBuildType}
     '';
+
+  checkPhase = ''
+    runHook preCheck
+
+    ./bin/tests
+
+    runHook postCheck
+  '';
 
   cmakeFlags =
     let
@@ -224,8 +244,7 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "BUILD_PYTORCH_OPS" false)
       (cmakeBool "BUILD_SHARED_LIBS" true)
       (cmakeBool "BUILD_TENSORFLOW_OPS" false)
-      (cmakeBool "BUILD_TESTS" false)
-      (cmakeBool "BUILD_UNIT_TESTS" false)
+      (cmakeBool "BUILD_UNIT_TESTS" finalAttrs.finalPackage.doCheck)
       (cmakeBool "BUILD_WEBRTC" false)
       (cmakeBool "BUNDLE_OPEN3D_ML" false)
       (cmakeBool "DEVELOPER_BUILD" false)
@@ -264,6 +283,8 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeFeature "BLA_SIZEOF_INTEGER" "4")
     ];
 
+  doCheck = true;
+
   dontWrapQtApps = true; # gui uses glfw/filament, not qt. But something brings in qt
 
   # reset by qt? set in preConfigure.
@@ -272,11 +293,75 @@ stdenv.mkDerivation (_finalAttrs: {
   dontStrip = debug;
   separateDebugInfo = !debug;
 
+  env = {
+    GTEST_FILTER = "-${
+      builtins.concatStringsSep ":" [
+        # all of the following are disabled because require online fixtures
+        "ControlGrid/ControlGridPermuteDevices.*"
+        "Dataset.*"
+        "Downloader.DownloadAndVerify"
+        "Extract.ExtractFromZIP"
+        "Feature/FeaturePermuteDevices.ComputeFPFHFeature/0"
+        "Feature/FeaturePermuteDevices.CorrespondencesFromFeatures/0"
+        "Feature/FeaturePermuteDevices.SelectByIndex/0"
+        "Octree.ConvertToJsonValue"
+        "Octree.FragmentPLYCheckClone"
+        "Octree.FragmentPLYLocate"
+        "Octree.Visualization"
+        "OctreeIO.JsonFileIOFragment"
+        "PointCloud.ClusterDBSCAN"
+        "PointCloud.CreateFromDepthImage"
+        "PointCloud.CreateFromRGBDImage"
+        "PointCloud.DetectPlanarPatches"
+        "PointCloud.HiddenPointRemoval"
+        "PointCloud.SegmentPlane"
+        "PointCloud.SegmentPlaneDeterministic"
+        "PointCloud/PointCloudPermuteDevices.ClusterDBSCAN/0"
+        "PointCloud/PointCloudPermuteDevices.HiddenPointRemoval/0"
+        "PointCloud/PointCloudPermuteDevices.RemoveStatisticalOutliers/0"
+        "PointCloud/PointCloudPermuteDevices.SegmentPlane/0"
+        "RGBDImage.CreateFromColorAndDepth"
+        "RGBDImage.CreateFromRedwoodFormat"
+        "RGBDImage.CreateFromSUNFormat"
+        "RGBDImage.CreateFromTUMFormat"
+        "Registration/RegistrationPermuteDevices.EvaluateRegistration/0"
+        "Registration/RegistrationPermuteDevices.GetInformationMatrixFromPointCloud/0"
+        "Registration/RegistrationPermuteDevices.ICPColored/0"
+        "Registration/RegistrationPermuteDevices.ICPDoppler/0"
+        "Registration/RegistrationPermuteDevices.ICPPointToPlane/0"
+        "Registration/RegistrationPermuteDevices.ICPPointToPoint/0"
+        "TPointCloudIO.ReadPointCloudFromPLY*"
+        "TPointCloudIO.ReadPointCloudFromPTS1"
+        "TPointCloudIO.ReadWritePTS"
+        "TPointCloudIO.ReadWritePointCloudAsNPZ"
+        "TPointCloudIO.ReadWritePointCloudAsPCD"
+        "TriangleMeshIO.CreateMeshFromFile"
+        "TriangleMeshIO.ReadWriteTriangleMeshPLY"
+        "TriangleMeshIO.TriangleMeshLegecyCompatibility"
+        "UniformTSDFVolume.RealData"
+        "VoxelBlockGrid/VoxelBlockGridPermuteDevices.*"
+
+        # backend problems
+        # "Linalg/LinalgPermuteDevices.LU/0"
+        # "Linalg/LinalgPermuteDevices.LUIpiv/0"
+      ]
+    }";
+  };
+
+  passthru.tests = {
+    pkg-config = testers.hasPkgConfigModules { package = finalAttrs.finalPackage; };
+    cmake-config = testers.hasCmakeConfigModules {
+      package = finalAttrs.finalPackage;
+      moduleNames = [ "Open3D" ];
+    };
+  };
+
   meta = {
     description = "Open3D 3D data processing library built from source";
     homepage = "https://www.open3d.org/";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ tetov ];
     platforms = lib.platforms.linux;
+    pkgConfigModules = [ "Open3D" ];
   };
 })
