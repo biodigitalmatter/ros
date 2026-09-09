@@ -8,6 +8,8 @@
   runCommand,
   writeTextDir,
 
+  realsenseSupport ? true,
+
   assimp,
   cmake,
   cppzmq,
@@ -22,6 +24,7 @@
   libjpeg,
   liblzf,
   libpng,
+  librealsense,
   libtiff,
   libusb1,
   minizip,
@@ -189,7 +192,8 @@ stdenv.mkDerivation (_finalAttrs: {
     vtk
     zeromq
     zlib
-  ];
+  ]
+  ++ lib.optional realsenseSupport librealsense;
 
   preConfigure = ''
     cmakeFlagsArray+=("-DCMAKE_MODULE_PATH=${cmakeFindLibLzf}/cmake")
@@ -210,7 +214,7 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "BUILD_GUI" false)
       (cmakeBool "BUILD_ISPC_MODULE" false)
       (cmakeBool "BUILD_JUPYTER_EXTENSION" false)
-      (cmakeBool "BUILD_LIBREALSENSE" false)
+      (cmakeBool "BUILD_LIBREALSENSE" realsenseSupport)
       (cmakeBool "BUILD_PYTHON_MODULE" false)
       (cmakeBool "BUILD_PYTORCH_OPS" false)
       (cmakeBool "BUILD_SHARED_LIBS" true)
@@ -232,6 +236,7 @@ stdenv.mkDerivation (_finalAttrs: {
       (cmakeBool "USE_SYSTEM_JPEG" true)
       (cmakeBool "USE_SYSTEM_JSONCPP" true)
       (cmakeBool "USE_SYSTEM_LIBLZF" true)
+      (cmakeBool "USE_SYSTEM_LIBREALSENSE" true)
       (cmakeBool "USE_SYSTEM_MSGPACK" true)
       (cmakeBool "USE_SYSTEM_NANOFLANN" true)
       (cmakeBool "USE_SYSTEM_OPENSSL" true)
