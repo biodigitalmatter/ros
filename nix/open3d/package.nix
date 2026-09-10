@@ -1,6 +1,8 @@
 {
   lib,
   stdenv,
+
+  callPackage,
   fetchFromGitHub,
   fetchpatch2,
   runCommand,
@@ -64,27 +66,8 @@ let
     ln -s ${poissonRecon} $out/PoissonRecon
   '';
 
-  tinygltfSource = fetchFromGitHub {
-    owner = "syoyo";
-    repo = "tinygltf";
-    rev = "72f4a55edd54742bca1a71ade8ac70afca1d3f07";
-    hash = "sha256-vlVhDH2/vOKn+iQWhVUFIEe5uNDeQ51i5ZTx7uCSeLY=";
-  };
+  tinygltf = callPackage ./tinygltf-v2.nix { };
 
-  tinygltfCompat = runCommand "open3d-tinygltf" { } ''
-    mkdir -p $out/include $out/lib/cmake/TinyGLTF
-    cp -r ${tinygltfSource}/* $out/include/
-    cat > $out/lib/cmake/TinyGLTF/TinyGLTFConfig.cmake <<EOF
-    set(TinyGLTF_FOUND TRUE)
-    if(NOT TARGET TinyGLTF::TinyGLTF)
-      add_library(TinyGLTF::TinyGLTF INTERFACE IMPORTED)
-      set_target_properties(TinyGLTF::TinyGLTF PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "''${CMAKE_CURRENT_LIST_DIR}/../../include"
-        INTERFACE_COMPILE_DEFINITIONS "TINYGLTF_IMPLEMENTATION;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION"
-      )
-    endif()
-    EOF
-  '';
   uvatlas = fetchFromGitHub {
     owner = "microsoft";
     repo = "UVAtlas";
@@ -135,6 +118,7 @@ stdenv.mkDerivation (_finalAttrs: {
         };
     in
     [
+      ./find_tinygltf.patch
       (fetchCondaRecipePatch {
         name = "fix-unzip";
         hash = "sha256-1oBzWpusl7NkbhLKBpC8gaROEG6+0kgGZKEPm5rVbk4=";
@@ -196,7 +180,7 @@ stdenv.mkDerivation (_finalAttrs: {
     openssl
     qhull
     tbb
-    tinygltfCompat
+    tinygltf
     tinyobjloader
     vtk
     zeromq
