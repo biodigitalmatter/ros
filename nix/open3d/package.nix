@@ -15,6 +15,7 @@
   pythonSupport ? true,
   realsenseSupport ? true,
   withCuda ? true,
+  withGui ? true,
 
   assimp,
   cmake,
@@ -53,6 +54,7 @@
 
 let
   cutlass133 = callPackage ./cutlass.nix { };
+
   cudaToolkitRoot = symlinkJoin {
     name = "open3d-cuda-toolkit-root";
     paths = [
@@ -77,6 +79,8 @@ let
     tag = "may2022";
     hash = "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=";
   };
+
+  filamentRoot = callPackage ./filament.nix { };
 
   openblas32 = openblas.override { blas64 = false; };
 
@@ -237,8 +241,8 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   propagatedBuildInputs = [
-    eigen
-    fmt
+    eigen # required for cmake module
+    fmt # required for cmake module
   ]
   ++ lib.optionals pythonSupport (
     with pythonPackages;
@@ -297,14 +301,14 @@ stdenv.mkDerivation (finalAttrs: {
       inherit (lib)
         cmakeBool
         cmakeFeature
-        # cmakeOptionType
+        cmakeOptionType
         ;
     in
     [
       (cmakeBool "BUILD_COMMON_CUDA_ARCHS" false)
       (cmakeBool "BUILD_CUDA_MODULE" true)
       (cmakeBool "BUILD_EXAMPLES" false)
-      (cmakeBool "BUILD_GUI" false)
+      (cmakeBool "BUILD_GUI" withGui)
       (cmakeBool "BUILD_ISPC_MODULE" false)
       (cmakeBool "BUILD_JUPYTER_EXTENSION" false)
       (cmakeBool "BUILD_LIBREALSENSE" realsenseSupport)
@@ -351,6 +355,11 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "USE_SYSTEM_BLAS" true)
       (cmakeFeature "BLA_VENDOR" "OpenBLAS")
       (cmakeFeature "BLA_SIZEOF_INTEGER" "4")
+
+    ]
+    ++ lib.optionals withGui [
+      (cmakeOptionType "FILEPATH" "FILAMENT_PRECOMPILED_ROOT" "${filamentRoot}")
+      (cmakeOptionType "PATH" "DESKTOP_INSTALL_DIR" "${placeholder "out"}/share")
     ];
 
   installTargets = [
