@@ -7,16 +7,19 @@
   fetchpatch2,
   replaceVars,
   runCommand,
+  symlinkJoin,
   testers,
   writeTextDir,
 
   debug ? false,
   pythonSupport ? true,
   realsenseSupport ? true,
+  withCuda ? true,
 
   assimp,
   cmake,
   cppzmq,
+  cudaPackages,
   curl,
   eigen,
   embree,
@@ -49,6 +52,18 @@
 }:
 
 let
+  cutlass133 = callPackage ./cutlass.nix { };
+  cudaToolkitRoot = symlinkJoin {
+    name = "open3d-cuda-toolkit-root";
+    paths = [
+      cudaPackages.cudatoolkit
+      cudaPackages.libcublas.static
+      cudaPackages.libcusolver.static
+      cudaPackages.libcusparse.static
+      cudaPackages.libnpp.static
+    ];
+  };
+
   directxHeaders = fetchFromGitHub {
     owner = "microsoft";
     repo = "DirectX-Headers";
@@ -174,9 +189,9 @@ stdenv.mkDerivation (finalAttrs: {
       setuptools
       wheel
     ]
-    ++ lib.optional (stdenv.hostPlatform == stdenv.buildPlatform) pythonImportsCheckHook
-
-  );
+  )
+  ++ lib.optional (stdenv.hostPlatform == stdenv.buildPlatform) pythonPackages.pythonImportsCheckHook
+  ++ lib.optional withCuda cudaPackages.cuda_nvcc;
 
   buildInputs = [
     assimp
@@ -209,7 +224,17 @@ stdenv.mkDerivation (finalAttrs: {
   ]
   ++ lib.optional realsenseSupport librealsense
   ++ lib.optional finalAttrs.finalPackage.doCheck gtest
-  ++ lib.optional pythonSupport pythonPackages.pybind11;
+  ++ lib.optional pythonSupport pythonPackages.pybind11
+  ++ lib.optionals withCuda [
+    cudaPackages.cccl
+    cudaPackages.cuda_cudart
+    cudaPackages.libcublas.static
+    cudaPackages.libcusolver.static
+    cudaPackages.libcusparse.static
+    cudaPackages.libnpp.static
+    cudaToolkitRoot
+    cutlass133
+  ];
 
   propagatedBuildInputs = [
     eigen
@@ -277,7 +302,7 @@ stdenv.mkDerivation (finalAttrs: {
     in
     [
       (cmakeBool "BUILD_COMMON_CUDA_ARCHS" false)
-      (cmakeBool "BUILD_CUDA_MODULE" false)
+      (cmakeBool "BUILD_CUDA_MODULE" true)
       (cmakeBool "BUILD_EXAMPLES" false)
       (cmakeBool "BUILD_GUI" false)
       (cmakeBool "BUILD_ISPC_MODULE" false)
@@ -374,6 +399,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   env = {
+    CUDAToolkit_ROOT = "${cudaToolkitRoot}";
     GTEST_FILTER = "-${
       builtins.concatStringsSep ":" [
         # all of the following are disabled because require online fixtures
