@@ -9,6 +9,7 @@
   runCommand,
   writeTextDir,
 
+  debug ? false,
   realsenseSupport ? true,
 
   assimp,
@@ -190,9 +191,16 @@ stdenv.mkDerivation (_finalAttrs: {
   ]
   ++ lib.optional realsenseSupport librealsense;
 
-  preConfigure = ''
-    cmakeFlagsArray+=("-DCMAKE_MODULE_PATH=${cmakeFindLibLzf}/cmake")
-  '';
+  preConfigure =
+    let
+      cmakeBuildType = if debug then "RelWithDebInfo" else "Release";
+    in
+    ''
+      cmakeFlagsArray+=("-DCMAKE_MODULE_PATH=${cmakeFindLibLzf}/cmake")
+      # qt6 setup hook resets this some godforsaken reason
+      # https://discourse.nixos.org/t/qt-resetting-cmake-build-type/33468/3
+      cmakeBuildType=${cmakeBuildType}
+    '';
 
   cmakeFlags =
     let
@@ -251,6 +259,13 @@ stdenv.mkDerivation (_finalAttrs: {
     ];
 
   dontWrapQtApps = true; # gui uses glfw/filament, not qt. But something brings in qt
+
+  # reset by qt? set in preConfigure.
+  cmakeBuildType = if debug then "Debug" else "RelWithDebInfo";
+
+  dontStrip = debug;
+  separateDebugInfo = !debug;
+
   meta = {
     description = "Open3D 3D data processing library built from source";
     homepage = "https://www.open3d.org/";
