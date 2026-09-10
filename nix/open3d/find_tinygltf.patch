@@ -1,0 +1,13 @@
+diff --git a/3rdparty/find_dependencies.cmake b/3rdparty/find_dependencies.cmake
+index 13f6501c8d..e69bdd7334 100644
+--- a/3rdparty/find_dependencies.cmake
++++ b/3rdparty/find_dependencies.cmake
+@@ -972,7 +972,7 @@
+ if(USE_SYSTEM_TINYGLTF)
+     open3d_find_package_3rdparty_library(3rdparty_tinygltf
+         PACKAGE TinyGLTF
+-        TARGETS TinyGLTF::TinyGLTF
++        TARGETS tinygltf::tinygltf
+     )
+     if(NOT 3rdparty_tinygltf_FOUND)
+         set(USE_SYSTEM_TINYGLTF OFF)
