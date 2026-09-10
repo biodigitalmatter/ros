@@ -124,36 +124,46 @@ stdenv.mkDerivation (_finalAttrs: {
       --replace-fail 'set(POISSON_INCLUDE_DIRS ''${SOURCE_DIR})' "set(POISSON_INCLUDE_DIRS ${poissonReconInclude}/)"
   '';
 
-  patches = [
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-unzip.patch";
-      hash = "sha256-1oBzWpusl7NkbhLKBpC8gaROEG6+0kgGZKEPm5rVbk4=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-error.patch";
-      hash = "sha256-hYB64FzfdLhVUSuFj4Uad/Q9aSdOqDFqsifKGViE8W0=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-find-imgui.patch";
-      hash = "sha256-h8JOdb5Uy0qXuthuIfA+4UyTF/oRMWbkXDYNLrli8iE=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/7249.patch";
-      hash = "sha256-5ApyjFMAFk5wEQmKHz4A86khFKd3lf0tEFSVDl+h5wc=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-requirements-txt.patch";
-      hash = "sha256-shyko5XKFppwSx8Aj0fEAcAuWp1YwphkDFm7du2Z0EU=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-missing-memory-include.patch";
-      hash = "sha256-eEbNFDUYw/5tjHPUqkI94gnafROmtXrsrhlwbt6hiso=";
-    })
-    (fetchpatch2 {
-      url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/main/recipe/fix-gcc15-missing-cstdint.patch";
-      hash = "sha256-S5bRzq2U97HSQSCNG/UadcM4SPgig370tJ9yrqUHWAQ=";
-    })
-  ];
+  patches =
+    let
+      condaRecipeRev = "e8a6c47d141f605d0f0773a35337f58bb81790fa";
+      fetchCondaRecipePatch =
+        { name, hash }:
+        fetchpatch2 {
+          inherit hash;
+          url = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock/${condaRecipeRev}/recipe/${name}.patch";
+        };
+    in
+    [
+      (fetchCondaRecipePatch {
+        name = "fix-unzip";
+        hash = "sha256-1oBzWpusl7NkbhLKBpC8gaROEG6+0kgGZKEPm5rVbk4=";
+      })
+      (fetchCondaRecipePatch {
+        name = "fix-error";
+        hash = "sha256-hYB64FzfdLhVUSuFj4Uad/Q9aSdOqDFqsifKGViE8W0=";
+      })
+      (fetchCondaRecipePatch {
+        name = "fix-find-imgui";
+        hash = "sha256-h8JOdb5Uy0qXuthuIfA+4UyTF/oRMWbkXDYNLrli8iE=";
+      })
+      (fetchCondaRecipePatch {
+        name = "7249";
+        hash = "sha256-5ApyjFMAFk5wEQmKHz4A86khFKd3lf0tEFSVDl+h5wc=";
+      })
+      (fetchCondaRecipePatch {
+        name = "fix-requirements-txt";
+        hash = "sha256-shyko5XKFppwSx8Aj0fEAcAuWp1YwphkDFm7du2Z0EU=";
+      })
+      (fetchCondaRecipePatch {
+        name = "fix-missing-memory-include";
+        hash = "sha256-eEbNFDUYw/5tjHPUqkI94gnafROmtXrsrhlwbt6hiso=";
+      })
+      (fetchCondaRecipePatch {
+        name = "fix-gcc15-missing-cstdint";
+        hash = "sha256-S5bRzq2U97HSQSCNG/UadcM4SPgig370tJ9yrqUHWAQ=";
+      })
+    ];
 
   nativeBuildInputs = [
     cmake
