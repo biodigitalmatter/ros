@@ -11,6 +11,7 @@
   writeTextDir,
 
   debug ? false,
+  pythonSupport ? true,
   realsenseSupport ? true,
 
   assimp,
@@ -38,6 +39,7 @@
   openblas,
   openssl,
   pkg-config,
+  pythonPackages,
   qhull,
   tbb,
   tinyobjloader,
@@ -163,7 +165,19 @@ stdenv.mkDerivation (finalAttrs: {
     git
     ninja
     pkg-config
-  ];
+  ]
+  ++ lib.optionals pythonSupport (
+    with pythonPackages;
+    [
+      pip
+      pybind11-stubgen
+      setuptools
+      wheel
+    ]
+    ++ lib.optionals (stdenv.hostPlatform == stdenv.buildPlatform) [
+      pythonImportsCheckHook
+    ]
+  );
 
   buildInputs = [
     assimp
@@ -195,16 +209,47 @@ stdenv.mkDerivation (finalAttrs: {
     zlib
   ]
   ++ lib.optional realsenseSupport librealsense
-  ++ lib.optional finalAttrs.finalPackage.doCheck gtest;
+  ++ lib.optional finalAttrs.finalPackage.doCheck gtest
+  ++ lib.optionals pythonSupport (with pythonPackages; [ pybind11 ]);
 
   propagatedBuildInputs = [
     eigen
     fmt
-  ];
+  ]
+  ++ lib.optionals pythonSupport (
+    with pythonPackages;
+    [
+      dash
+      numpy
+      werkzeug
+      flask
+      nbformat
+      configargparse
+    ]
+  );
 
   nativeCheckInputs = [
     gtest
-  ];
+  ]
+  ++ lib.optionals pythonSupport (
+    with pythonPackages;
+    [
+      pytestCheckHook
+    ]
+  );
+
+  checkInputs = lib.optionals pythonSupport (
+    with pythonPackages;
+    [
+      certifi
+      oauthlib
+      pytest
+      pytest-randomly
+      python
+      scipy
+      tensorboard
+    ]
+  );
 
   preConfigure =
     let
@@ -225,6 +270,10 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postCheck
   '';
 
+  postInstall = lib.optionalString pythonSupport ''
+    python -m pip install ./lib/python_package/pip_package/*.whl --no-index --no-warn-script-location --prefix="$out" --no-cache
+  '';
+
   cmakeFlags =
     let
       inherit (lib)
@@ -241,7 +290,7 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "BUILD_ISPC_MODULE" false)
       (cmakeBool "BUILD_JUPYTER_EXTENSION" false)
       (cmakeBool "BUILD_LIBREALSENSE" realsenseSupport)
-      (cmakeBool "BUILD_PYTHON_MODULE" false)
+      (cmakeBool "BUILD_PYTHON_MODULE" pythonSupport)
       (cmakeBool "BUILD_PYTORCH_OPS" false)
       (cmakeBool "BUILD_SHARED_LIBS" true)
       (cmakeBool "BUILD_TENSORFLOW_OPS" false)
@@ -284,6 +333,37 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeFeature "BLA_SIZEOF_INTEGER" "4")
     ];
 
+  installTargets =
+    lib.intersperse " " [
+      "install"
+    ]
+    ++ lib.optional pythonSupport "pip-package";
+
+  disabledTestPaths =
+    let
+      baseDir = "lib/python_package";
+    in
+    [
+      # skip benchmarks
+      "${baseDir}/benchmarks/*"
+
+      # requires networking
+      "${baseDir}/test/data/test_data.py"
+      "${baseDir}/test/test_octree.py::test_octree_visualize"
+      "${baseDir}/test/test_octree.py::test_octree_voxel_grid_convert"
+      "${baseDir}/test/test_octree.py::test_locate_leaf_node"
+      "${baseDir}/test/io/test_pathlib.py::test_pathlib_support"
+      "${baseDir}/test/t/io/test_noise.py::test_apply_depth_noise_model"
+      "${baseDir}/test/test_color_map_optimization.py::test_color_map"
+
+      # requires torch even when -DBUILD_PYTORCH_OPS=OFF
+      "${baseDir}/test/ml_ops/test_ragged_tensor.py"
+
+      # The test matrix is singular. OpenBLAS GETRF reports a zero pivot for
+      # Float32, while this test assumes the factorization succeeds.
+      "${baseDir}/test/core/test_linalg.py::test_lu[dtype2-device0]"
+    ];
+
   doCheck = true;
 
   dontWrapQtApps = true; # gui uses glfw/filament, not qt. But something brings in qt
@@ -293,6 +373,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   dontStrip = debug;
   separateDebugInfo = !debug;
+
+  pythonImportsCheck = [
+    "open3d"
+  ];
 
   env = {
     GTEST_FILTER = "-${
