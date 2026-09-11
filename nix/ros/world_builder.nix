@@ -14,7 +14,7 @@
   sensor-msgs,
   tf2-eigen,
   tf2-ros,
-  tl-expected,
+  tl-expected-nixpkgs,
 
   # from openvdb
   boost,
@@ -44,7 +44,7 @@ buildRosPackage {
     microsoft-gsl
     openvdb.dev
     tbb.dev
-    tl-expected
+    tl-expected-nixpkgs
     zlib.dev
     image-geometry
   ];

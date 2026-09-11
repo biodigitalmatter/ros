@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
 # SPDX-License-Identifier: Apache-2.0
 
-# toplevel packages
 toplevelPackages:
 # ros scope
 final: _prev:
@@ -21,7 +20,7 @@ in
   world-builder = callPackage ./world_builder.nix { };
 
   # name collision
-  # tl-expected = toplevelPackages.tl-expected;
+  tl-expected-nixpkgs = toplevelPackages.tl-expected;
 
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };
