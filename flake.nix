@@ -11,13 +11,19 @@
       url = "github:NixOS/nixos-hardware/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixpkgs.follows = "nix-ros-overlay/nixpkgs"; # IMPORTANT!!!
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     systems.url = "github:nix-systems/default-linux";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nix-ros-overlay/nixpkgs";
+    };
 
     nix-ros-workspace = {
       url = "github:hacker1024/nix-ros-workspace";
