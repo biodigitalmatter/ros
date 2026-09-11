@@ -8,6 +8,7 @@
   chess-vision,
   chess-vision-ros,
   elizabeth-descriptions,
+  elizabeth-moveit-config,
   elizabeth-perception,
   elizabeth-perception-filters,
   material-vision,
@@ -17,7 +18,9 @@
   basedpyright,
   colcon,
   demo-nodes-cpp,
+  joint-trajectory-controller,
   lemminx,
+  moveit-setup-assistant,
   nixd,
   python3,
   ros2-utils-tool,
@@ -32,7 +35,7 @@
   rqt-tf-tree,
   rqt-topic,
   ruff,
-  rviz2,
+  # rviz2,
   ty,
 }:
 buildROSWorkspace {
@@ -43,6 +46,7 @@ buildROSWorkspace {
       chess-vision
       chess-vision-ros
       elizabeth-descriptions
+      elizabeth-moveit-config
       elizabeth-perception
       elizabeth-perception-filters
       material-vision
@@ -56,7 +60,9 @@ buildROSWorkspace {
       basedpyright
       colcon
       demo-nodes-cpp
+      joint-trajectory-controller
       lemminx
+      moveit-setup-assistant
       nixd
       ros2-utils-tool
       rqt
@@ -70,7 +76,7 @@ buildROSWorkspace {
       rqt-tf-tree
       rqt-topic
       ruff
-      rviz2
+      # rviz2
       ty
       ;
     python3 = python3.withPackages (

@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <rclcpp/rclcpp.hpp>
-#include <string>
 #include <rcpputils/tl_expected/expected.hpp>
+#include <string>
 
 #include "world_builder/core/vdb_volume.hpp"
 
