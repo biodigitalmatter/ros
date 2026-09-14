@@ -11,10 +11,11 @@
   microsoft-gsl,
   openvdb,
   rclcpp,
+  rcpputils,
   sensor-msgs,
   tf2-eigen,
   tf2-ros,
-  tl-expected-nixpkgs,
+  tl-expected,
 
   # from openvdb
   boost,
@@ -43,8 +44,9 @@ buildRosPackage {
     eigen
     microsoft-gsl
     openvdb.dev
+    rcpputils
     tbb.dev
-    tl-expected-nixpkgs
+    tl-expected
     zlib.dev
     image-geometry
   ];

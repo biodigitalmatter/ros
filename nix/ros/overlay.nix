@@ -20,7 +20,8 @@ in
   world-builder = callPackage ./world_builder.nix { };
 
   # name collision
-  tl-expected-nixpkgs = toplevelPackages.tl-expected;
+  # using tl-expected from rcpputils instead
+  # tl-expected-nixpkgs = toplevelPackages.tl-expected;
 
   # deps
   abb-egm-msgs = callPackage ./abb_egm_msgs.nix { };

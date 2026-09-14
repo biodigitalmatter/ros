@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-#include <tl/expected.hpp>
+#include <rcpputils/tl_expected/expected.hpp>
 
 #include "world_builder/core/vdb_volume.hpp"
 

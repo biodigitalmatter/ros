@@ -14,15 +14,15 @@ WorldBuilderConfigResult parseWorldBuilderConfig(const RawWorldBuilderConfig & r
 {
   // also throws rclcpp::exceptions::InvalidTopicNameError
   if (raw.world_frame.empty()) {
-    return tl::unexpected("world_frame must not be empty");
+    return tl::make_unexpected("world_frame must not be empty");
   }
 
   if (raw.camera_info_topic.empty()) {
-    return tl::unexpected("camera_info_topic must not be empty");
+    return tl::make_unexpected("camera_info_topic must not be empty");
   }
 
   if (raw.depth_topic.empty()) {
-    return tl::unexpected("depth_topic must not be empty");
+    return tl::make_unexpected("depth_topic must not be empty");
   }
 
   std::uint32_t tf_filter_queue_size;
@@ -30,15 +30,15 @@ WorldBuilderConfigResult parseWorldBuilderConfig(const RawWorldBuilderConfig & r
   try {
     tf_filter_queue_size = gsl::narrow<std::uint32_t>(raw.tf_filter_queue_size);
   } catch (const gsl::narrowing_error &) {
-    return tl::unexpected("tf_filter_queue_size is out of range");
+    return tl::make_unexpected("tf_filter_queue_size is out of range");
   }
 
   if (tf_filter_queue_size == 0) {
-    return tl::unexpected("tf_filter_queue_size must be larger than 0");
+    return tl::make_unexpected("tf_filter_queue_size must be larger than 0");
   }
 
   if (raw.depth_scale <= 0.0 || !std::isfinite(raw.depth_scale)) {
-    return tl::unexpected("depth_scale must be finite and > 0");
+    return tl::make_unexpected("depth_scale must be finite and > 0");
   }
 
   float volume_max_weight;
@@ -46,7 +46,7 @@ WorldBuilderConfigResult parseWorldBuilderConfig(const RawWorldBuilderConfig & r
   try {
     volume_max_weight = gsl::narrow<float>(raw.volume_max_weight);
   } catch (const gsl::narrowing_error &) {
-    return tl::unexpected("volume_max_weight is out of range");
+    return tl::make_unexpected("volume_max_weight is out of range");
   }
 
   return WorldBuilderConfig{
