@@ -1,0 +1,13 @@
+diff --git a/3rdparty/find_dependencies.cmake b/3rdparty/find_dependencies.cmake
+index 13f6501c8d..f3b7cf75e2 100644
+--- a/3rdparty/find_dependencies.cmake
++++ b/3rdparty/find_dependencies.cmake
+@@ -1016,7 +1016,7 @@
+ if(USE_SYSTEM_QHULLCPP)
+     open3d_find_package_3rdparty_library(3rdparty_qhullcpp
+         PACKAGE Qhull
+-        TARGETS Qhull::qhullcpp Qhull::qhull_r
++        TARGETS Qhull::qhullcpp Qhull::qhullstatic_r
+     )
+     if(NOT 3rdparty_qhullcpp_FOUND)
+         set(USE_SYSTEM_QHULLCPP OFF)
