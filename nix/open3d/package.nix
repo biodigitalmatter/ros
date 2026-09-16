@@ -174,9 +174,8 @@ stdenv.mkDerivation (finalAttrs: {
       setuptools
       wheel
     ]
-    ++ lib.optionals (stdenv.hostPlatform == stdenv.buildPlatform) [
-      pythonImportsCheckHook
-    ]
+    ++ lib.optional (stdenv.hostPlatform == stdenv.buildPlatform) pythonImportsCheckHook
+
   );
 
   buildInputs = [
@@ -210,7 +209,7 @@ stdenv.mkDerivation (finalAttrs: {
   ]
   ++ lib.optional realsenseSupport librealsense
   ++ lib.optional finalAttrs.finalPackage.doCheck gtest
-  ++ lib.optionals pythonSupport (with pythonPackages; [ pybind11 ]);
+  ++ lib.optional pythonSupport pythonPackages.pybind11;
 
   propagatedBuildInputs = [
     eigen
@@ -231,12 +230,7 @@ stdenv.mkDerivation (finalAttrs: {
   nativeCheckInputs = [
     gtest
   ]
-  ++ lib.optionals pythonSupport (
-    with pythonPackages;
-    [
-      pytestCheckHook
-    ]
-  );
+  ++ lib.optional pythonSupport pythonPackages.pytestCheckHook;
 
   checkInputs = lib.optionals pythonSupport (
     with pythonPackages;
