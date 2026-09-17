@@ -27,7 +27,6 @@ buildRosPackage {
 
   buildType = "ament_cmake";
   buildInputs = [
-    ament-cmake
     catch-ros2 # to get through configure
     ros-environment # to set ROS_DISTRO for configure
   ];
