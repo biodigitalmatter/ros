@@ -9,6 +9,7 @@
   geometry-msgs,
   image-geometry,
   microsoft-gsl,
+  # open3d-conversions
   openvdb,
   rclcpp,
   rcpputils,
@@ -59,6 +60,7 @@ buildRosPackage {
 
   propagatedBuildInputs = [
     geometry-msgs
+    # open3d-conversions
     rclcpp
     rosidl-default-runtime
     std-srvs
