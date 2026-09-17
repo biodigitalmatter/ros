@@ -1,5 +1,5 @@
 diff --git a/3rdparty/uvatlas/uvatlas.cmake b/3rdparty/uvatlas/uvatlas.cmake
-index 63642f80e3..be26050dea 100644
+index 63642f80e3..82bcb9166b 100644
 --- a/3rdparty/uvatlas/uvatlas.cmake
 +++ b/3rdparty/uvatlas/uvatlas.cmake
 @@ -4,9 +4,7 @@
@@ -9,7 +9,7 @@ index 63642f80e3..be26050dea 100644
 -    GIT_REPOSITORY https://github.com/microsoft/DirectX-Headers.git
 -    GIT_TAG v1.606.3
 -    GIT_SHALLOW TRUE
-+    SOURCE_DIR @directxHeaders@
++    URL file://@directxHeaders@
      DOWNLOAD_DIR "${OPEN3D_THIRD_PARTY_DOWNLOAD_DIR}/uvatlas"
      UPDATE_COMMAND ""
      CMAKE_ARGS
@@ -20,7 +20,7 @@ index 63642f80e3..be26050dea 100644
 -    GIT_REPOSITORY https://github.com/microsoft/DirectXMath.git
 -    GIT_TAG may2022
 -    GIT_SHALLOW TRUE
-+    SOURCE_DIR @directxMath@
++    URL file://@directxMath@
      DOWNLOAD_DIR "${OPEN3D_THIRD_PARTY_DOWNLOAD_DIR}/uvatlas"
      UPDATE_COMMAND ""
      CMAKE_ARGS
@@ -30,7 +30,7 @@ index 63642f80e3..be26050dea 100644
      PREFIX uvatlas
 -    URL https://github.com/microsoft/UVAtlas/archive/refs/tags/may2022.tar.gz
 -    URL_HASH SHA256=591516913a0f3c381f1fd01647cb1b8d1eeade575d1c726ae8f5dd9f83b81754
-+    URL @uvatlas@
++    URL file://@uvatlas@
      DOWNLOAD_DIR "${OPEN3D_THIRD_PARTY_DOWNLOAD_DIR}/uvatlas"
      # do not update
      UPDATE_COMMAND ""
