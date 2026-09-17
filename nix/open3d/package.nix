@@ -250,7 +250,6 @@ stdenv.mkDerivation (finalAttrs: {
       cmakeBuildType = if debug then "RelWithDebInfo" else "Release";
     in
     ''
-      cmakeFlagsArray+=("-DCMAKE_MODULE_PATH=${cmakeFindLibLzf}/cmake")
       # qt6 setup hook resets this some godforsaken reason
       # https://discourse.nixos.org/t/qt-resetting-cmake-build-type/33468/3
       cmakeBuildType=${cmakeBuildType}
@@ -319,6 +318,8 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "USE_SYSTEM_VTK" true)
       (cmakeBool "USE_SYSTEM_ZEROMQ" true)
       (cmakeBool "WITH_IPP" false)
+
+      (cmakeFeature "CMAKE_MODULE_PATH" "${cmakeFindLibLzf}/cmake")
 
       # BLAS
       (cmakeBool "USE_BLAS" true)
