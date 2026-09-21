@@ -353,11 +353,10 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeFeature "BLA_SIZEOF_INTEGER" "4")
     ];
 
-  installTargets =
-    lib.intersperse " " [
-      "install"
-    ]
-    ++ lib.optional pythonSupport "pip-package";
+  installTargets = [
+    "install"
+  ]
+  ++ lib.optional pythonSupport "pip-package";
 
   disabledTestPaths =
     let
@@ -386,7 +385,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   doCheck = true;
 
-  dontWrapQtApps = true; # gui uses glfw/filament, not qt. But something brings in qt
+  dontWrapQtApps = true; # gui uses glfw/filament, not qt. But (vtk?) brings in qt
 
   # reset by qt? set in preConfigure.
   cmakeBuildType = if debug then "Debug" else "RelWithDebInfo";
@@ -401,56 +400,61 @@ stdenv.mkDerivation (finalAttrs: {
   env = {
     CUDAToolkit_ROOT = "${cudaToolkitRoot}";
     GTEST_FILTER = "-${
-      builtins.concatStringsSep ":" [
-        # all of the following are disabled because require online fixtures
-        "ControlGrid/ControlGridPermuteDevices.*"
-        "Dataset.*"
-        "Downloader.DownloadAndVerify"
-        "Extract.ExtractFromZIP"
-        "Feature/FeaturePermuteDevices.ComputeFPFHFeature/0"
-        "Feature/FeaturePermuteDevices.CorrespondencesFromFeatures/0"
-        "Feature/FeaturePermuteDevices.SelectByIndex/0"
-        "Octree.ConvertToJsonValue"
-        "Octree.FragmentPLYCheckClone"
-        "Octree.FragmentPLYLocate"
-        "Octree.Visualization"
-        "OctreeIO.JsonFileIOFragment"
-        "PointCloud.ClusterDBSCAN"
-        "PointCloud.CreateFromDepthImage"
-        "PointCloud.CreateFromRGBDImage"
-        "PointCloud.DetectPlanarPatches"
-        "PointCloud.HiddenPointRemoval"
-        "PointCloud.SegmentPlane"
-        "PointCloud.SegmentPlaneDeterministic"
-        "PointCloud/PointCloudPermuteDevices.ClusterDBSCAN/0"
-        "PointCloud/PointCloudPermuteDevices.HiddenPointRemoval/0"
-        "PointCloud/PointCloudPermuteDevices.RemoveStatisticalOutliers/0"
-        "PointCloud/PointCloudPermuteDevices.SegmentPlane/0"
-        "RGBDImage.CreateFromColorAndDepth"
-        "RGBDImage.CreateFromRedwoodFormat"
-        "RGBDImage.CreateFromSUNFormat"
-        "RGBDImage.CreateFromTUMFormat"
-        "Registration/RegistrationPermuteDevices.EvaluateRegistration/0"
-        "Registration/RegistrationPermuteDevices.GetInformationMatrixFromPointCloud/0"
-        "Registration/RegistrationPermuteDevices.ICPColored/0"
-        "Registration/RegistrationPermuteDevices.ICPDoppler/0"
-        "Registration/RegistrationPermuteDevices.ICPPointToPlane/0"
-        "Registration/RegistrationPermuteDevices.ICPPointToPoint/0"
-        "TPointCloudIO.ReadPointCloudFromPLY*"
-        "TPointCloudIO.ReadPointCloudFromPTS1"
-        "TPointCloudIO.ReadWritePTS"
-        "TPointCloudIO.ReadWritePointCloudAsNPZ"
-        "TPointCloudIO.ReadWritePointCloudAsPCD"
-        "TriangleMeshIO.CreateMeshFromFile"
-        "TriangleMeshIO.ReadWriteTriangleMeshPLY"
-        "TriangleMeshIO.TriangleMeshLegecyCompatibility"
-        "UniformTSDFVolume.RealData"
-        "VoxelBlockGrid/VoxelBlockGridPermuteDevices.*"
-
-        # backend problems
-        # "Linalg/LinalgPermuteDevices.LU/0"
-        # "Linalg/LinalgPermuteDevices.LUIpiv/0"
-      ]
+      builtins.concatStringsSep ":" (
+        [
+          # all of the following are disabled because require online fixtures
+          "ControlGrid/ControlGridPermuteDevices.*"
+          "Dataset.*"
+          "Downloader.DownloadAndVerify"
+          "Extract.ExtractFromZIP"
+          "Feature/FeaturePermuteDevices.ComputeFPFHFeature/0"
+          "Feature/FeaturePermuteDevices.CorrespondencesFromFeatures/0"
+          "Feature/FeaturePermuteDevices.SelectByIndex/0"
+          "Octree.ConvertToJsonValue"
+          "Octree.FragmentPLYCheckClone"
+          "Octree.FragmentPLYLocate"
+          "Octree.Visualization"
+          "OctreeIO.JsonFileIOFragment"
+          "PointCloud.ClusterDBSCAN"
+          "PointCloud.CreateFromDepthImage"
+          "PointCloud.CreateFromRGBDImage"
+          "PointCloud.DetectPlanarPatches"
+          "PointCloud.HiddenPointRemoval"
+          "PointCloud.SegmentPlane"
+          "PointCloud.SegmentPlaneDeterministic"
+          "PointCloud/PointCloudPermuteDevices.ClusterDBSCAN/0"
+          "PointCloud/PointCloudPermuteDevices.HiddenPointRemoval/0"
+          "PointCloud/PointCloudPermuteDevices.RemoveStatisticalOutliers/0"
+          "PointCloud/PointCloudPermuteDevices.SegmentPlane/0"
+          "RGBDImage.CreateFromColorAndDepth"
+          "RGBDImage.CreateFromRedwoodFormat"
+          "RGBDImage.CreateFromSUNFormat"
+          "RGBDImage.CreateFromTUMFormat"
+          "Registration/RegistrationPermuteDevices.EvaluateRegistration/0"
+          "Registration/RegistrationPermuteDevices.GetInformationMatrixFromPointCloud/0"
+          "Registration/RegistrationPermuteDevices.ICPColored/0"
+          "Registration/RegistrationPermuteDevices.ICPDoppler/0"
+          "Registration/RegistrationPermuteDevices.ICPPointToPlane/0"
+          "Registration/RegistrationPermuteDevices.ICPPointToPoint/0"
+          "TPointCloudIO.ReadPointCloudFromPLY*"
+          "TPointCloudIO.ReadPointCloudFromPTS1"
+          "TPointCloudIO.ReadWritePTS"
+          "TPointCloudIO.ReadWritePointCloudAsNPZ"
+          "TPointCloudIO.ReadWritePointCloudAsPCD"
+          "TriangleMeshIO.CreateMeshFromFile"
+          "TriangleMeshIO.ReadWriteTriangleMeshPLY"
+          "TriangleMeshIO.TriangleMeshLegecyCompatibility"
+          "UniformTSDFVolume.RealData"
+          "VoxelBlockGrid/VoxelBlockGridPermuteDevices.*"
+        ]
+        ++ lib.optionals withCuda [
+          # requires CUDA device
+          "CUDAUtils.ScopedStream*"
+          "FixedRadiusIndex.*"
+          "KnnIndex.*"
+          "ParallelFor.LambdaCUDA"
+        ]
+      )
     }";
   };
 
