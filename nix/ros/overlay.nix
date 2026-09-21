@@ -28,7 +28,6 @@ in
   });
 
   # own
-  open3d = callPackage ../open3d/package.nix { };
   workspace = callPackage ./workspace.nix { };
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };
   chess-vision = callPackage ./chess_vision.nix { };

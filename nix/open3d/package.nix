@@ -3,18 +3,20 @@
   stdenv,
 
   callPackage,
+  symlinkJoin,
+  testers,
+  writeTextDir,
   fetchFromGitHub,
   fetchpatch2,
   replaceVars,
   runCommand,
-  symlinkJoin,
-  testers,
-  writeTextDir,
 
   debug ? false,
-  pythonSupport ? true,
-  realsenseSupport ? true,
-  withCuda ? true,
+  withCuda ? false,
+  withPythonBindings ? false,
+  withRealSense ? false,
+
+  pythonPackages,
 
   assimp,
   cmake,
@@ -42,7 +44,6 @@
   openblas,
   openssl,
   pkg-config,
-  pythonPackages,
   qhull,
   tbb,
   tinyobjloader,
@@ -52,6 +53,16 @@
 }:
 
 let
+  cmakeFindLibLzf = writeTextDir "cmake/Findliblzf.cmake" ''
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(liblzf QUIET IMPORTED_TARGET liblzf)
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(liblzf REQUIRED_VARS liblzf_FOUND)
+    if(NOT TARGET liblzf::liblzf)
+      add_library(liblzf::liblzf ALIAS PkgConfig::liblzf)
+     endif()
+  '';
+
   cutlass133 = callPackage ./cutlass.nix { };
   cudaToolkitRoot = symlinkJoin {
     name = "open3d-cuda-toolkit-root";
@@ -64,54 +75,11 @@ let
     ];
   };
 
-  directxHeaders = fetchFromGitHub {
-    owner = "microsoft";
-    repo = "DirectX-Headers";
-    tag = "v1.606.3";
-    hash = "sha256-D3LDBWKCi09dR21i9Z53Nox9fco4FThomNRIoKn502Q=";
-  };
-
-  directxMath = fetchFromGitHub {
-    owner = "microsoft";
-    repo = "DirectXMath";
-    tag = "may2022";
-    hash = "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=";
-  };
-
   openblas32 = openblas.override { blas64 = false; };
-
-  poissonRecon = fetchFromGitHub {
-    owner = "isl-org";
-    repo = "Open3D-PoissonRecon";
-    rev = "90f3f064e275b275cff445881ecee5a7c495c9e0";
-    hash = "sha256-0cHy3KxvhiJxVrVh/j1FcFMy60o5mQedIapZrOjKhQo=";
-  };
-
-  poissonReconInclude = runCommand "open3d-poissonrecon-include" { } ''
-    mkdir -p $out
-    ln -s ${poissonRecon} $out/PoissonRecon
-  '';
 
   stdgpu = callPackage ./stdgpu.nix { };
 
   tinygltf = callPackage ./tinygltf-v2.nix { };
-
-  uvatlas = fetchFromGitHub {
-    owner = "microsoft";
-    repo = "UVAtlas";
-    tag = "may2022";
-    hash = "sha256-BP2hkEexo1E0sL43pYKsPhCsP+t7ffupVad06ZctvXs=";
-  };
-
-  cmakeFindLibLzf = writeTextDir "cmake/Findliblzf.cmake" ''
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(liblzf QUIET IMPORTED_TARGET liblzf)
-    include(FindPackageHandleStandardArgs)
-    find_package_handle_standard_args(liblzf REQUIRED_VARS liblzf_FOUND)
-    if(NOT TARGET liblzf::liblzf)
-      add_library(liblzf::liblzf ALIAS PkgConfig::liblzf)
-     endif()
-  '';
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "open3d";
@@ -123,15 +91,48 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "isl-org";
     repo = "Open3D";
-    tag = "v0.19.0";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-jWjtfDcjDBOQHH4s2e1P8ye19JlucYIZPi0pgvOsdcA=";
   };
 
   patches =
     let
-      condaRecipeRev = "e8a6c47d141f605d0f0773a35337f58bb81790fa";
+      directxHeaders = fetchFromGitHub {
+        owner = "microsoft";
+        repo = "DirectX-Headers";
+        tag = "v1.606.3";
+        hash = "sha256-D3LDBWKCi09dR21i9Z53Nox9fco4FThomNRIoKn502Q=";
+      };
+
+      directxMath = fetchFromGitHub {
+        owner = "microsoft";
+        repo = "DirectXMath";
+        tag = "may2022";
+        hash = "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=";
+      };
+
+      poissonRecon = fetchFromGitHub {
+        owner = "isl-org";
+        repo = "Open3D-PoissonRecon";
+        rev = "90f3f064e275b275cff445881ecee5a7c495c9e0";
+        hash = "sha256-0cHy3KxvhiJxVrVh/j1FcFMy60o5mQedIapZrOjKhQo=";
+      };
+
+      poissonReconInclude = runCommand "open3d-poissonrecon-include" { } ''
+        mkdir -p $out
+        ln -s ${poissonRecon} $out/PoissonRecon
+      '';
+
+      uvatlas = fetchFromGitHub {
+        owner = "microsoft";
+        repo = "UVAtlas";
+        tag = "may2022";
+        hash = "sha256-BP2hkEexo1E0sL43pYKsPhCsP+t7ffupVad06ZctvXs=";
+      };
+
       fetchCondaRecipePatch =
         let
+          condaRecipeRev = "e8a6c47d141f605d0f0773a35337f58bb81790fa";
           baseUrl = "https://raw.githubusercontent.com/conda-forge/open3d-feedstock";
         in
         { name, hash }:
@@ -175,19 +176,22 @@ stdenv.mkDerivation (finalAttrs: {
       })
     ];
 
+  outputs = [
+    "out"
+  ]
+  ++ lib.optional withPythonBindings "python";
+
   nativeBuildInputs = [
     cmake
     git
     ninja
     pkg-config
   ]
-  ++ lib.optionals pythonSupport (
+  ++ lib.optionals withPythonBindings (
     with pythonPackages;
     [
       pip
-      pybind11-stubgen
       setuptools
-      wheel
     ]
   )
   ++ lib.optional (stdenv.hostPlatform == stdenv.buildPlatform) pythonPackages.pythonImportsCheckHook
@@ -222,9 +226,9 @@ stdenv.mkDerivation (finalAttrs: {
     zeromq
     zlib
   ]
-  ++ lib.optional realsenseSupport librealsense
+  ++ lib.optional withRealSense librealsense
   ++ lib.optional finalAttrs.finalPackage.doCheck gtest
-  ++ lib.optional pythonSupport pythonPackages.pybind11
+  ++ lib.optional withPythonBindings pythonPackages.pybind11
   ++ lib.optionals withCuda [
     cudaPackages.cccl
     cudaPackages.cuda_cudart
@@ -240,35 +244,16 @@ stdenv.mkDerivation (finalAttrs: {
     eigen
     fmt
   ]
-  ++ lib.optionals pythonSupport (
+  ++ lib.optionals withPythonBindings (
     with pythonPackages;
     [
-      dash
       numpy
-      werkzeug
-      flask
-      nbformat
-      configargparse
     ]
   );
 
   nativeCheckInputs = [
     gtest
-  ]
-  ++ lib.optional pythonSupport pythonPackages.pytestCheckHook;
-
-  checkInputs = lib.optionals pythonSupport (
-    with pythonPackages;
-    [
-      certifi
-      oauthlib
-      pytest
-      pytest-randomly
-      python
-      scipy
-      tensorboard
-    ]
-  );
+  ];
 
   preConfigure =
     let
@@ -288,8 +273,10 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postCheck
   '';
 
-  postInstall = lib.optionalString pythonSupport ''
-    python -m pip install ./lib/python_package/pip_package/*.whl --no-index --no-warn-script-location --prefix="$out" --no-cache
+
+  postInstall = lib.optionalString withPythonBindings ''
+    mkdir -p "$python"
+    cp -a lib/python_package/. "$python/"
   '';
 
   cmakeFlags =
@@ -307,8 +294,8 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "BUILD_GUI" false)
       (cmakeBool "BUILD_ISPC_MODULE" false)
       (cmakeBool "BUILD_JUPYTER_EXTENSION" false)
-      (cmakeBool "BUILD_LIBREALSENSE" realsenseSupport)
-      (cmakeBool "BUILD_PYTHON_MODULE" pythonSupport)
+      (cmakeBool "BUILD_LIBREALSENSE" withRealSense)
+      (cmakeBool "BUILD_PYTHON_MODULE" withPythonBindings)
       (cmakeBool "BUILD_PYTORCH_OPS" false)
       (cmakeBool "BUILD_SHARED_LIBS" true)
       (cmakeBool "BUILD_TENSORFLOW_OPS" false)
@@ -356,32 +343,7 @@ stdenv.mkDerivation (finalAttrs: {
   installTargets = [
     "install"
   ]
-  ++ lib.optional pythonSupport "pip-package";
-
-  disabledTestPaths =
-    let
-      baseDir = "lib/python_package";
-    in
-    [
-      # skip benchmarks
-      "${baseDir}/benchmarks/*"
-
-      # requires networking
-      "${baseDir}/test/data/test_data.py"
-      "${baseDir}/test/test_octree.py::test_octree_visualize"
-      "${baseDir}/test/test_octree.py::test_octree_voxel_grid_convert"
-      "${baseDir}/test/test_octree.py::test_locate_leaf_node"
-      "${baseDir}/test/io/test_pathlib.py::test_pathlib_support"
-      "${baseDir}/test/t/io/test_noise.py::test_apply_depth_noise_model"
-      "${baseDir}/test/test_color_map_optimization.py::test_color_map"
-
-      # requires torch even when -DBUILD_PYTORCH_OPS=OFF
-      "${baseDir}/test/ml_ops/test_ragged_tensor.py"
-
-      # The test matrix is singular. OpenBLAS GETRF reports a zero pivot for
-      # Float32, while this test assumes the factorization succeeds.
-      "${baseDir}/test/core/test_linalg.py::test_lu[dtype2-device0]"
-    ];
+  ++ lib.optional withPythonBindings "pip-package";
 
   doCheck = true;
 
@@ -393,12 +355,8 @@ stdenv.mkDerivation (finalAttrs: {
   dontStrip = debug;
   separateDebugInfo = !debug;
 
-  pythonImportsCheck = [
-    "open3d"
-  ];
-
   env = {
-    CUDAToolkit_ROOT = "${cudaToolkitRoot}";
+    CUDAToolkit_ROOT = lib.mkIf withCuda "${cudaToolkitRoot}";
     GTEST_FILTER = "-${
       builtins.concatStringsSep ":" (
         [

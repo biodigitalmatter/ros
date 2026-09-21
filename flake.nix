@@ -61,7 +61,19 @@
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath final) prev.rosPackages;
             abb_libegm = final.callPackage ./nix/abb_libegm/package.nix { };
             abb_librws = final.callPackage ./nix/abb_librws/package.nix { };
-            open3d = final.callPackage ./nix/open3d-bin/package.nix { };
+            open3d = final.callPackage ./nix/open3d/package.nix {
+              pythonPackages = final.python3Packages;
+            };
+
+            pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+              (pyFinal: pyPrev: {
+                open3d = pyFinal.callPackage ./nix/open3d/python.nix {
+                  open3d = final.open3d.override {
+                    pythonPackages = pyFinal;
+                  };
+                };
+              })
+            ];
           };
 
         perSystem =
@@ -205,7 +217,15 @@
 
             legacyPackages = self'.packages;
 
-            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null null) rosPkgScope;
+            packages = builtins.intersectAttrs (import localRosPkgsOverlayPath pkgs null null) rosPkgScope // {
+              open3d = pkgs.open3d;
+
+              open3d-python = pkgs.python3Packages.open3d;
+
+              open3d-python-cuda = pkgs.python3Packages.open3d.override {
+                withCuda = true;
+              };
+            };
 
             treefmt = {
               programs = {
