@@ -1,0 +1,8 @@
+add_library(liblzf::liblzf UNKNOWN IMPORTED)
+
+set_target_properties(liblzf::liblzf PROPERTIES
+    IMPORTED_LOCATION "@out@/lib/liblzf.so"
+    INTERFACE_INCLUDE_DIRECTORIES "@dev@/include"
+)
+
+set(liblzf_FOUND TRUE)

@@ -9,24 +9,6 @@ let
   inherit (final) callPackage;
 in
 {
-  liblzf = toplevelPackages.liblzf.overrideAttrs (old: {
-    postFixup = (old.postFixup or "") + ''
-      mkdir -p $dev/include/liblzf $dev/lib/cmake/liblzf
-      ln -s ../lzf.h $dev/include/liblzf/lzf.h
-      ln -s ../lzfP.h $dev/include/liblzf/lzfP.h
-      cat > $dev/lib/cmake/liblzf/liblzf-config.cmake <<EOF
-      if(NOT TARGET liblzf::liblzf)
-        add_library(liblzf::liblzf SHARED IMPORTED)
-        set_target_properties(liblzf::liblzf PROPERTIES
-          IMPORTED_LOCATION "${toplevelPackages.liblzf}/lib/liblzf.so.1.0.0"
-          INTERFACE_INCLUDE_DIRECTORIES "${toplevelPackages.liblzf.dev}/include"
-        )
-      endif()
-      set(liblzf_FOUND TRUE)
-      EOF
-    '';
-  });
-
   # own
   workspace = callPackage ./workspace.nix { };
   biodigitalmatter-ros = callPackage ./biodigitalmatter_ros.nix { };

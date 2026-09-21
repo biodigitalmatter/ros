@@ -5,7 +5,6 @@
   callPackage,
   symlinkJoin,
   testers,
-  writeTextDir,
   fetchFromGitHub,
   fetchpatch2,
   replaceVars,
@@ -53,16 +52,6 @@
 }:
 
 let
-  cmakeFindLibLzf = writeTextDir "cmake/Findliblzf.cmake" ''
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(liblzf QUIET IMPORTED_TARGET liblzf)
-    include(FindPackageHandleStandardArgs)
-    find_package_handle_standard_args(liblzf REQUIRED_VARS liblzf_FOUND)
-    if(NOT TARGET liblzf::liblzf)
-      add_library(liblzf::liblzf ALIAS PkgConfig::liblzf)
-     endif()
-  '';
-
   cutlass133 = callPackage ./cutlass.nix { };
   cudaToolkitRoot = symlinkJoin {
     name = "open3d-cuda-toolkit-root";
@@ -74,6 +63,23 @@ let
       cudaPackages.libnpp.static
     ];
   };
+
+  liblzf' = liblzf.overrideAttrs (oldAttrs: {
+      postFixup = (oldAttrs.postFixup or "") + ''
+        echo "out:"
+        find "$out/lib" -maxdepth 1 -name 'liblzf.so*' -ls
+
+        echo "dev:"
+        find "$dev/lib" -maxdepth 1 -name 'liblzf.so*' -ls
+
+        mkdir -p $dev/include/liblzf $dev/lib/cmake/liblzf
+        ln -s ../lzf.h $dev/include/liblzf/lzf.h
+
+        substitute ${./liblzfConfig.cmake.in} $dev/lib/cmake/liblzf/liblzfConfig.cmake \
+          --replace-fail "@out@" "$out" \
+          --replace-fail "@dev@" "$dev"
+      '';
+    });
 
   openblas32 = openblas.override { blas64 = false; };
 
@@ -208,7 +214,7 @@ stdenv.mkDerivation (finalAttrs: {
     glfw
     jsoncpp
     libjpeg
-    liblzf.dev
+    liblzf'
     libpng
     libtiff
     libusb1
@@ -331,7 +337,6 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "USE_SYSTEM_ZEROMQ" true)
       (cmakeBool "WITH_IPP" false)
 
-      (cmakeFeature "CMAKE_MODULE_PATH" "${cmakeFindLibLzf}/cmake")
 
       # BLAS
       (cmakeBool "USE_BLAS" true)
