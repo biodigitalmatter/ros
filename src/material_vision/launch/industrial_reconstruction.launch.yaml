@@ -1,0 +1,16 @@
+launch:
+  - arg:
+      name: camera_namespace
+      default: /rob1/rgbd
+  - arg:
+      name: camera_name
+      default: extruder_d405
+  - include:
+      file: $(find-pkg-share industrial_reconstructon)/launch/reconstruction.launch.xml
+      arg:
+        - name: depth_image_topic
+          value: $(var camera_namespace)/$(var camera_name)/depth/image_rect_raw
+        - name: color_image_topic
+          value: $(var camera_namespace)/$(var camera_name)/color/image_rect_raw
+        - name: camera_info_topic
+          value: $(var camera_namespace)/$(var camera_name)/depth/camera_info

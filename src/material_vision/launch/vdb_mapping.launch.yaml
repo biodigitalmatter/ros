@@ -1,0 +1,13 @@
+launch:
+  - node_container:
+      pkg: rclcpp_components
+      exec: component_container_mt
+      name: component_container
+      composable_node:
+        - pkg: vdb_mapping_ros2
+          plugin: vdb_mapping_ros2::vdb_mapping_ros2_component
+          name: vdb_mapping
+          param:
+            - from: $(find-pkg-share material_vision)/config/vdb_params.yaml
+            - name: use_dedicated_executors
+              value: true
