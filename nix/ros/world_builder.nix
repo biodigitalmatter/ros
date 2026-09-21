@@ -5,14 +5,15 @@
   buildRosPackage,
   ament-cmake,
 
+  eigen,
   geometry-msgs,
+  image-geometry,
+  microsoft-gsl,
+  openvdb,
   rclcpp,
   sensor-msgs,
-  tf2-ros,
   tf2-eigen,
-  openvdb,
-  eigen,
-  microsoft-gsl,
+  tf2-ros,
   tl-expected,
 
   # from openvdb
@@ -45,6 +46,7 @@ buildRosPackage {
     tbb.dev
     tl-expected
     zlib.dev
+    image-geometry
   ];
 
   propagatedBuildInputs = [
