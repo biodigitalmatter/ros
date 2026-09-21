@@ -53,6 +53,7 @@
 
 let
   cutlass133 = callPackage ./cutlass.nix { };
+
   cudaToolkitRoot = symlinkJoin {
     name = "open3d-cuda-toolkit-root";
     paths = [
@@ -279,7 +280,6 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postCheck
   '';
 
-
   postInstall = lib.optionalString withPythonBindings ''
     mkdir -p "$python"
     cp -a lib/python_package/. "$python/"
@@ -295,7 +295,7 @@ stdenv.mkDerivation (finalAttrs: {
     in
     [
       (cmakeBool "BUILD_COMMON_CUDA_ARCHS" false)
-      (cmakeBool "BUILD_CUDA_MODULE" true)
+      (cmakeBool "BUILD_CUDA_MODULE" withCuda)
       (cmakeBool "BUILD_EXAMPLES" false)
       (cmakeBool "BUILD_GUI" false)
       (cmakeBool "BUILD_ISPC_MODULE" false)
@@ -361,7 +361,6 @@ stdenv.mkDerivation (finalAttrs: {
   separateDebugInfo = !debug;
 
   env = {
-    CUDAToolkit_ROOT = lib.mkIf withCuda "${cudaToolkitRoot}";
     GTEST_FILTER = "-${
       builtins.concatStringsSep ":" (
         [
@@ -419,6 +418,9 @@ stdenv.mkDerivation (finalAttrs: {
         ]
       )
     }";
+  }
+  // lib.optionalAttrs withCuda {
+    CUDAToolkit_ROOT = "${cudaToolkitRoot}";
   };
 
   passthru.tests = {
