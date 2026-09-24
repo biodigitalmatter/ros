@@ -1,11 +1,20 @@
-# generated using ros2nix based on biodigitalmatter_ros/package.xml
+# generated using ros2nix
 
 [wentash/ros2nix](https://github.com/wentasah/ros2nix).
 
+## Should match `dependencies.repos`!
+
 ## Add more
 
-From ros package repo:
-
 ```sh
-nix run github:wentash/ros2nix -- --output-as-ros-pkg-name --patches --fetch $(find . -name package.xml)
+nix run github:wentasah/ros2nix -- \
+    --output-as-nix-pkg-name \
+    --output-as-pkg-dir \
+    --patches \
+    --fetch flake-inputs \
+    --flake \
+    --no-overlay \
+    --no-shell \
+    --nixfmt \
+    $(find . -name package.xml)
 ```
