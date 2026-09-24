@@ -5,7 +5,6 @@
 
   depth-image-proc,
   launch-ros,
-  # open3d,
   pcl-ros,
   python3Packages,
   realsense2-camera,
@@ -27,18 +26,20 @@ buildRosPackage {
     inherit
       depth-image-proc
       launch-ros
-      # open3d
       pcl-ros
       realsense2-camera
       realsense2-description
       sensor-msgs
       tf2-ros
       ;
+
+    python-open3d = python3Packages.open3d.override {
+      withCuda = true;
+    };
   };
 
   nativeCheckInputs = [
     python3Packages.pytest
-    # open3d
   ];
 
   meta = {
