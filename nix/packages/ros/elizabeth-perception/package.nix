@@ -14,7 +14,7 @@ buildRosPackage {
   pname = "ros-jazzy-elizabeth-perception";
   version = "0.1.0";
 
-  src = ../../src/elizabeth_perception;
+  src = ../../../../src/elizabeth_perception;
 
   buildType = "ament_cmake";
 

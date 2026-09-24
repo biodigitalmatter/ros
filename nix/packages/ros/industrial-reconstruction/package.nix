@@ -49,7 +49,8 @@ buildRosPackage rec {
     tf2-msgs
     tf2-ros
     visualization-msgs
-  ] ++ (with python3Packages; [
+  ]
+  ++ (with python3Packages; [
     open3d
     pyquaternion
   ]);

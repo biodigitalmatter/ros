@@ -11,7 +11,7 @@ buildRosPackage {
   pname = "ros-jazzy-elizabeth-perception_filters";
   version = "0.1.0";
 
-  src = ../../src/elizabeth_perception_filters;
+  src = ../../../../src/elizabeth_perception_filters;
 
   buildType = "ament_python";
 

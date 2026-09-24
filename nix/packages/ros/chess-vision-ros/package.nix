@@ -19,7 +19,7 @@ buildRosPackage {
   pname = "ros-jazzy-chess-vision-ros";
   version = "0.1.0";
 
-  src = ../../src/chess_vision_ros;
+  src = ../../../../src/chess_vision_ros;
 
   buildType = "ament_python";
 

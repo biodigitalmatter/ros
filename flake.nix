@@ -42,7 +42,7 @@
       { ... }:
       let
         rosDistro = "jazzy";
-        localRosPkgsOverlayPath = ./nix/ros/overlay.nix;
+        localRosPkgsOverlayPath = ./nix/overlays/ros.nix;
       in
       {
         imports = [
@@ -65,15 +65,15 @@
           in
           final: prev: {
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath final) prev.rosPackages;
-            abb_libegm = final.callPackage ./nix/abb_libegm/package.nix { };
-            abb_librws = final.callPackage ./nix/abb_librws/package.nix { };
-            open3d = final.callPackage ./nix/open3d/package.nix {
+            abb_libegm = final.callPackage ./nix/packages/abb_libegm/package.nix { };
+            abb_librws = final.callPackage ./nix/packages/abb_librws/package.nix { };
+            open3d = final.callPackage ./nix/packages/open3d/package.nix {
               pythonPackages = final.python3Packages;
             };
 
             pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-              (pyFinal: pyPrev: {
-                open3d = pyFinal.callPackage ./nix/open3d/python.nix {
+              (pyFinal: _pyPrev: {
+                open3d = pyFinal.callPackage ./nix/packages/open3d/python.nix {
                   open3d = final.open3d.override {
                     pythonPackages = pyFinal;
                   };

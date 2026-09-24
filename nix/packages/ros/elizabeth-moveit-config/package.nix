@@ -15,7 +15,7 @@ buildRosPackage {
   pname = "ros-jazzy-elizabeth-moveit-config";
   version = "0.1.0";
 
-  src = ../../src/elizabeth_moveit_config;
+  src = ../../../../src/elizabeth_moveit_config;
 
   buildType = "ament_cmake";
 

@@ -73,26 +73,25 @@ buildPythonPackage {
     "open3d"
   ];
 
-  disabledTestPaths =
-    [
-      # skip benchmarks
-      "benchmarks/*"
+  disabledTestPaths = [
+    # skip benchmarks
+    "benchmarks/*"
 
-      # requires networking
-      "test/data/test_data.py"
-      "test/test_octree.py::test_octree_visualize"
-      "test/test_octree.py::test_octree_voxel_grid_convert"
-      "test/test_octree.py::test_locate_leaf_node"
-      "test/io/test_pathlib.py::test_pathlib_support"
-      "test/t/io/test_noise.py::test_apply_depth_noise_model"
-      "test/test_color_map_optimization.py::test_color_map"
+    # requires networking
+    "test/data/test_data.py"
+    "test/test_octree.py::test_octree_visualize"
+    "test/test_octree.py::test_octree_voxel_grid_convert"
+    "test/test_octree.py::test_locate_leaf_node"
+    "test/io/test_pathlib.py::test_pathlib_support"
+    "test/t/io/test_noise.py::test_apply_depth_noise_model"
+    "test/test_color_map_optimization.py::test_color_map"
 
-      # requires torch even when -DBUILD_PYTORCH_OPS=OFF
-      "test/ml_ops/test_ragged_tensor.py"
+    # requires torch even when -DBUILD_PYTORCH_OPS=OFF
+    "test/ml_ops/test_ragged_tensor.py"
 
-      # The test matrix is singular. OpenBLAS GETRF reports a zero pivot for
-      # Float32, while this test assumes the factorization succeeds.
-      "test/core/test_linalg.py::test_lu[dtype2-device0]"
-    ];
+    # The test matrix is singular. OpenBLAS GETRF reports a zero pivot for
+    # Float32, while this test assumes the factorization succeeds.
+    "test/core/test_linalg.py::test_lu[dtype2-device0]"
+  ];
 
 }

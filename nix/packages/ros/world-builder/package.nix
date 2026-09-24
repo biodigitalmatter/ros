@@ -32,7 +32,7 @@ buildRosPackage {
   pname = "ros-jazzy-world-builder";
   version = "0.1.0";
 
-  src = ../../src/world_builder;
+  src = ../../../../src/world_builder;
 
   buildType = "ament_cmake";
 

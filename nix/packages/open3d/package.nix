@@ -66,21 +66,21 @@ let
   };
 
   liblzf' = liblzf.overrideAttrs (oldAttrs: {
-      postFixup = (oldAttrs.postFixup or "") + ''
-        echo "out:"
-        find "$out/lib" -maxdepth 1 -name 'liblzf.so*' -ls
+    postFixup = (oldAttrs.postFixup or "") + ''
+      echo "out:"
+      find "$out/lib" -maxdepth 1 -name 'liblzf.so*' -ls
 
-        echo "dev:"
-        find "$dev/lib" -maxdepth 1 -name 'liblzf.so*' -ls
+      echo "dev:"
+      find "$dev/lib" -maxdepth 1 -name 'liblzf.so*' -ls
 
-        mkdir -p $dev/include/liblzf $dev/lib/cmake/liblzf
-        ln -s ../lzf.h $dev/include/liblzf/lzf.h
+      mkdir -p $dev/include/liblzf $dev/lib/cmake/liblzf
+      ln -s ../lzf.h $dev/include/liblzf/lzf.h
 
-        substitute ${./liblzfConfig.cmake.in} $dev/lib/cmake/liblzf/liblzfConfig.cmake \
-          --replace-fail "@out@" "$out" \
-          --replace-fail "@dev@" "$dev"
-      '';
-    });
+      substitute ${./liblzfConfig.cmake.in} $dev/lib/cmake/liblzf/liblzfConfig.cmake \
+        --replace-fail "@out@" "$out" \
+        --replace-fail "@dev@" "$dev"
+    '';
+  });
 
   openblas32 = openblas.override { blas64 = false; };
 
@@ -336,7 +336,6 @@ stdenv.mkDerivation (finalAttrs: {
       (cmakeBool "USE_SYSTEM_VTK" true)
       (cmakeBool "USE_SYSTEM_ZEROMQ" true)
       (cmakeBool "WITH_IPP" false)
-
 
       # BLAS
       (cmakeBool "USE_BLAS" true)
