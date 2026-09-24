@@ -20,8 +20,8 @@ buildRosPackage rec {
   src = fetchFromGitHub {
     owner = "ros-industrial";
     repo = "industrial_reconstruction";
-    rev = "05f4215510fbc33d6a216774aea85505efa49e63";
-    sha256 = "07sfb28j06cmwv4816js6p48bpasclg6qn4v59ms194k7g44q8dk";
+    rev = "90fdc690be9230480614b5cf96cc39c873de292c";
+    hash = "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=";
   };
 
   buildType = "ament_cmake";

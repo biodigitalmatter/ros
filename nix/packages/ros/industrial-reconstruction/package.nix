@@ -26,7 +26,7 @@ buildRosPackage rec {
     owner = "ros-industrial";
     repo = "industrial_reconstruction";
     rev = "90fdc690be9230480614b5cf96cc39c873de292c";
-    sha256 = "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=";
+    hash = "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=";
   };
 
   buildType = "ament_python";
