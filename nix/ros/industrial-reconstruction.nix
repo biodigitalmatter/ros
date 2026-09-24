@@ -10,7 +10,7 @@
   launch,
   launch-ros,
   message-filters,
-  open3d,
+  python3Packages,
   rclpy,
   sensor-msgs,
   std-msgs,
@@ -25,13 +25,17 @@ buildRosPackage rec {
   src = fetchFromGitHub {
     owner = "ros-industrial";
     repo = "industrial_reconstruction";
-    rev = "05f4215510fbc33d6a216774aea85505efa49e63";
-    sha256 = "07sfb28j06cmwv4816js6p48bpasclg6qn4v59ms194k7g44q8dk";
+    rev = "90fdc690be9230480614b5cf96cc39c873de292c";
+    sha256 = "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=";
   };
 
   buildType = "ament_python";
   sourceRoot = "${src.name}/industrial_reconstruction/";
+
+  nativeBuildInputs = [ ament-cmake ];
+
   buildInputs = [ ament-cmake ];
+
   propagatedBuildInputs = [
     cv-bridge
     geometry-msgs
@@ -39,15 +43,16 @@ buildRosPackage rec {
     launch
     launch-ros
     message-filters
-    open3d
     rclpy
     sensor-msgs
     std-msgs
     tf2-msgs
     tf2-ros
     visualization-msgs
-  ];
-  nativeBuildInputs = [ ament-cmake ];
+  ] ++ (with python3Packages; [
+    open3d
+    pyquaternion
+  ]);
 
   meta = {
     description = "A ROS2 reconstruction utility leveraging TSDF from Open3D";

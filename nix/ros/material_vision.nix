@@ -4,6 +4,7 @@
   ament-cmake,
 
   depth-image-proc,
+  industrial-reconstruction,
   launch-ros,
   pcl-ros,
   python3Packages,
@@ -31,6 +32,7 @@ buildRosPackage {
       realsense2-description
       sensor-msgs
       tf2-ros
+      industrial-reconstruction
       ;
 
     python-open3d = python3Packages.open3d.override {
