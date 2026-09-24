@@ -14,20 +14,16 @@ buildRosPackage {
   src = ../../../../src/elizabeth_perception_filters;
 
   buildType = "ament_python";
-
   propagatedBuildInputs = [
     python3Packages.numpy
     python3Packages.pytest
     rclpy
     sensor-msgs
   ];
-
   passthru.workspacePackages = {
     inherit launch-pytest;
   };
-
   nativeCheckInputs = [ python3Packages.pytest ];
-
   meta = {
     description = "perception filters";
     license = with lib.licenses; [ asl20 ];

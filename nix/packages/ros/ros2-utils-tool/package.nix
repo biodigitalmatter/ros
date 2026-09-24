@@ -22,7 +22,7 @@ buildRosPackage {
     owner = "MaxFleur";
     repo = "ros2_utils_tool";
     rev = "v0.13.0";
-    sha256 = "sha256-JNg643dyvBnDTBMzxHDCpJLN+ENpR3Kee7KCFCCdPJo";
+    hash = "sha256-JNg643dyvBnDTBMzxHDCpJLN+ENpR3Kee7KCFCCdPJo";
   };
 
   buildType = "ament_cmake";

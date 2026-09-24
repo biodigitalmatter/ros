@@ -16,7 +16,6 @@ buildRosPackage {
   src = ../../../../src/biodigitalmatter_ros;
 
   buildType = "ament_python";
-
   passthru.workspacePackages = {
     inherit
       abb-rws-client
@@ -26,11 +25,9 @@ buildRosPackage {
       rosbridge-server
       ;
   };
-
   nativeCheckInputs = [
     python3Packages.pytest
   ];
-
   meta = {
     description = "ROS setup for biodigital matter lab";
     license = with lib.licenses; [ mit ];

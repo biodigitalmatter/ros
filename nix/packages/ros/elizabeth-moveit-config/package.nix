@@ -18,9 +18,7 @@ buildRosPackage {
   src = ../../../../src/elizabeth_moveit_config;
 
   buildType = "ament_cmake";
-
   nativebuildinputs = [ ament-cmake ];
-
   passthru.workspacePackages = {
     inherit
       controller-manager
@@ -31,9 +29,9 @@ buildRosPackage {
       xacro
       ;
   };
-
   meta = {
     description = "MoveIt2 config for the Elizabeth robot platform";
     license = with lib.licenses; [ asl20 ];
   };
+  buildInputs = [ ament-cmake ];
 }

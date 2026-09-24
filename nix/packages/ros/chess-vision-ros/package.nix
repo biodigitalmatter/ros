@@ -22,7 +22,6 @@ buildRosPackage {
   src = ../../../../src/chess_vision_ros;
 
   buildType = "ament_python";
-
   propagatedBuildInputs = [
     chess-vision
     cv-bridge
@@ -33,7 +32,6 @@ buildRosPackage {
     rclpy
     sensor-msgs
   ];
-
   passthru.workspacePackages = {
     inherit
       launch-pytest
@@ -43,11 +41,9 @@ buildRosPackage {
       ros2bag
       ;
   };
-
   nativeCheckInputs = [
     python3Packages.pytest
   ];
-
   meta = {
     description = "ROS wrapper for chess_vision";
     license = with lib.licenses; [ asl20 ];

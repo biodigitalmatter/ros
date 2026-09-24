@@ -13,7 +13,7 @@
   std-msgs,
   tf2-ros,
 }:
-buildRosPackage rec {
+buildRosPackage {
   pname = "ros-jazzy-industrial-reconstruction-msgs";
   version = "0.0.0";
 
@@ -24,12 +24,20 @@ buildRosPackage rec {
     hash = "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=";
   };
 
+  sourceRoot = "source/industrial_reconstruction_msgs";
+
   buildType = "ament_cmake";
-  sourceRoot = "${src.name}/industrial_reconstruction_msgs/";
+
+  nativeBuildInputs = [
+    ament-cmake
+    rosidl-default-generators
+  ];
+
   buildInputs = [
     ament-cmake
     rosidl-default-generators
   ];
+
   propagatedBuildInputs = [
     geometry-msgs
     launch
@@ -38,10 +46,6 @@ buildRosPackage rec {
     rosidl-default-runtime
     std-msgs
     tf2-ros
-  ];
-  nativeBuildInputs = [
-    ament-cmake
-    rosidl-default-generators
   ];
 
   meta = {

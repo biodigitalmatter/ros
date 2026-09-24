@@ -12,7 +12,10 @@
   openvdb,
   rclcpp,
   rcpputils,
+  rosidl-default-generators,
+  rosidl-default-runtime,
   sensor-msgs,
+  std-srvs,
   tf2-eigen,
   tf2-ros,
   tl-expected,
@@ -36,7 +39,10 @@ buildRosPackage {
 
   buildType = "ament_cmake";
 
-  nativeBuildInputs = [ ament-cmake ];
+  nativeBuildInputs = [
+    ament-cmake
+    rosidl-default-generators
+  ];
 
   buildInputs = [
     boost
@@ -54,6 +60,8 @@ buildRosPackage {
   propagatedBuildInputs = [
     geometry-msgs
     rclcpp
+    rosidl-default-runtime
+    std-srvs
     sensor-msgs
     tf2-ros
     tf2-eigen

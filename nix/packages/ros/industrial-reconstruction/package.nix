@@ -3,7 +3,7 @@
   lib,
   buildRosPackage,
   fetchFromGitHub,
-  ament-cmake,
+
   cv-bridge,
   geometry-msgs,
   industrial-reconstruction-msgs,
@@ -18,7 +18,7 @@
   tf2-ros,
   visualization-msgs,
 }:
-buildRosPackage rec {
+buildRosPackage {
   pname = "ros-jazzy-industrial-reconstruction";
   version = "0.0.0";
 
@@ -30,11 +30,7 @@ buildRosPackage rec {
   };
 
   buildType = "ament_python";
-  sourceRoot = "${src.name}/industrial_reconstruction/";
-
-  nativeBuildInputs = [ ament-cmake ];
-
-  buildInputs = [ ament-cmake ];
+  sourceRoot = "source/industrial_reconstruction";
 
   propagatedBuildInputs = [
     cv-bridge
@@ -51,7 +47,9 @@ buildRosPackage rec {
     visualization-msgs
   ]
   ++ (with python3Packages; [
-    open3d
+    (open3d.override {
+      withCuda = true;
+    })
     pyquaternion
   ]);
 

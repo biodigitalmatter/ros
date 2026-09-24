@@ -33,7 +33,7 @@ let
 in
 buildPythonPackage {
   inherit (open3d) version;
-  pname = if withCuda then "open3d" else "open3d-cpu";
+  pname = "open3d";
 
   src = pythonSource;
 

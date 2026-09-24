@@ -2,7 +2,6 @@
   lib,
   buildRosPackage,
   ament-cmake,
-
   depth-image-proc,
   industrial-reconstruction,
   launch-ros,
@@ -20,9 +19,7 @@ buildRosPackage {
   src = ../../../../src/material_vision;
 
   buildType = "ament_python";
-
   nativeBuildInputs = [ ament-cmake ];
-
   passthru.workspacePackages = {
     inherit
       depth-image-proc
@@ -39,11 +36,9 @@ buildRosPackage {
       withCuda = true;
     };
   };
-
   nativeCheckInputs = [
     python3Packages.pytest
   ];
-
   meta = {
     description = "Build a model of what you're building";
     license = with lib.licenses; [ asl20 ];

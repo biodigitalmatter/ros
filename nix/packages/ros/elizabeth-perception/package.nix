@@ -17,9 +17,7 @@ buildRosPackage {
   src = ../../../../src/elizabeth_perception;
 
   buildType = "ament_cmake";
-
   nativeBuildInputs = [ ament-cmake ];
-
   passthru.workspacePackages = {
     inherit
       depth-image-proc
@@ -30,7 +28,6 @@ buildRosPackage {
       xacro
       ;
   };
-
   meta = {
     description = "setup for cameras on elizabeth (IRB 4600 on caterpillar tracks)";
     license = with lib.licenses; [ asl20 ];
