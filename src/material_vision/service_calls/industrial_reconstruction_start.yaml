@@ -1,0 +1,23 @@
+# USAGE:
+#
+# ros2 service call /start_reconstruction industrial_reconstruction_msgs/srv/StartReconstruction --stdin <$(ros2 pkg prefix --share material_vision)/service_calls/industrial_reconstruction_start.yaml
+tracking_frame: extruder_d405_depth_optical_frame
+relative_frame: base_footprint
+translation_distance: 0.0
+rotational_distance: 0.0
+live: true
+tsdf_params:
+  voxel_length: 0.005
+  sdf_trunc: 0.025
+  min_box_values:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  max_box_values:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+rgbd_params:
+  depth_scale: 1000.0
+  depth_trunc: 2
+  convert_rgb_to_intensity: false

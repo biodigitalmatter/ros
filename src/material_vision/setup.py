@@ -13,6 +13,7 @@ _ = setup(
         ("share/" + package_name, ["package.xml"]),
         ("share/" + package_name + "/config", glob.glob("config/*")),
         ("share/" + package_name + "/launch", glob.glob("launch/*")),
+        ("share/" + package_name + "/service_calls", glob.glob("service_calls/*")),
     ],
     install_requires=["setuptools"],
     zip_safe=True,

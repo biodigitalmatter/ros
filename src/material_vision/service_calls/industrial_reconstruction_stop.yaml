@@ -1,0 +1,7 @@
+# USAGE:
+#
+# ros2 service call /stop_reconstruction industrial_reconstruction_msgs/srv/StopReconstruction --stdin <$(ros2 pkg prefix --share material_vision)/service_calls/industrial_reconstruction_stop.yaml
+archive_directory: "/tmp/ind_rec"
+mesh_filepath: "/tmp/ind_rec/mesh.ply"
+normal_filters: []
+min_num_faces: 0
