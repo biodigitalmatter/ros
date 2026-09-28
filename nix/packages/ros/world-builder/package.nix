@@ -60,6 +60,7 @@ buildRosPackage {
 
   propagatedBuildInputs = [
     geometry-msgs
+    openvdb
     # open3d-conversions
     rclcpp
     rosidl-default-runtime
