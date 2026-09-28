@@ -28,11 +28,6 @@ launch:
             - name: robot_description
               value: $(var robot_description)
       - node:
-          pkg: tf2_ros
-          exec: static_transform_publisher
-          name: $(var camera_name)_tool0_tf_publisher
-          args: "--x 0.27275 --y 0.025 --z 0.058 --yaw 0.2617994 --pitch 0  --roll 0 --frame-id $(var parent_frame) --child-frame-id $(var camera_name)_bottom_screw_frame"
-      - node:
           pkg: realsense2_camera
           exec: realsense2_camera_node
           name: $(var camera_name)

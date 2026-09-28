@@ -19,6 +19,7 @@
       name="${camera_name}"
       use_nominal_extrinsics="$(arg use_nominal_extrinsics)"
       >
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <!-- TODO: Needs calibration -->
+    <origin xyz="0.27275 0.025 0.058" rpy="0 0 0.2617994"/>
   </xacro:sensor_d405>
 </robot>
