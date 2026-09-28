@@ -17,6 +17,10 @@ buildRosPackage {
 
   src = packageSources.abb_egm_rws_managers;
 
+  patches = [
+    ./debug-system-info-error.patch
+  ];
+
   buildType = "cmake";
   buildInputs = [ cmake ];
   propagatedBuildInputs = [
