@@ -6,7 +6,10 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:denful/import-tree";
-    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+    nix-ros-overlay = {
+      url = "github:lopsided98/nix-ros-overlay/master";
+      inputs.flake-utils.inputs.systems.follows = "systems";
+    };
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,6 +35,150 @@
 
     nixpkgs-not-upstreamable = {
       url = "git+https://git.sr.ht/~tetov/nixpkgs-not-upstreamable";
+      flake = false;
+    };
+
+    # package sources
+    abb_libegm = {
+      type = "github";
+      owner = "ros-industrial";
+      repo = "abb_libegm";
+      rev = "2c9350abfb67131cae796805fed8cd6eeb2ab7f9";
+      flake = false;
+    };
+
+    abb_librws = {
+      type = "github";
+      owner = "ros-industrial";
+      repo = "abb_librws";
+      rev = "9ba08371482f3975f364011db9b1368fa0fc6b32";
+      flake = false;
+    };
+
+    # ROS packages
+    abb_egm_rws_managers = {
+      type = "github";
+      owner = "ros-industrial";
+      repo = "abb_egm_rws_managers";
+      rev = "7e554e53b415df1bbd743392b84a055c499b63d2";
+      flake = false;
+    };
+
+    abb_ros2 = {
+      type = "github";
+      owner = "PickNikRobotics";
+      repo = "abb_ros2";
+      rev = "05cbabe774ef026b1cd36fe6b253b55f55e16340";
+      # ref = "rolling";
+      flake = false;
+    };
+
+    abb_ros2_msgs = {
+      type = "github";
+      owner = "gbartyzel";
+      repo = "abb_ros2_msgs";
+      rev = "071bb1fc2148a7cd850a1ff550c5987e67da6bdd";
+      # ref = "rolling";
+      flake = false;
+    };
+
+    compas_rrc_ros = {
+      type = "github";
+      owner = "biodigitalmatter";
+      repo = "compas_rrc_ros";
+      rev = "f9e3cb5e2a2b100486f47f044c3702d77b9026a9"; # ros2
+      # ref = "ros2";
+      flake = false;
+    };
+
+    industrial_reconstruction = {
+      type = "github";
+      owner = "ros-industrial";
+      repo = "industrial_reconstruction";
+      rev = "90fdc690be9230480614b5cf96cc39c873de292c";
+      # ref = "main";
+      flake = false;
+    };
+
+    perception_open3d = {
+      type = "github";
+      owner = "ros-perception";
+      repo = "perception_open3d";
+      ref = "0.1.2";
+      flake = false;
+    };
+
+    ros2_utils_tool = {
+      type = "github";
+      owner = "MaxFleur";
+      repo = "ros2_utils_tool";
+      ref = "v0.13.0";
+      flake = false;
+    };
+
+    # open3d and deps
+    open3d = {
+      type = "github";
+      owner = "isl-org";
+      repo = "Open3D";
+      ref = "v0.19.0";
+      flake = false;
+    };
+
+    cutlass133 = {
+      type = "github";
+      owner = "NVIDIA";
+      repo = "cutlass";
+      ref = "v1.3.3";
+      flake = false;
+    };
+
+    directx-headers16063 = {
+      type = "github";
+      owner = "microsoft";
+      repo = "DirectX-Headers";
+      ref = "v1.606.3";
+      flake = false;
+    };
+
+    directx-math = {
+      type = "github";
+      owner = "microsoft";
+      repo = "DirectXMath";
+      ref = "may2022";
+      flake = false;
+    };
+
+    poisson-recon = {
+      type = "github";
+      owner = "isl-org";
+      repo = "Open3D-PoissonRecon";
+      rev = "90f3f064e275b275cff445881ecee5a7c495c9e0";
+      flake = false;
+    };
+
+    stdgpu = {
+      type = "github";
+      owner = "stotko";
+      repo = "stdgpu";
+      rev = "2588168d226bd17229dbf58d821549580791089d";
+      flake = false;
+    };
+
+    tinygltf297 = {
+      type = "github";
+      owner = "syoyo";
+      repo = "tinygltf";
+      # open3D uses 2.4
+      ref = "v2.9.7";
+      flake = false;
+    };
+
+    uvatlas = {
+      type = "github";
+      owner = "microsoft";
+      repo = "UVAtlas";
+      ref = "may2022";
       flake = false;
     };
   };
@@ -65,6 +212,31 @@
           in
           final: prev: {
             rosPackages = applyDistroOverlay (import localRosPkgsOverlayPath final) prev.rosPackages;
+            packageSources = {
+              inherit (inputs)
+                abb_libegm
+                abb_librws
+
+                # ros packages
+                abb_egm_rws_managers
+                abb_ros2
+                abb_ros2_msgs
+                compas_rrc_ros
+                industrial_reconstruction
+                perception_open3d
+                ros2_utils_tool
+
+                # open3d and deps
+                cutlass133
+                directx-headers16063
+                directx-math
+                open3d
+                poisson-recon
+                stdgpu
+                tinygltf297
+                uvatlas
+                ;
+            };
             abb_libegm = final.callPackage ./nix/packages/abb_libegm/package.nix { };
             abb_librws = final.callPackage ./nix/packages/abb_librws/package.nix { };
             open3d = final.callPackage ./nix/packages/open3d/package.nix {

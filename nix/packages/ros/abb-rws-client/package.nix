@@ -1,7 +1,8 @@
 {
-  lib,
-  fetchFromGitHub,
   buildRosPackage,
+  lib,
+  packageSources,
+
   abb-egm-msgs,
   abb-egm-rws-managers,
   abb-hardware-interface,
@@ -21,13 +22,7 @@ buildRosPackage {
   pname = "ros-jazzy-abb-rws-client";
   version = "0-unstable-2025-07-14";
 
-  src = fetchFromGitHub {
-    owner = "PickNikRobotics";
-    repo = "abb_ros2";
-    rev = "05cbabe774ef026b1cd36fe6b253b55f55e16340";
-    hash = "sha256-kr9nyK57OaYjasZGzH+DHFinwqPavxtpnklJpvHjqSQ=";
-  };
-
+  src = packageSources.abb_ros2;
   sourceRoot = "source/abb_rws_client";
 
   buildType = "ament_cmake";

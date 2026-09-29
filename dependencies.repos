@@ -17,7 +17,7 @@ repositories:
   abb_ros2:
     type: git
     url: https://github.com/PickNikRobotics/abb_ros2
-    version: 7d0eb930dfbfc64bc620bbbd70dd31fdd512ee68 # rolling
+    version: 05cbabe774ef026b1cd36fe6b253b55f55e16340 # rolling
   abb_libegm:
     type: git
     url: https://github.com/ros-industrial/abb_libegm.git

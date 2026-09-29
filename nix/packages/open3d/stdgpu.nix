@@ -1,7 +1,8 @@
 {
+  packageSources,
+
   cmake,
   cudaPackages,
-  fetchFromGitHub,
   ninja,
   stdenv,
 }:
@@ -10,12 +11,7 @@ stdenv.mkDerivation {
   pname = "stdgpu";
   version = "1.3.0-unstable-2024-11-28";
 
-  src = fetchFromGitHub {
-    owner = "stotko";
-    repo = "stdgpu";
-    rev = "2588168d226bd17229dbf58d821549580791089d";
-    hash = "sha256-gpV0q0+9M/+HfZU8z2mKr608ghNbKMvExBHrpvWBYC0=";
-  };
+  src = packageSources.stdgpu;
 
   nativeBuildInputs = [
     cmake

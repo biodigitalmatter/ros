@@ -1,11 +1,11 @@
 {
+  packageSources,
   lib,
   stdenv,
 
   callPackage,
   symlinkJoin,
   testers,
-  fetchFromGitHub,
   fetchpatch2,
   replaceVars,
   runCommand,
@@ -52,7 +52,7 @@
 }:
 
 let
-  cutlass133 = callPackage ./cutlass.nix { };
+  cutlass133 = callPackage ./cutlass133.nix { };
 
   cudaToolkitRoot = symlinkJoin {
     name = "open3d-cuda-toolkit-root";
@@ -86,7 +86,7 @@ let
 
   stdgpu = callPackage ./stdgpu.nix { };
 
-  tinygltf = callPackage ./tinygltf-v2.nix { };
+  tinygltf = callPackage ./tinygltf297.nix { };
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "open3d";
@@ -95,47 +95,21 @@ stdenv.mkDerivation (finalAttrs: {
   __structuredAttrs = true;
   strictDeps = true;
 
-  src = fetchFromGitHub {
-    owner = "isl-org";
-    repo = "Open3D";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-jWjtfDcjDBOQHH4s2e1P8ye19JlucYIZPi0pgvOsdcA=";
-  };
+  src = packageSources.open3d;
 
   patches =
     let
-      directxHeaders = fetchFromGitHub {
-        owner = "microsoft";
-        repo = "DirectX-Headers";
-        tag = "v1.606.3";
-        hash = "sha256-D3LDBWKCi09dR21i9Z53Nox9fco4FThomNRIoKn502Q=";
-      };
-
-      directxMath = fetchFromGitHub {
-        owner = "microsoft";
-        repo = "DirectXMath";
-        tag = "may2022";
-        hash = "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=";
-      };
-
-      poissonRecon = fetchFromGitHub {
-        owner = "isl-org";
-        repo = "Open3D-PoissonRecon";
-        rev = "90f3f064e275b275cff445881ecee5a7c495c9e0";
-        hash = "sha256-0cHy3KxvhiJxVrVh/j1FcFMy60o5mQedIapZrOjKhQo=";
-      };
+      inherit (packageSources)
+        directx-headers16063
+        directx-math
+        poisson-recon
+        uvatlas
+        ;
 
       poissonReconInclude = runCommand "open3d-poissonrecon-include" { } ''
         mkdir -p $out
-        ln -s ${poissonRecon} $out/PoissonRecon
+        ln -s ${poisson-recon} $out/PoissonRecon
       '';
-
-      uvatlas = fetchFromGitHub {
-        owner = "microsoft";
-        repo = "UVAtlas";
-        tag = "may2022";
-        hash = "sha256-BP2hkEexo1E0sL43pYKsPhCsP+t7ffupVad06ZctvXs=";
-      };
 
       fetchCondaRecipePatch =
         let
@@ -152,7 +126,8 @@ stdenv.mkDerivation (finalAttrs: {
       ./find_tinygltf.patch
       ./qhull-link-qhullstatic_r.patch
       (replaceVars ./fix-uvatlas-sources.patch {
-        inherit directxHeaders directxMath uvatlas;
+        inherit directx-math uvatlas;
+        directx-headers = directx-headers16063;
       })
       (replaceVars ./use-system-poissonrecon.patch {
         inherit poissonReconInclude;

@@ -1,6 +1,7 @@
 {
+  packageSources,
   buildRosPackage,
-  fetchFromGitHub,
+
   ament-cmake,
   catch-ros2,
   cv-bridge,
@@ -18,12 +19,7 @@ buildRosPackage {
   pname = "ros-jazzy-ros2-utils-tool";
   version = "0.13.0";
 
-  src = fetchFromGitHub {
-    owner = "MaxFleur";
-    repo = "ros2_utils_tool";
-    rev = "v0.13.0";
-    hash = "sha256-JNg643dyvBnDTBMzxHDCpJLN+ENpR3Kee7KCFCCdPJo";
-  };
+  src = packageSources.ros2_utils_tool;
 
   buildType = "ament_cmake";
   buildInputs = [

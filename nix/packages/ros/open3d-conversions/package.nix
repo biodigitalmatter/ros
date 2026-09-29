@@ -1,7 +1,7 @@
 {
+  packageSources,
   lib,
   buildRosPackage,
-  fetchFromGitHub,
 
   ament-cmake,
   eigen,
@@ -11,16 +11,11 @@
   sensor-msgs,
 }:
 
-buildRosPackage rec {
+buildRosPackage {
   pname = "ros-jazzy-open3d-conversions";
   version = "0.1.2";
 
-  src = fetchFromGitHub {
-    owner = "ros-perception";
-    repo = "perception_open3d";
-    tag = version;
-    sha256 = "sha256-BR9Roqcw1UD+E++hn/vhZKF/cqfvzYoYWcYG6vdZf0Q=";
-  };
+  src = packageSources.perception_open3d;
 
   buildType = "ament_cmake";
 
@@ -37,7 +32,6 @@ buildRosPackage rec {
   ];
 
   meta = {
-    description = "The ros2_utils_tool package";
     license = lib.licenses.asl20;
   };
 }

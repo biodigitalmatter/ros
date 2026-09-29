@@ -1,5 +1,158 @@
 {
   "nodes": {
+    "abb_egm_rws_managers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1748369883,
+        "narHash": "sha256-kmi/g3Bj1gMvgWwh7LPuXazx7J3p6gl3Jvs3jRBmxY4=",
+        "owner": "ros-industrial",
+        "repo": "abb_egm_rws_managers",
+        "rev": "7e554e53b415df1bbd743392b84a055c499b63d2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ros-industrial",
+        "repo": "abb_egm_rws_managers",
+        "rev": "7e554e53b415df1bbd743392b84a055c499b63d2",
+        "type": "github"
+      }
+    },
+    "abb_libegm": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677052966,
+        "narHash": "sha256-jZ5MDYwviID55ltcnmM0XlWkvubRizHB7KCeF6JuQdg=",
+        "owner": "ros-industrial",
+        "repo": "abb_libegm",
+        "rev": "2c9350abfb67131cae796805fed8cd6eeb2ab7f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ros-industrial",
+        "repo": "abb_libegm",
+        "rev": "2c9350abfb67131cae796805fed8cd6eeb2ab7f9",
+        "type": "github"
+      }
+    },
+    "abb_librws": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677053083,
+        "narHash": "sha256-+VSc5sjh7pGqsIpFJt3AWcO7z3KEZ4dPflHsmZ1R4CU=",
+        "owner": "ros-industrial",
+        "repo": "abb_librws",
+        "rev": "9ba08371482f3975f364011db9b1368fa0fc6b32",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ros-industrial",
+        "repo": "abb_librws",
+        "rev": "9ba08371482f3975f364011db9b1368fa0fc6b32",
+        "type": "github"
+      }
+    },
+    "abb_ros2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1752522800,
+        "narHash": "sha256-kr9nyK57OaYjasZGzH+DHFinwqPavxtpnklJpvHjqSQ=",
+        "owner": "PickNikRobotics",
+        "repo": "abb_ros2",
+        "rev": "05cbabe774ef026b1cd36fe6b253b55f55e16340",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PickNikRobotics",
+        "repo": "abb_ros2",
+        "rev": "05cbabe774ef026b1cd36fe6b253b55f55e16340",
+        "type": "github"
+      }
+    },
+    "abb_ros2_msgs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1660567177,
+        "narHash": "sha256-d6u9wAep9Rerz7sKvy4/x90acorF5mz9o8k6SRxdk9o=",
+        "owner": "gbartyzel",
+        "repo": "abb_ros2_msgs",
+        "rev": "071bb1fc2148a7cd850a1ff550c5987e67da6bdd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gbartyzel",
+        "repo": "abb_ros2_msgs",
+        "rev": "071bb1fc2148a7cd850a1ff550c5987e67da6bdd",
+        "type": "github"
+      }
+    },
+    "compas_rrc_ros": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1747915130,
+        "narHash": "sha256-P8qGiSqLvYzrIZO/SfAm+JuR/wPozmsm945P27TaTxI=",
+        "owner": "biodigitalmatter",
+        "repo": "compas_rrc_ros",
+        "rev": "f9e3cb5e2a2b100486f47f044c3702d77b9026a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "biodigitalmatter",
+        "repo": "compas_rrc_ros",
+        "rev": "f9e3cb5e2a2b100486f47f044c3702d77b9026a9",
+        "type": "github"
+      }
+    },
+    "cutlass133": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1562781252,
+        "narHash": "sha256-Geatc0MCGtPDdlb8SXPopsepaREkBysuZgaZYoIkFHg=",
+        "owner": "NVIDIA",
+        "repo": "cutlass",
+        "rev": "b5cab177a9e8f7c803f60d1ad4124f2c094142af",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NVIDIA",
+        "ref": "v1.3.3",
+        "repo": "cutlass",
+        "type": "github"
+      }
+    },
+    "directx-headers16063": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1657820153,
+        "narHash": "sha256-D3LDBWKCi09dR21i9Z53Nox9fco4FThomNRIoKn502Q=",
+        "owner": "microsoft",
+        "repo": "DirectX-Headers",
+        "rev": "fd329244e62201bf959331d28514928fc1d45005",
+        "type": "github"
+      },
+      "original": {
+        "owner": "microsoft",
+        "ref": "v1.606.3",
+        "repo": "DirectX-Headers",
+        "type": "github"
+      }
+    },
+    "directx-math": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1652855547,
+        "narHash": "sha256-4zlqFTJbrTxDlOOI0p2lX5MFmo/gabRSmGgfOep/PbU=",
+        "owner": "microsoft",
+        "repo": "DirectXMath",
+        "rev": "e95d84892ec894967c48151f9106bd4388e85e63",
+        "type": "github"
+      },
+      "original": {
+        "owner": "microsoft",
+        "ref": "may2022",
+        "repo": "DirectXMath",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -20,7 +173,9 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems"
+        "systems": [
+          "systems"
+        ]
       },
       "locked": {
         "lastModified": 1731533236,
@@ -48,6 +203,23 @@
       "original": {
         "owner": "denful",
         "repo": "import-tree",
+        "type": "github"
+      }
+    },
+    "industrial_reconstruction": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1766102029,
+        "narHash": "sha256-XHYAjOkXwgZFZhBZ5bsEVhhNiOGMivRZJaNhOnTDimQ=",
+        "owner": "ros-industrial",
+        "repo": "industrial_reconstruction",
+        "rev": "90fdc690be9230480614b5cf96cc39c873de292c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ros-industrial",
+        "repo": "industrial_reconstruction",
+        "rev": "90fdc690be9230480614b5cf96cc39c873de292c",
         "type": "github"
       }
     },
@@ -156,10 +328,71 @@
         "url": "https://git.sr.ht/~tetov/nixpkgs-not-upstreamable"
       }
     },
+    "open3d": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1736292018,
+        "narHash": "sha256-jWjtfDcjDBOQHH4s2e1P8ye19JlucYIZPi0pgvOsdcA=",
+        "owner": "isl-org",
+        "repo": "Open3D",
+        "rev": "1e7b17438687a0b0c1e5a7187321ac7044afe275",
+        "type": "github"
+      },
+      "original": {
+        "owner": "isl-org",
+        "ref": "v0.19.0",
+        "repo": "Open3D",
+        "type": "github"
+      }
+    },
+    "perception_open3d": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1654716514,
+        "narHash": "sha256-BR9Roqcw1UD+E++hn/vhZKF/cqfvzYoYWcYG6vdZf0Q=",
+        "owner": "ros-perception",
+        "repo": "perception_open3d",
+        "rev": "7ddcc5769e58826adea728789c5f01091dca46c9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ros-perception",
+        "ref": "0.1.2",
+        "repo": "perception_open3d",
+        "type": "github"
+      }
+    },
+    "poisson-recon": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680132955,
+        "narHash": "sha256-0cHy3KxvhiJxVrVh/j1FcFMy60o5mQedIapZrOjKhQo=",
+        "owner": "isl-org",
+        "repo": "Open3D-PoissonRecon",
+        "rev": "90f3f064e275b275cff445881ecee5a7c495c9e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "isl-org",
+        "repo": "Open3D-PoissonRecon",
+        "rev": "90f3f064e275b275cff445881ecee5a7c495c9e0",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "abb_egm_rws_managers": "abb_egm_rws_managers",
+        "abb_libegm": "abb_libegm",
+        "abb_librws": "abb_librws",
+        "abb_ros2": "abb_ros2",
+        "abb_ros2_msgs": "abb_ros2_msgs",
+        "compas_rrc_ros": "compas_rrc_ros",
+        "cutlass133": "cutlass133",
+        "directx-headers16063": "directx-headers16063",
+        "directx-math": "directx-math",
         "flake-parts": "flake-parts",
         "import-tree": "import-tree",
+        "industrial_reconstruction": "industrial_reconstruction",
         "nix-ros-overlay": "nix-ros-overlay",
         "nix-ros-workspace": "nix-ros-workspace",
         "nixos-hardware": "nixos-hardware",
@@ -168,9 +401,33 @@
           "nixpkgs"
         ],
         "nixpkgs-not-upstreamable": "nixpkgs-not-upstreamable",
+        "open3d": "open3d",
+        "perception_open3d": "perception_open3d",
+        "poisson-recon": "poisson-recon",
+        "ros2_utils_tool": "ros2_utils_tool",
         "sops-nix": "sops-nix",
-        "systems": "systems_2",
-        "treefmt-nix": "treefmt-nix"
+        "stdgpu": "stdgpu",
+        "systems": "systems",
+        "tinygltf297": "tinygltf297",
+        "treefmt-nix": "treefmt-nix",
+        "uvatlas": "uvatlas"
+      }
+    },
+    "ros2_utils_tool": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753994629,
+        "narHash": "sha256-JNg643dyvBnDTBMzxHDCpJLN+ENpR3Kee7KCFCCdPJo=",
+        "owner": "MaxFleur",
+        "repo": "ros2_utils_tool",
+        "rev": "0be5b00e6f369c55d1cbd7f54cdb568191fe52a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MaxFleur",
+        "ref": "v0.13.0",
+        "repo": "ros2_utils_tool",
+        "type": "github"
       }
     },
     "rosdistro": {
@@ -209,22 +466,24 @@
         "type": "github"
       }
     },
-    "systems": {
+    "stdgpu": {
+      "flake": false,
       "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "lastModified": 1732605516,
+        "narHash": "sha256-gpV0q0+9M/+HfZU8z2mKr608ghNbKMvExBHrpvWBYC0=",
+        "owner": "stotko",
+        "repo": "stdgpu",
+        "rev": "2588168d226bd17229dbf58d821549580791089d",
         "type": "github"
       },
       "original": {
-        "owner": "nix-systems",
-        "repo": "default",
+        "owner": "stotko",
+        "repo": "stdgpu",
+        "rev": "2588168d226bd17229dbf58d821549580791089d",
         "type": "github"
       }
     },
-    "systems_2": {
+    "systems": {
       "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
@@ -236,6 +495,23 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default-linux",
+        "type": "github"
+      }
+    },
+    "tinygltf297": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1762045871,
+        "narHash": "sha256-V7gwETNejBnxYDVoNQtcBlrObcyGZW1f6wXjVdBG1IY=",
+        "owner": "syoyo",
+        "repo": "tinygltf",
+        "rev": "488a70a3df62a4df1a736e9e56fb8836580c4888",
+        "type": "github"
+      },
+      "original": {
+        "owner": "syoyo",
+        "ref": "v2.9.7",
+        "repo": "tinygltf",
         "type": "github"
       }
     },
@@ -257,6 +533,23 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "uvatlas": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1652221893,
+        "narHash": "sha256-BP2hkEexo1E0sL43pYKsPhCsP+t7ffupVad06ZctvXs=",
+        "owner": "microsoft",
+        "repo": "UVAtlas",
+        "rev": "1fa9b62292a0a8711b4d427b56f148289a2579de",
+        "type": "github"
+      },
+      "original": {
+        "owner": "microsoft",
+        "ref": "may2022",
+        "repo": "UVAtlas",
         "type": "github"
       }
     }

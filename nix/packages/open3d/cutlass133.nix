@@ -1,5 +1,5 @@
 {
-  fetchFromGitHub,
+  packageSources,
   stdenv,
 }:
 
@@ -7,12 +7,7 @@ stdenv.mkDerivation {
   pname = "cutlass";
   version = "1.3.3";
 
-  src = fetchFromGitHub {
-    owner = "NVIDIA";
-    repo = "cutlass";
-    tag = "v1.3.3";
-    hash = "sha256-Geatc0MCGtPDdlb8SXPopsepaREkBysuZgaZYoIkFHg=";
-  };
+  src = packageSources.cutlass133;
 
   dontConfigure = true;
   dontBuild = true;
