@@ -2,6 +2,9 @@ launch:
   - arg:
       name: robot_ip
       default: 192.168.8.125
+  - arg:
+      name: rws_port
+      default: "80"
   - group:
       - push_ros_namespace:
           namespace: rob1
@@ -20,11 +23,19 @@ launch:
               value: elizabeth
             - name: robot_ip
               value: $(var robot_ip)
+            - name: rws_port
+              value: $(var rws_port)
           remap:
             - from: rws_client/joint_states
               to: joint_states
       - include:
           file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
+          arg:
+            # needs RWS details since they go in the xacro
+            - name: rws_ip
+              value: $(var robot_ip)
+            - name: rws_port
+              value: $(var rws_port)
     # - include:
     #     file: $(find-pkg-share compas_rrc_driver)/launch/bringup-common.launch.xml
     #     arg:

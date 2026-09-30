@@ -1,10 +1,15 @@
 launch:
+  - arg:
+      name: rws_ip
+  - arg:
+      name: rws_port
+      default: "80"
   - let:
       name: robot_xacro
       value: $(find-pkg-share elizabeth_descriptions)/urdf/elizabeth.xacro
   - let:
       name: robot_description
-      value: $(command '$(find-exec xacro) $(var robot_xacro)')
+      value: $(command '$(find-exec xacro) $(var robot_xacro) rws_ip:=$(var rws_ip) rws_port:=$(var rws_port)')
   - node:
       pkg: robot_state_publisher
       exec: robot_state_publisher
