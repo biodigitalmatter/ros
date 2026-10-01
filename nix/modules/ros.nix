@@ -22,18 +22,19 @@
       {
         environment.variables = environmentVariables;
 
-        networking.firewall.allowedUDPPortRanges = [
-          (
-            let
-              domainId = lib.toInt environmentVariables.ROS_DOMAIN_ID;
-              from = 7400 + 250 * domainId;
-              to = from + 200;
-            in
-            {
+        networking.firewall =
+          let
+            domainId = lib.toInt environmentVariables.ROS_DOMAIN_ID;
+            from = 7400 + 250 * domainId;
+            to = from + 249;
+            portRange = {
               inherit from to;
-            }
-          )
-        ];
+            };
+          in
+          {
+            allowedTCPPortRanges = [ portRange ];
+            allowedUDPPortRanges = [ portRange ];
+          };
 
       };
   };
