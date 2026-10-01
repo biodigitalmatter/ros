@@ -1,0 +1,24 @@
+launch:
+  - arg:
+      name: robot_ip
+      default: 192.168.8.125
+  - arg:
+      name: rws_port
+      default: "80"
+  - arg:
+      name: robot_nickname
+      default: elizabeth
+  - node:
+      pkg: abb_rws_client
+      exec: rws_client
+      name: rws_client
+      param:
+        - name: robot_nickname
+          value: $(var robot_nickname)
+        - name: robot_ip
+          value: $(var robot_ip)
+        - name: robot_port
+          value: $(var rws_port)
+      remap:
+        - from: rws_client/joint_states
+          to: joint_states

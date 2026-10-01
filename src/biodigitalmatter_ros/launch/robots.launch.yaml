@@ -14,20 +14,13 @@ launch:
           name: base_footprint_broadcaster
           args: >-
             --frame-id map --child-frame-id base_footprint
-      - node:
-          pkg: abb_rws_client
-          exec: rws_client
-          name: rws_client
-          param:
-            - name: robot_nickname
-              value: elizabeth
+      - include:
+          file: $(find-pkg-share biodigitalmatter_ros)/launch/rws.launch.yaml
+          arg:
             - name: robot_ip
               value: $(var robot_ip)
             - name: rws_port
               value: $(var rws_port)
-          remap:
-            - from: rws_client/joint_states
-              to: joint_states
       - include:
           file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
           arg:
