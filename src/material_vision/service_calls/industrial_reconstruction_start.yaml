@@ -5,10 +5,12 @@ tracking_frame: extruder_d405_depth_optical_frame
 relative_frame: base_footprint
 translation_distance: 0.0
 rotational_distance: 0.0
-live: true
+live: false
 tsdf_params:
-  voxel_length: 0.005
+  # should be at least 2 times smaller than distance between features
   sdf_trunc: 0.025
+  # 2-4 times smaller than sdf_trunc
+  voxel_length: 0.005
   min_box_values:
     x: 0.0
     y: 0.0
@@ -19,5 +21,5 @@ tsdf_params:
     z: 0.0
 rgbd_params:
   depth_scale: 1000.0
-  depth_trunc: 2
+  depth_trunc: 2 # truncate distances from camera larger than this
   convert_rgb_to_intensity: false
