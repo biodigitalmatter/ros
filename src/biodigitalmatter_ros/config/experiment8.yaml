@@ -1,22 +1,22 @@
-rob1:
+elizabeth:
   recorder:
     ros__parameters:
       use_sim_time: false
       record:
         topics:
-          - /rob1/joint_states
-          - /rob1/robot_description
-          - /rob1/rgbd/extruder_d405/color/camera_info
-          - /rob1/rgbd/extruder_d405/color/image_raw
-          - /rob1/rgbd/extruder_d405/color/metadata
-          - /rob1/rgbd/extruder_d405/depth/camera_info
-          - /rob1/rgbd/extruder_d405/depth/image_rect_raw
-          - /rob1/rgbd/extruder_d405/depth/metadata
-          - /rob1/rgbd/extruder_d405/depth/points
-          - /rob1/rgbd/extruder_d405/extrinsics/depth_to_color
-          - /rob1/rgbd/extruder_d405/extrinsics/depth_to_depth
-          - /rob1/rgbd/joint_states
-          - /rob1/rgbd/robot_description
+          - /elizabeth/joint_states
+          - /elizabeth/robot_description
+          - /elizabeth/rgbd/extruder_d405/color/camera_info
+          - /elizabeth/rgbd/extruder_d405/color/image_raw
+          - /elizabeth/rgbd/extruder_d405/color/metadata
+          - /elizabeth/rgbd/extruder_d405/depth/camera_info
+          - /elizabeth/rgbd/extruder_d405/depth/image_rect_raw
+          - /elizabeth/rgbd/extruder_d405/depth/metadata
+          - /elizabeth/rgbd/extruder_d405/depth/points
+          - /elizabeth/rgbd/extruder_d405/extrinsics/depth_to_color
+          - /elizabeth/rgbd/extruder_d405/extrinsics/depth_to_depth
+          - /elizabeth/rgbd/joint_states
+          - /elizabeth/rgbd/robot_description
           - /tf
           - /tf_static
       storage:

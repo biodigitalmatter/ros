@@ -1,12 +1,21 @@
 launch:
+  - arg:
+      name: robot_namespace
+      default: elizabeth
   - node:
       pkg: rosbag2_transport
       exec: recorder
-      namespace: /rob1
+      namespace: $(var robot_namespace)
       name: recorder
       param:
         - from: $(find-pkg-share biodigitalmatter_ros)/config/experiment8.yaml
   - include:
       file: $(find-pkg-share biodigitalmatter_ros)/launch/robots.launch.yaml
+      arg:
+        - name: robot_namespace
+          value: $(var robot_namespace)
   - include:
       file: $(find-pkg-share elizabeth_perception)/launch/rgbd_extruder_pointcloud.launch.yaml
+      arg:
+        - name: robot_namespace
+          value: $(var robot_namespace)

@@ -43,4 +43,4 @@ services:
       - robot_ip:=192.168.8.125
       - robot_streaming_port:=30101
       - robot_state_port:=30201
-      - namespace:=rob1
+      - namespace:=elizabeth

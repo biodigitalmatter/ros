@@ -1,7 +1,10 @@
 launch:
   - arg:
-      name: namespace
-      default: rob1/rgbd/extruder_d405/color
+      name: robot_namespace
+      default: elizabeth
+  - arg:
+      name: camera_name
+      default: extruder_d405
   - arg:
       name: dictionary
       default: DICT_5X5_100
@@ -10,7 +13,7 @@ launch:
       pkg: chess_vision_ros
       exec: aruco_tracker_node
       name: aruco_tracker
-      namespace: $(var namespace)
+      namespace: $(var robot_namespace)/rgbd/$(var camera_name)/color
       param:
         - name: dictionary
           value: $(var dictionary)

@@ -1,10 +1,15 @@
 launch:
   - arg:
+      name: robot_namespace
+      default: elizabeth
+  - arg:
       name: camera_name
       default: extruder_d405
   - group:
       - push_ros_namespace:
-          namespace: /rob1/rgbd/$(var camera_name)/depth
+          namespace: $(var robot_namespace)
+      - push_ros_namespace:
+          namespace: rgbd/$(var camera_name)/depth
       - node:
           pkg: elizabeth_perception_filters
           exec: depth_image_filter_node
@@ -24,11 +29,11 @@ launch:
             - name: queue_size
               value: 5
             # fix mismatch between depth_proc and realsense
-            - name: qos_overrides./rob1/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.reliability
+            - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.reliability
               value: reliable
-            - name: qos_overrides./rob1/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.durability
+            - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.durability
               value: volatile
-            - name: qos_overrides./rob1/rgbd/$(var camera_name)/depth/camera_info.subscription.reliability
+            - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/camera_info.subscription.reliability
               value: reliable
-            - name: qos_overrides./rob1/rgbd/$(var camera_name)/depth/camera_info.subscription.durability
+            - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/camera_info.subscription.durability
               value: volatile

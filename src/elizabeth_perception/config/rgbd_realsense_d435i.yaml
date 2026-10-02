@@ -1,4 +1,4 @@
-/rob1/rgbd/extruder_d405:
+/**/extruder_d435i:
   ros__parameters:
     enable_color: true
     enable_depth: true

@@ -1,19 +1,21 @@
 launch:
   - arg:
+      name: robot_namespace
+      default: elizabeth
+  - arg:
       name: camera_model
       default: OAK-D-S2-POE
   - arg:
       name: name
       default: extruder_$(eval '"$(var camera_model)".replace("-","_")')
   - arg:
-      name: camera_namespace
-      default: rob1/rgbd
-  - arg:
       name: parent_frame
       default: tool0
   - group:
       - push_ros_namespace:
-          namespace: $(var camera_namespace)
+          namespace: $(var robot_namespace)
+      - push_ros_namespace:
+          namespace: rgbd
       - include:
           file: "$(find-pkg-share depthai_ros_driver_v3)/launch/driver_as_part_of_a_robot.launch.py"
           arg:

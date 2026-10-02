@@ -1,7 +1,10 @@
 launch:
+  - arg:
+      name: robot_namespace
+      default: elizabeth
   - group:
       - push_ros_namespace:
-          namespace: /rob1
+          namespace: $(var robot_namespace)
       - include:
           file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
       - node:
