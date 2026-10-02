@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot name="toolchanger_adapter_plates_extruder_t25"
+	xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <link name="toolchanger_adapter_plates_extruder_t25">
+    <visual>
+      <geometry>
+        <mesh filename="package://elizabeth_description/urdf/models/toolchanger_adapter_plates_extruder_t25.stl"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <mesh filename="package://elizabeth_description/urdf/models/toolchanger_adapter_plates_extruder_t25.stl"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="tool0_to_toolchanger_adapter_plates_extruder_t25" type="fixed">
+    <parent link="tool0"/>
+    <child link="toolchanger_adapter_plates_extruder_t25"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
