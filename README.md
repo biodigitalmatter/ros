@@ -57,7 +57,7 @@ sudo ln -s /usr/include/pcl-*/pcl /lib/x86_64-linux-gnu/cmake/pcl/include/pcl
 The entry point is:
 
 ```sh
-ros2 launch biodigitalmatter_ros bringup.launch.yaml
+ros2 launch elizabeth_bringup bringup.launch.yaml
 ```
 
 ## Following not implemented for jazzy properly yet
@@ -80,7 +80,7 @@ default set to false.
 Example:
 
 ```sh
-ros2 launch biodigitalmatter_ros bringup.launch.xml no_robots:=true no_record:=true
+ros2 launch elizabeth_bringup bringup.launch.xml no_robots:=true no_record:=true
 ```
 
 #### Robot settings
@@ -107,7 +107,7 @@ The relevant ones are
   Luxonis camera. Defaults to `OAK-D-POE`.
 
 ```sh
-ros2 launch biodigitalmatter_ros bringup.launch.xml rgbd_camera:=D435i
+ros2 launch elizabeth_bringup bringup.launch.xml rgbd_camera:=D435i
 ```
 
 ### Launch setups
@@ -117,11 +117,11 @@ ros2 launch biodigitalmatter_ros bringup.launch.xml rgbd_camera:=D435i
 #### Kaolin
 
 ```bash
-ros2 launch biodigitalmatter_ros bringup.launch.xml no_robots:=true no_rgb:=true no_record:=true
+ros2 launch elizabeth_bringup bringup.launch.xml no_robots:=true no_rgb:=true no_record:=true
 ```
 
 #### Cook
 
 ```bash
-ros2 launch biodigitalmatter_ros bringup.launch.xml no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
+ros2 launch elizabeth_bringup bringup.launch.xml no_rgbd:=true no_rrc:=true rgb_pw:=MASKED
 ```

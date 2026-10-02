@@ -7,7 +7,7 @@ launch:
       default: "80"
   - arg:
       name: robot_nickname
-      default: elizabeth
+      default: ""
   - node:
       pkg: abb_rws_client
       exec: rws_client

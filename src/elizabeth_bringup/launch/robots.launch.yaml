@@ -18,14 +18,14 @@ launch:
           args: >-
             --frame-id map --child-frame-id base_footprint
       - include:
-          file: $(find-pkg-share biodigitalmatter_ros)/launch/rws.launch.yaml
+          file: $(find-pkg-share elizabeth_bringup)/launch/rws.launch.yaml
           arg:
             - name: robot_ip
               value: $(var robot_ip)
             - name: rws_port
               value: $(var rws_port)
       - include:
-          file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
+          file: $(find-pkg-share elizabeth_description)/launch/description.launch.yaml
           arg:
             # needs RWS details since they go in the xacro
             - name: rws_ip

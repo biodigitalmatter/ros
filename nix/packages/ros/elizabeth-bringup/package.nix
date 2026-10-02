@@ -6,14 +6,18 @@
   axis-camera,
   compas-rrc-driver,
   docker-compose,
+  elizabeth-description,
+  elizabeth-perception,
   rosbridge-server,
+  rosbag2-transport,
+  tf2-ros,
   python3Packages,
 }:
 buildRosPackage {
-  pname = "ros-jazzy-biodigitalmatter-ros";
+  pname = "ros-jazzy-elizabeth-bringup";
   version = "0.1.0";
 
-  src = ../../../../src/biodigitalmatter_ros;
+  src = ../../../../src/elizabeth_bringup;
 
   buildType = "ament_python";
   passthru.workspacePackages = {
@@ -22,14 +26,18 @@ buildRosPackage {
       axis-camera
       compas-rrc-driver
       docker-compose
+      elizabeth-description
+      elizabeth-perception
       rosbridge-server
+      rosbag2-transport
+      tf2-ros
       ;
   };
   nativeCheckInputs = [
     python3Packages.pytest
   ];
   meta = {
-    description = "ROS setup for biodigital matter lab";
+    description = "ROS bringup for Elizabeth";
     license = with lib.licenses; [ mit ];
   };
 }

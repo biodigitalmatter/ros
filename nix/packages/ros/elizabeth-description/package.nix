@@ -6,13 +6,14 @@
   abb-irb4600-support,
   joint-state-publisher,
   robot-state-publisher,
+  tf2-ros,
   xacro,
 }:
 buildRosPackage {
-  pname = "ros-jazzy-elizabeth-descriptions";
+  pname = "ros-jazzy-elizabeth-description";
   version = "0.1.0";
 
-  src = ../../../../src/elizabeth_descriptions;
+  src = ../../../../src/elizabeth_description;
 
   buildType = "ament_cmake";
   nativeBuildInputs = [ ament-cmake ];
@@ -21,6 +22,7 @@ buildRosPackage {
       abb-irb4600-support
       joint-state-publisher
       robot-state-publisher
+      tf2-ros
       xacro
       ;
   };

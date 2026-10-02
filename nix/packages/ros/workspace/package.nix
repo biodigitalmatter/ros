@@ -4,11 +4,11 @@
 {
   buildROSWorkspace,
 
-  biodigitalmatter-ros,
+  elizabeth-bringup,
   chess-vision,
   chess-vision-ros,
   chess-vision-ros-interfaces,
-  elizabeth-descriptions,
+  elizabeth-description,
   elizabeth-moveit-config,
   elizabeth-perception,
   elizabeth-perception-filters,
@@ -36,14 +36,14 @@
   rqt-topic,
 }:
 buildROSWorkspace {
-  name = "biodigitalmatter_ros jazzy workspace";
+  name = "elizabeth jazzy workspace";
   devPackages = {
     inherit
-      biodigitalmatter-ros
+      elizabeth-bringup
       chess-vision
       chess-vision-ros
       chess-vision-ros-interfaces
-      elizabeth-descriptions
+      elizabeth-description
       elizabeth-moveit-config
       elizabeth-perception
       elizabeth-perception-filters

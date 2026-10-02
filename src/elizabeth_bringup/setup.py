@@ -2,7 +2,7 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-package_name = "biodigitalmatter_ros"
+package_name = "elizabeth_bringup"
 
 share_dir = Path("share") / package_name
 
@@ -23,7 +23,7 @@ _ = setup(
     zip_safe=True,
     maintainer="Anton Tetov Johansson",
     maintainer_email="anton@tetov.se",
-    description="ROS setup for biodigital matter lab",
+    description="ROS bringup for Elizabeth",
     license="Apache-2.0",
     extras_require={
         "test": [

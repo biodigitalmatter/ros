@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import elizabeth urdf file -->
-    <xacro:include filename="$(find elizabeth_descriptions)/urdf/elizabeth.xacro" />
+    <xacro:include filename="$(find elizabeth_description)/urdf/elizabeth.xacro" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="elizabeth.ros2_control.xacro" />

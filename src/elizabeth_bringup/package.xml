@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>biodigitalmatter_ros</name>
+  <name>elizabeth_bringup</name>
   <version>0.1.0</version>
-  <description>ROS setup for biodigital matter lab</description>
+  <description>ROS bringup for Elizabeth</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>Apache-2.0</license>
   <url type="website">https://www.abm.lth.se/biodigitalmatter/</url>
@@ -14,7 +14,11 @@
   <exec_depend>axis_camera</exec_depend>
   <exec_depend>abb_rws_client</exec_depend>
   <exec_depend>chess_vision_ros</exec_depend>
+  <exec_depend>elizabeth_description</exec_depend>
+  <exec_depend>elizabeth_perception</exec_depend>
   <exec_depend>material_vision</exec_depend>
+  <exec_depend>rosbag2_transport</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
   <test_depend>abb_robot_msgs</test_depend>
   <test_depend>ament_index_python</test_depend>
   <test_depend>launch_pytest</test_depend>

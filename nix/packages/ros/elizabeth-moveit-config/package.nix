@@ -4,6 +4,7 @@
   ament-cmake,
 
   controller-manager,
+  elizabeth-description,
   joint-state-publisher,
   joint-state-publisher-gui,
   robot-state-publisher,
@@ -22,6 +23,7 @@ buildRosPackage {
   passthru.workspacePackages = {
     inherit
       controller-manager
+      elizabeth-description
       joint-state-publisher
       joint-state-publisher-gui
       robot-state-publisher

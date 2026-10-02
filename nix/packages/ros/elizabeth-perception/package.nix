@@ -5,6 +5,7 @@
 
   depth-image-proc,
   # depthai
+  elizabeth-perception-filters,
   realsense2-camera,
   realsense2-description,
   xacro,
@@ -22,6 +23,7 @@ buildRosPackage {
     inherit
       depth-image-proc
       # depthai
+      elizabeth-perception-filters
       realsense2-camera
       realsense2-description
       robot-state-publisher

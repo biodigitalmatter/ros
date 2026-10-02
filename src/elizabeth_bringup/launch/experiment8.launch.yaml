@@ -8,9 +8,9 @@ launch:
       namespace: $(var robot_namespace)
       name: recorder
       param:
-        - from: $(find-pkg-share biodigitalmatter_ros)/config/experiment8.yaml
+        - from: $(find-pkg-share elizabeth_bringup)/config/experiment8.yaml
   - include:
-      file: $(find-pkg-share elizabeth_descriptions)/launch/view_robot.launch.yaml
+      file: $(find-pkg-share elizabeth_bringup)/launch/robots.launch.yaml
       arg:
         - name: robot_namespace
           value: $(var robot_namespace)

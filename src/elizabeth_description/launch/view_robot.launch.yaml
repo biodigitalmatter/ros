@@ -6,7 +6,7 @@ launch:
       - push_ros_namespace:
           namespace: $(var robot_namespace)
       - include:
-          file: $(find-pkg-share elizabeth_descriptions)/launch/description.launch.yaml
+          file: $(find-pkg-share elizabeth_description)/launch/description.launch.yaml
       - node:
           pkg: joint_state_publisher
           exec: joint_state_publisher

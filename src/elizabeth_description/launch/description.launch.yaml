@@ -6,7 +6,7 @@ launch:
       default: "80"
   - let:
       name: robot_xacro
-      value: $(find-pkg-share elizabeth_descriptions)/urdf/elizabeth.xacro
+      value: $(find-pkg-share elizabeth_description)/urdf/elizabeth.xacro
   - let:
       name: robot_description
       value: $(command '$(find-exec xacro) $(var robot_xacro) rws_ip:=$(var rws_ip) rws_port:=$(var rws_port)')

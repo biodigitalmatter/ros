@@ -2,7 +2,7 @@
 
 Exposes HTTP 503 Too many sessions 70/70 failures.
 
-Run by settings env var RWS_STRESS.
+Run by setting env var RWS_STRESS.
 """
 
 import os
@@ -49,8 +49,8 @@ def rws_launch(request):
 @pytest.mark.skipif(
     "RWS_STRESS" not in os.environ, reason="Set env var RWS_STRESS to run test"
 )
-@pytest.mark.launch(fixture=rws_launch)
 @pytest.mark.filterwarnings("ignore:There is no current event loop")
+@pytest.mark.launch(fixture=rws_launch)
 def test_rws_initializes(rws_launch):
     _, iteration = rws_launch
     context = Context()
