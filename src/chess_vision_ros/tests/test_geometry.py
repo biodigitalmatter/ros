@@ -1,8 +1,9 @@
 import math
 
 import numpy as np
-from chess_vision_ros.geometry import transformation_from_transform
 from geometry_msgs.msg import Transform
+
+from chess_vision_ros.geometry import transformation_from_transform
 
 
 def test_transformation_from_transform_translation() -> None:
