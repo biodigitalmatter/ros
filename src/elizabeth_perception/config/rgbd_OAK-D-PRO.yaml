@@ -1,4 +1,4 @@
-/**/extruder_OAK_D_PRO:
+/**/extruder_oak_d_pro:
   ros__parameters:
     camera:
       i_nn_type: none

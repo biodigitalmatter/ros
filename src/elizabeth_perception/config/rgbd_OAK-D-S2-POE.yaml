@@ -1,4 +1,4 @@
-/**/extruder_OAK_D_S2_POE:
+/**/extruder_oak_d_s2_poe:
   ros__parameters:
     driver:
       i_low_bandwidth: true

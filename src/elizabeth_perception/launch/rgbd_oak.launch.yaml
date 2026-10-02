@@ -6,8 +6,8 @@ launch:
       name: camera_model
       default: OAK-D-S2-POE
   - arg:
-      name: name
-      default: extruder_$(eval '"$(var camera_model)".replace("-","_")')
+      name: camera_name
+      default: extruder_$(eval '"$(var camera_model)".lower().replace("-","_")')
   - arg:
       name: parent_frame
       default: tool0
@@ -20,7 +20,7 @@ launch:
           file: "$(find-pkg-share depthai_ros_driver_v3)/launch/driver_as_part_of_a_robot.launch.py"
           arg:
             - name: name
-              value: $(var name)
+              value: $(var camera_name)
             - name: parent_frame
               value: $(var parent_frame)
             - name: camera_model
