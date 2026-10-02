@@ -16,7 +16,7 @@ launch:
         - name: rgb1_pw
           value: $(var rgb1_pw)
   - include:
-      file: "$(find-pkg-share elizabeth_bringup)/launch/robots.launch.yaml"
+      file: "$(find-pkg-share elizabeth_bringup)/launch/robot.launch.yaml"
       arg:
         - name: robot_namespace
           value: $(var robot_namespace)
