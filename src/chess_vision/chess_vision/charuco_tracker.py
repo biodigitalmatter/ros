@@ -7,7 +7,7 @@ import numpy as np
 import numpy.typing as npt
 
 from chess_vision import CameraCalibration, ChArUcoBoard
-from chess_vision.geometry import xform_from_cv
+from chess_vision.geometry import transformation_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
 MarkerIDs = npt.NDArray[np.uint8]
@@ -135,9 +135,9 @@ class ChArUcoTracker:
         if not success:
             return marked_frame, markerIds, None
 
-        xform = xform_from_cv(rvec, tvec)
+        T = transformation_from_cv(rvec, tvec)
 
-        return marked_frame, markerIds, xform
+        return marked_frame, markerIds, T
 
     def draw_debug_frame(
         self,
