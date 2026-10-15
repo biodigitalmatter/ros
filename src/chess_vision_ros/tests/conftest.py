@@ -16,8 +16,8 @@ def calibration_video_path(fixture_dir: Path):
 
 
 @pytest.fixture
-def rosbag_path(fixture_dir: Path) -> Path:
-    path_ = fixture_dir / "rosbag"
+def charuco_rosbag_path(fixture_dir: Path) -> Path:
+    path_ = fixture_dir / "charuco_rosbag"
 
     datapath = path_ / "rosbag_0.mcap"
 

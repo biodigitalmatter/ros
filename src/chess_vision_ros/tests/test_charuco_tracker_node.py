@@ -17,7 +17,7 @@ from rclpy.node import Node
 
 
 @launch_pytest.fixture
-def generate_test_description(rosbag_path: Path, sample_camera_info_path: Path):
+def generate_test_description(charuco_rosbag_path: Path, sample_camera_info_path: Path):
     nodes = [
         launch_ros.actions.Node(
             package="chess_vision_ros",
@@ -46,7 +46,7 @@ def generate_test_description(rosbag_path: Path, sample_camera_info_path: Path):
             "--rate",
             "1",
             "--loop",
-            str(rosbag_path),
+            str(charuco_rosbag_path),
         ],
     )
     return launch.LaunchDescription(

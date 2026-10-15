@@ -11,7 +11,7 @@ curl -LO https://github.com/yumashino/Camera-Calibration-with-ChArUco-Board/blob
 ## create bag from video
 
 ``` sh
-ros2 run ros2_utils_tool tool_video_to_bag ./sample_calibration_video.mp4 ./rosbag
+ros2 run ros2_utils_tool tool_video_to_bag ./sample_calibration_video.mp4 ./charuco_rosbag
 ```
 
 # sample_camera_info.json
