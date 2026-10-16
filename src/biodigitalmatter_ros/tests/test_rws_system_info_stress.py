@@ -43,6 +43,7 @@ def rws_launch(request):
 
 @pytest.mark.hardware
 @pytest.mark.launch(fixture=rws_launch)
+@pytest.mark.filterwarnings("ignore:There is no current event loop")
 def test_rws_initializes(rws_launch):
     _, iteration = rws_launch
     context = Context()

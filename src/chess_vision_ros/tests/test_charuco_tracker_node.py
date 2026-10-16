@@ -119,6 +119,7 @@ def ros_node(request):
 # https://github.com/ros2/launch/blob/jazzy/launch_pytest/test/launch_pytest/examples/check_node_msgs.py
 @pytest.mark.launch(fixture=generate_test_description)
 @pytest.mark.skipif("CI" in os.environ, reason="Does not have bagfile")
+@pytest.mark.filterwarnings("ignore:There is no current event loop")
 def test_check_if_msgs_published(ros_node):
     msgs_received_flag = ros_node.msg_event_object.wait(timeout=5.0)
     assert msgs_received_flag, "Did not receive msgs!"

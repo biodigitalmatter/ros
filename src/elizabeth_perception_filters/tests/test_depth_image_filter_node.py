@@ -38,6 +38,7 @@ def ros_node(request):
         rclpy.shutdown()
 
 
+@pytest.mark.filterwarnings("ignore:There is no current event loop")
 @pytest.mark.launch(fixture=generate_test_description)
 def test_filters_16uc1(ros_node) -> None:
     received: list[Image] = []
