@@ -3,7 +3,9 @@ import os
 import compas.geometry
 import cv2 as cv
 
-from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
+from chess_vision.camera_calibration import CameraCalibration
+from chess_vision.charuco_board import ChArUcoBoard
+from chess_vision.charuco_tracker import ChArUcoTracker
 
 
 def get_capture(video_path: os.PathLike[str]):

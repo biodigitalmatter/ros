@@ -6,7 +6,8 @@ import cv2 as cv
 import numpy as np
 import numpy.typing as npt
 
-from chess_vision import CameraCalibration, ChArUcoBoard
+from chess_vision.camera_calibration import CameraCalibration
+from chess_vision.charuco_board import ChArUcoBoard
 from chess_vision.geometry import transformation_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
@@ -55,7 +56,7 @@ class ChArUcoTracker:
             # are not provided
             return self._detector.detectBoard(frame)
 
-        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue]
+        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue] # ty: ignore[no-matching-overload]
             frame,
             self._dictionary,
             parameters=self._detector_params,
@@ -146,7 +147,7 @@ class ChArUcoTracker:
         charucoIds: MarkerIDs | None,
     ) -> ImageU8:
         if frame.ndim == 2:
-            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType]
+            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType] # ty: ignore[invalid-assignment]
 
         if (
             charucoIds is not None

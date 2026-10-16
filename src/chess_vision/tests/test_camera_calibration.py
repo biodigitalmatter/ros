@@ -1,6 +1,6 @@
 import numpy as np
 
-from chess_vision import CameraCalibration
+from chess_vision.camera_calibration import CameraCalibration
 
 
 def test_create_dummy_intrinsics_from_image() -> None:

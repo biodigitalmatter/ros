@@ -3,7 +3,7 @@
 <package format="3">
   <name>chess_vision</name>
   <version>0.1.0</version>
-  <description>detect charuco boards</description>
+  <description>Detecting and tracking for benign reasons.</description>
   <maintainer email="anton@tetov.se">Anton Tetov Johansson</maintainer>
   <license>Apache-2.0</license>
   <url type="repository">https://github.com/biodigitalmatter/ros</url>

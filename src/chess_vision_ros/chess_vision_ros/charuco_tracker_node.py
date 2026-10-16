@@ -16,7 +16,9 @@ from rclpy.qos import (
 from rclpy.subscription import Subscription
 from sensor_msgs.msg import CameraInfo, Image
 
-from chess_vision import CameraCalibration, ChArUcoBoard, ChArUcoTracker
+from chess_vision.camera_calibration import CameraCalibration
+from chess_vision.charuco_board import ChArUcoBoard
+from chess_vision.charuco_tracker import ChArUcoTracker
 
 CAMERA_INFO_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,

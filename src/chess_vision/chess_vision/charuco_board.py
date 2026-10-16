@@ -19,7 +19,7 @@ class ChArUcoBoard:
         self.dictionary: aruco.Dictionary = aruco.getPredefinedDictionary(dictionary)
 
         if hasattr(aruco, "CharucoBoard_create"):
-            self.board: aruco.CharucoBoard = aruco.CharucoBoard_create(
+            self.board: aruco.CharucoBoard = aruco.CharucoBoard_create(  # ty: ignore[invalid-type-form]
                 squaresX,
                 squaresY,
                 squareLength,
