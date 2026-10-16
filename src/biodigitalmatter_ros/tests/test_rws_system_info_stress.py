@@ -1,6 +1,11 @@
 """Stress-test repeated startup of the existing RWS launch file.
 
-Exposes HTTP 503 Too many sessions 70/70 failures."""
+Exposes HTTP 503 Too many sessions 70/70 failures.
+
+Run by settings env var RWS_STRESS.
+"""
+
+import os
 
 import launch
 import launch_pytest
@@ -41,7 +46,9 @@ def rws_launch(request):
     )
 
 
-@pytest.mark.hardware
+@pytest.mark.skipif(
+    "RWS_STRESS" not in os.environ, reason="Set env var RWS_STRESS to run test"
+)
 @pytest.mark.launch(fixture=rws_launch)
 @pytest.mark.filterwarnings("ignore:There is no current event loop")
 def test_rws_initializes(rws_launch):
