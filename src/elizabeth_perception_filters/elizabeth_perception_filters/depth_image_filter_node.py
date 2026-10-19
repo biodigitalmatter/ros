@@ -44,8 +44,8 @@ class DepthImageFilterNode(Node):
         self.logger = self.get_logger()
 
     def callback(self, msg: Image) -> None:
-        min_distance_m = float(self.get_parameter("min_distance_m").value)  # pyright: ignore[reportArgumentType, reportUnknownMemberType]
-        max_distance_m = float(self.get_parameter("max_distance_m").value)  # pyright: ignore[reportUnknownMemberType, reportArgumentType]
+        min_distance_m = float(self.get_parameter("min_distance_m").value)
+        max_distance_m = float(self.get_parameter("max_distance_m").value)
 
         try:
             out = clip_distance(msg, min_distance_m, max_distance_m)

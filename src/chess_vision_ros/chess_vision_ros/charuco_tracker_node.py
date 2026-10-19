@@ -1,7 +1,5 @@
 import typing
 
-import numpy as np
-import numpy.typing as npt
 import rclpy
 from cv_bridge import CvBridge
 from geometry_msgs.msg import PoseStamped
@@ -18,7 +16,7 @@ from sensor_msgs.msg import CameraInfo, Image
 
 from chess_vision.camera_calibration import CameraCalibration
 from chess_vision.charuco_board import ChArUcoBoard
-from chess_vision.charuco_tracker import ChArUcoTracker
+from chess_vision.charuco_tracker import ChArUcoTracker, ImageU8
 
 CAMERA_INFO_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,
@@ -82,7 +80,7 @@ class ChArUcoTrackerNode(Node):
 
     @property
     def board_name(self) -> str:
-        board_name = self.get_parameter("board_name").get_parameter_value().string_value  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+        board_name = self.get_parameter("board_name").get_parameter_value().string_value
 
         if not isinstance(board_name, str):
             raise RuntimeError(f"Invalid board_name type: {board_name=}")
@@ -91,7 +89,7 @@ class ChArUcoTrackerNode(Node):
 
     @property
     def rectified(self):
-        rectified = self.get_parameter("rectified").get_parameter_value().bool_value  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+        rectified = self.get_parameter("rectified").get_parameter_value().bool_value
 
         if not isinstance(rectified, bool):
             raise RuntimeError(f"Invalid rectified parameter type: {rectified=}")
@@ -131,12 +129,10 @@ class ChArUcoTrackerNode(Node):
                 )
                 assert self.tracker is not None
             else:
-                _ = self.logger.warning("Image gotten before camera info.")  # pyright: ignore[reportUnknownMemberType]
+                self.logger.warning("Image gotten before camera info.")
                 return
 
-        frame: npt.NDArray[np.uint8] = self.bridge.imgmsg_to_cv2(
-            msg, desired_encoding="bgr8"
-        )
+        frame: ImageU8 = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
         marked_frame, detection = self.tracker.detect_pose(frame)
 

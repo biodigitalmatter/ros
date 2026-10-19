@@ -37,9 +37,9 @@ class BagTransformBuffer:
 
             for transform in item.message.transforms:
                 if item.topic == "/tf_static":
-                    self._buffer.set_transform_static(transform, "rosbag")  # pyright: ignore[reportArgumentType]
+                    self._buffer.set_transform_static(transform, "rosbag")
                 else:
-                    self._buffer.set_transform(transform, "rosbag")  # pyright: ignore[reportArgumentType]
+                    self._buffer.set_transform(transform, "rosbag")
 
     def lookup_transform(
         self,

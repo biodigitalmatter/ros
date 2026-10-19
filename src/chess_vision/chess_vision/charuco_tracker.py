@@ -55,13 +55,13 @@ class ChArUcoTracker:
             self._detector_params = None
         else:
             self._detector = None
-            self._detector_params = cv.aruco.DetectorParameters_create()  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
+            self._detector_params = cv.aruco.DetectorParameters_create()
 
             # works for old/new board wrappers depending on binding version.
             if hasattr(self.board.board, "getDictionary"):
                 self._dictionary = self.board.board.getDictionary()
             else:
-                self._dictionary = self.board.board.dictionary  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
+                self._dictionary = self.board.board.dictionary
 
         self._debug_save_image_with_drawn_markers_counter = 0
 
@@ -71,11 +71,12 @@ class ChArUcoTracker:
             # are not provided
             return self._detector.detectBoard(frame)
 
-        marker_corners, marker_ids, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue] # ty: ignore[no-matching-overload]
+        # opencv 4.6
+        marker_corners, marker_ids, _rejected = cv.aruco.detectMarkers(
             frame,
             self._dictionary,
             parameters=self._detector_params,
-        )
+        )  # ty: ignore[no-matching-overload]
 
         if marker_ids is not None and len(marker_ids) > 0:
             _count, charuco_corners, charuco_ids = cv.aruco.interpolateCornersCharuco(
@@ -117,7 +118,7 @@ class ChArUcoTracker:
         ImageU8,
         ChArUcoDetection | None,
     ]:
-        charuco_corners, charuco_ids, markerCorners, marker_ids = self._detect_board(
+        charuco_corners, charuco_ids, _marker_corners, marker_ids = self._detect_board(
             frame
         )
 
@@ -191,7 +192,7 @@ class ChArUcoTracker:
         charuco_ids: MarkerIDs | None,
     ) -> ImageU8:
         if frame.ndim == 2:
-            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType] # ty: ignore[invalid-assignment]
+            frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # ty:ignore[invalid-assignment]
 
         if (
             charuco_ids is not None
