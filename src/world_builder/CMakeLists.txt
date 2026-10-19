@@ -3,7 +3,7 @@
 
 # https://reps.openrobotics.org/rep-2000/#jazzy-jalisco-may-2024---may-2029
 cmake_minimum_required(VERSION 3.28.3)
-project(world_builder VERSION 0.1.0)
+project(world_builder)
 
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
