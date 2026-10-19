@@ -15,7 +15,6 @@
   world-builder,
 
   # shellPackages
-  basedpyright,
   colcon,
   demo-nodes-cpp,
   joint-trajectory-controller,
@@ -34,9 +33,6 @@
   rqt-service-caller,
   rqt-tf-tree,
   rqt-topic,
-  ruff,
-  # rviz2,
-  ty,
 }:
 buildROSWorkspace {
   name = "biodigitalmatter_ros jazzy workspace";
@@ -57,7 +53,6 @@ buildROSWorkspace {
 
   prebuiltShellPackages = {
     inherit
-      basedpyright
       colcon
       demo-nodes-cpp
       joint-trajectory-controller
@@ -75,9 +70,6 @@ buildROSWorkspace {
       rqt-service-caller
       rqt-tf-tree
       rqt-topic
-      ruff
-      # rviz2
-      ty
       ;
     python3 = python3.withPackages (
       ps: with ps; [
