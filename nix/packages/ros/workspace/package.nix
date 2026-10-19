@@ -7,6 +7,7 @@
   biodigitalmatter-ros,
   chess-vision,
   chess-vision-ros,
+  chess-vision-ros-interfaces,
   elizabeth-descriptions,
   elizabeth-moveit-config,
   elizabeth-perception,
@@ -41,6 +42,7 @@ buildROSWorkspace {
       biodigitalmatter-ros
       chess-vision
       chess-vision-ros
+      chess-vision-ros-interfaces
       elizabeth-descriptions
       elizabeth-moveit-config
       elizabeth-perception
