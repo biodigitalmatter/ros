@@ -43,4 +43,7 @@ for sample in samples[::500]:
 
 result = calibrate_eye_in_hand_from_bag(bag, config)
 
+print("cam2gripper")
 print(result.cam2gripper)
+print(result.cam2gripper.translation_vector)
+print(result.cam2gripper.rotation.quaternion)
