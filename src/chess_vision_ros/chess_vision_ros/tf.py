@@ -10,7 +10,7 @@ from tf2_msgs.msg import TFMessage
 from tf2_ros import Buffer
 
 from chess_vision_ros.bag import BagReader
-from chess_vision_ros.geometry import transformation_from_transform
+from chess_vision_ros.conversions import transformation_from_transform
 
 
 @typing.final
