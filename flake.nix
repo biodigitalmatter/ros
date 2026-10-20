@@ -406,6 +406,7 @@
             };
 
             treefmt = {
+              flakeCheck = false; # requires built artifacts for cpp, brittle
               programs = {
                 clang-format.enable = true;
                 clang-tidy = {
