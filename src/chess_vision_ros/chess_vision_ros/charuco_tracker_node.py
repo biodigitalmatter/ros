@@ -138,7 +138,18 @@ class ChArUcoTrackerNode(Node):
             msg, desired_encoding="bgr8"
         )
 
-        marked_frame, marker_ids, xform = self.tracker.detect_pose(frame)
+        marked_frame, detection = self.tracker.detect_pose(frame)
+
+        if detection is None:
+            self.logger.debug("No detection from tracker.")
+            return
+
+        self.logger.debug(
+            f"Detected ChArUco: "
+            f"{len(detection.marker_ids)} markers, "
+            f"{detection.corner_count} corners, "
+            f"{detection.reprojection_error:.2f} px"
+        )
 
         out_msg = self.bridge.cv2_to_imgmsg(
             marked_frame,
@@ -149,21 +160,14 @@ class ChArUcoTrackerNode(Node):
 
         self.marker_img_pub.publish(out_msg)
 
-        if marker_ids is not None:
-            _ = self.logger.debug(
-                f"Detected marker IDs: {marker_ids.flatten().tolist()}"
-            )
-
-        if xform is None:
-            _ = self.logger.debug("No poses detected.")
-            return
+        self.logger.debug(f"{len(detection.marker_ids)} detected marker IDs")
 
         pose_msg = PoseStamped()
 
         pose_msg.header.stamp = msg.header.stamp
         pose_msg.header.frame_id = msg.header.frame_id
 
-        _, _, Ro, Tr, _ = xform.decomposed()
+        _, _, Ro, Tr, _ = detection.transformation.decomposed()
 
         x, y, z = Tr.translation_vector
 

@@ -1,5 +1,6 @@
 import pathlib
 import typing
+from dataclasses import dataclass
 
 import compas.geometry
 import cv2 as cv
@@ -11,12 +12,28 @@ from chess_vision.charuco_board import ChArUcoBoard
 from chess_vision.geometry import transformation_from_cv
 
 ImageU8 = npt.NDArray[np.uint8]
-MarkerIDs = npt.NDArray[np.uint8]
-CornerCoordinates = npt.NDArray[np.float64]
+MarkerIDs = npt.NDArray[np.int32]
+CornerCoordinates = npt.NDArray[np.float32]
+
+
+@typing.final
+@dataclass(frozen=True)
+class ChArUcoDetection:
+    # Transformation to charuco frame from optical frame
+    transformation: compas.geometry.Transformation
+    # Detected markers
+    marker_ids: MarkerIDs
+    # Number of detected corners
+    corner_count: int
+    # RMS Euclidean reprojection error in pixels
+    # https://stackoverflow.com/a/79587435/15398307
+    reprojection_error: float
 
 
 @typing.final
 class ChArUcoTracker:
+    MIN_POSE_CORNERS = 6
+
     def __init__(
         self,
         board: ChArUcoBoard,
@@ -33,8 +50,6 @@ class ChArUcoTracker:
                 raise RuntimeError(f"{self.debug_frame_dump_directory=} doesn't exist.")
 
         # introduced in 4.7
-        self._has_charuco_detector = hasattr(cv.aruco, "CharucoDetector")
-
         if hasattr(cv.aruco, "CharucoDetector"):
             self._detector = cv.aruco.CharucoDetector(self.board.board)
             self._detector_params = None
@@ -56,41 +71,60 @@ class ChArUcoTracker:
             # are not provided
             return self._detector.detectBoard(frame)
 
-        markerCorners, markerIds, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue] # ty: ignore[no-matching-overload]
+        marker_corners, marker_ids, _rejected = cv.aruco.detectMarkers(  # pyright: ignore[reportCallIssue] # ty: ignore[no-matching-overload]
             frame,
             self._dictionary,
             parameters=self._detector_params,
         )
 
-        charucoCorners = None
-        charucoIds = None
-
-        if markerIds is not None and len(markerIds) > 0:
-            _count, charucoCorners, charucoIds = cv.aruco.interpolateCornersCharuco(
-                markerCorners,
-                markerIds,
+        if marker_ids is not None and len(marker_ids) > 0:
+            _count, charuco_corners, charuco_ids = cv.aruco.interpolateCornersCharuco(
+                marker_corners,
+                marker_ids,
                 frame,
                 self.board.board,
                 cameraMatrix=self.camera_calibration.matrix,
                 distCoeffs=self.camera_calibration.dist_coeffs,
             )
 
-        return charucoCorners, charucoIds, markerCorners, markerIds
+        return charuco_corners, charuco_ids, marker_corners, marker_ids
+
+    def _match_image_points(
+        self, charuco_corners: CornerCoordinates, charuco_ids: MarkerIDs
+    ) -> tuple[
+        npt.NDArray[np.float32],
+        npt.NDArray[np.float32],
+    ]:
+        if hasattr(self.board.board, "matchImagePoints"):
+            return self.board.board.matchImagePoints(charuco_corners, charuco_ids)
+
+        # opencv 4.6
+        object_points = np.asarray(
+            self.board.board.chessboard_corners, dtype=np.float32
+        )[charuco_ids.flatten()]
+
+        image_points = np.asarray(
+            charuco_corners,
+            dtype=np.float32,
+        ).reshape(-1, 2)
+
+        return object_points, image_points
 
     def detect_pose(
         self,
         frame: ImageU8,
     ) -> tuple[
         ImageU8,
-        MarkerIDs | None,
-        compas.geometry.Transformation | None,
+        ChArUcoDetection | None,
     ]:
-        charucoCorners, charucoIds, markerCorners, markerIds = self._detect_board(frame)
+        charuco_corners, charuco_ids, markerCorners, marker_ids = self._detect_board(
+            frame
+        )
 
         marked_frame: ImageU8 = self.draw_debug_frame(
             frame.copy(),
-            charucoCorners,
-            charucoIds,
+            charuco_corners,
+            charuco_ids,
         )
 
         if self.debug_frame_dump_directory is not None:
@@ -99,65 +133,75 @@ class ChArUcoTracker:
             )
             print(f"Dumped frame: {path=}")
 
-        if markerIds is None or len(markerIds) < 1:
+        if marker_ids is None or len(marker_ids) < 1:
             print("Didn't detect any ArUco markers")
-            return marked_frame, None, None
+            return marked_frame, None
 
-        if charucoIds is None or len(charucoIds) < 6:  # pyright: ignore[reportUnnecessaryComparison]
+        if (
+            charuco_ids is None
+            or charuco_corners is None
+            or len(charuco_ids) < self.MIN_POSE_CORNERS
+        ):
             print("Didn't detect enough ChArUco corners")
-            return marked_frame, markerIds, None
+            return marked_frame, None
 
-        if hasattr(self.board.board, "matchImagePoints"):
-            obj_points, img_points = self.board.board.matchImagePoints(  # pyright: ignore[reportCallIssue, reportUnknownVariableType]
-                charucoCorners,
-                charucoIds,
-            )
+        object_points, image_points = self._match_image_points(
+            charuco_corners,
+            charuco_ids,
+        )
 
-            success, rvec, tvec = cv.solvePnP(
-                obj_points,
-                img_points,
-                self.camera_calibration.matrix,
-                self.camera_calibration.dist_coeffs,
-            )
-        else:
-            rvec = np.zeros((3, 1), dtype=np.float64)
-            tvec = np.zeros((3, 1), dtype=np.float64)
-
-            success, rvec, tvec = cv.aruco.estimatePoseCharucoBoard(  # pyright: ignore[reportCallIssue]
-                charucoCorners,
-                charucoIds,
-                self.board.board,
-                self.camera_calibration.matrix,
-                self.camera_calibration.dist_coeffs,
-                rvec,
-                tvec,
-            )
+        success, rvec, tvec = cv.solvePnP(
+            object_points,
+            image_points,
+            self.camera_calibration.matrix,
+            self.camera_calibration.dist_coeffs,
+        )
 
         if not success:
-            return marked_frame, markerIds, None
+            return marked_frame, None
 
         T = transformation_from_cv(rvec, tvec)
 
-        return marked_frame, markerIds, T
+        projected_points, _ = cv.projectPoints(
+            object_points,
+            rvec,
+            tvec,
+            self.camera_calibration.matrix,
+            self.camera_calibration.dist_coeffs,
+        )
+
+        residuals = image_points.reshape(-1, 2) - projected_points.reshape(-1, 2)
+
+        # RMS Euclidean reprojection error in pixels
+        reprojection_error = float(np.sqrt(np.mean(np.sum(residuals**2, axis=1))))
+
+        detection = ChArUcoDetection(
+            transformation=T,
+            marker_ids=marker_ids,
+            corner_count=len(charuco_ids),
+            reprojection_error=reprojection_error,
+        )
+
+        return marked_frame, detection
 
     def draw_debug_frame(
         self,
         frame: ImageU8,
-        charucoCorners: CornerCoordinates | None,
-        charucoIds: MarkerIDs | None,
+        charuco_corners: CornerCoordinates | None,
+        charuco_ids: MarkerIDs | None,
     ) -> ImageU8:
         if frame.ndim == 2:
             frame = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)  # pyright: ignore[reportAssignmentType] # ty: ignore[invalid-assignment]
 
         if (
-            charucoIds is not None
-            and len(charucoIds) > 0
-            and charucoCorners is not None
+            charuco_ids is not None
+            and len(charuco_ids) > 0
+            and charuco_corners is not None
         ):
             _ = cv.aruco.drawDetectedCornersCharuco(
                 frame,
-                charucoCorners,
-                charucoIds,
+                charuco_corners,
+                charuco_ids,
             )
 
         return frame
