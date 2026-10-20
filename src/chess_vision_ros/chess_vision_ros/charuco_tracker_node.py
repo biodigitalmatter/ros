@@ -1,8 +1,8 @@
 import typing
 
 import rclpy
+from chess_vision_ros_interfaces.msg import CharucoDetection as CharucoDetectionMsg
 from cv_bridge import CvBridge
-from geometry_msgs.msg import PoseStamped
 from rclpy.node import Node
 from rclpy.publisher import Publisher
 from rclpy.qos import (
@@ -17,6 +17,9 @@ from sensor_msgs.msg import CameraInfo, Image
 from chess_vision.camera_calibration import CameraCalibration
 from chess_vision.charuco_board import ChArUcoBoard
 from chess_vision.charuco_tracker import ChArUcoTracker, ImageU8
+from chess_vision_ros.conversions import (
+    ros_msg_from_charuco_detection,
+)
 
 CAMERA_INFO_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,
@@ -32,7 +35,7 @@ IMAGE_QOS = QoSProfile(
     depth=1,
 )
 
-POSE_QOS = QoSProfile(
+DETECTION_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,
     durability=QoSDurabilityPolicy.VOLATILE,
     history=QoSHistoryPolicy.KEEP_LAST,
@@ -54,6 +57,8 @@ class ChArUcoTrackerNode(Node):
 
         _ = self.declare_parameter("board_name", "large")
         _ = self.declare_parameter("rectified", False)
+        _ = self.declare_parameter("target_frame_id", "charuco")
+        _ = self.declare_parameter("publish_tf", True)
 
         self._tracker: ChArUcoTracker | None = None
         self._camera_calibration: CameraCalibration | None = None
@@ -68,8 +73,10 @@ class ChArUcoTrackerNode(Node):
             Image, "image_raw", self.image_callback, IMAGE_QOS
         )
 
-        self.pose_pub: Publisher = self.create_publisher(
-            PoseStamped, "charuco_pose", POSE_QOS
+        self.detection_pub: Publisher = self.create_publisher(
+            CharucoDetectionMsg,
+            "charuco_detection",
+            DETECTION_QOS,
         )
 
         self.marker_img_pub: Publisher = self.create_publisher(
@@ -78,35 +85,33 @@ class ChArUcoTrackerNode(Node):
 
         self.logger = self.get_logger()
 
-    @property
-    def board_name(self) -> str:
-        board_name = self.get_parameter("board_name").get_parameter_value().string_value
+    def _get_ros_parameter_bool(self, name: str) -> bool:
+        value = self.get_parameter(name).get_parameter_value().bool_value
 
-        if not isinstance(board_name, str):
-            raise RuntimeError(f"Invalid board_name type: {board_name=}")
+        if not isinstance(value, bool):
+            raise RuntimeError(f"Invalid {name} type: {type(value)}")
 
-        return board_name
+        return value
 
-    @property
-    def rectified(self):
-        rectified = self.get_parameter("rectified").get_parameter_value().bool_value
+    def _get_ros_parameter_str(self, name: str) -> str:
+        value = self.get_parameter(name).get_parameter_value().string_value
 
-        if not isinstance(rectified, bool):
-            raise RuntimeError(f"Invalid rectified parameter type: {rectified=}")
+        if not isinstance(value, str):
+            raise RuntimeError(f"Invalid {name} type: {type(value)}")
 
-        return rectified
+        return value
 
     @property
-    def tracker(self):
-        if self._tracker is None:
-            if self._camera_calibration is None:
-                _ = self.logger.warning(
-                    "Trying to set up chess_vision ChArUco tracker but camera_calibration is not set."
-                )
-                return
-            else:
-                board = ChArUcoBoard.from_board_parameters_dict(self.board_name)
-                self._tracker = ChArUcoTracker(board, self._camera_calibration)
+    def tracker(self) -> ChArUcoTracker | None:
+        if self._tracker is None and self._camera_calibration is not None:
+            board_name = self._get_ros_parameter_str("board_name")
+            board = ChArUcoBoard.from_board_parameters_dict(board_name)
+
+            self._tracker = ChArUcoTracker(
+                board,
+                self._camera_calibration,
+            )
+
         return self._tracker
 
     def camera_info_callback(self, msg: CameraInfo) -> None:
@@ -120,65 +125,53 @@ class ChArUcoTrackerNode(Node):
             _ = self.destroy_subscription(self.camera_info_sub)
 
     def image_callback(self, msg: Image) -> None:
-        if self.tracker is None:
-            if self.rectified:
-                self._camera_calibration = (
-                    CameraCalibration.create_dummy_intrinsics_from_image(
-                        height=msg.height, width=msg.width
-                    )
-                )
-                assert self.tracker is not None
-            else:
-                self.logger.warning("Image gotten before camera info.")
+        self.logger.info("First image received", once=True)
+
+        tracker = self.tracker
+
+        if tracker is None:
+            if not self._get_ros_parameter_bool("rectified"):
+                self.logger.warning("Image received before camera info.", once=True)
                 return
+            self._camera_calibration = (
+                CameraCalibration.create_dummy_intrinsics_from_image(
+                    height=msg.height, width=msg.width
+                )
+            )
+            tracker = self.tracker
+            assert self.tracker is not None
+
+        self.logger.info("Tracker set up", once=True)
 
         frame: ImageU8 = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
-        marked_frame, detection = self.tracker.detect_pose(frame)
+        marked_frame, detection = tracker.detect_pose(frame)
 
-        if detection is None:
-            self.logger.debug("No detection from tracker.")
-            return
+        self.logger.info("detect_pose returned", once=True)
 
-        self.logger.debug(
-            f"Detected ChArUco: "
-            f"{len(detection.marker_ids)} markers, "
-            f"{detection.corner_count} corners, "
-            f"{detection.reprojection_error:.2f} px"
-        )
+        if detection is not None:
+            self.logger.debug(
+                f"Detected ChArUco: "
+                f"{detection.marker_count} markers, "
+                f"{detection.corner_count} corners, "
+                f"{detection.reprojection_error_px:.2f} px"
+            )
 
-        out_msg = self.bridge.cv2_to_imgmsg(
+            detection_msg = ros_msg_from_charuco_detection(detection)
+            detection_msg.header = msg.header
+            detection_msg.child_frame_id = self._get_ros_parameter_str(
+                "target_frame_id"
+            )
+
+            self.detection_pub.publish(detection_msg)
+
+        marked_frame_msg = self.bridge.cv2_to_imgmsg(
             marked_frame,
             encoding="bgr8",
         )
+        marked_frame_msg.header = msg.header
 
-        out_msg.header = msg.header
-
-        self.marker_img_pub.publish(out_msg)
-
-        self.logger.debug(f"{len(detection.marker_ids)} detected marker IDs")
-
-        pose_msg = PoseStamped()
-
-        pose_msg.header.stamp = msg.header.stamp
-        pose_msg.header.frame_id = msg.header.frame_id
-
-        _, _, Ro, Tr, _ = detection.transformation.decomposed()
-
-        x, y, z = Tr.translation_vector
-
-        pose_msg.pose.position.x = x
-        pose_msg.pose.position.y = y
-        pose_msg.pose.position.z = z
-
-        x, y, z, w = Ro.quaternion.xyzw
-
-        pose_msg.pose.orientation.x = x
-        pose_msg.pose.orientation.y = y
-        pose_msg.pose.orientation.z = z
-        pose_msg.pose.orientation.w = w
-
-        self.pose_pub.publish(pose_msg)
+        self.marker_img_pub.publish(marked_frame_msg)
 
 
 def main(args: list[str] | None = None):

@@ -19,15 +19,15 @@ CornerCoordinates = npt.NDArray[np.float32]
 @typing.final
 @dataclass(frozen=True)
 class ChArUcoDetection:
-    # Transformation to charuco frame from optical frame
+    # Transformation to ChArUco frame from optical frame
     transformation: compas.geometry.Transformation
-    # Detected markers
-    marker_ids: MarkerIDs
+    # Number of detected markers
+    marker_count: int
     # Number of detected corners
     corner_count: int
     # RMS Euclidean reprojection error in pixels
     # https://stackoverflow.com/a/79587435/15398307
-    reprojection_error: float
+    reprojection_error_px: float
 
 
 @typing.final
@@ -174,13 +174,13 @@ class ChArUcoTracker:
         residuals = image_points.reshape(-1, 2) - projected_points.reshape(-1, 2)
 
         # RMS Euclidean reprojection error in pixels
-        reprojection_error = float(np.sqrt(np.mean(np.sum(residuals**2, axis=1))))
+        reprojection_error_px = float(np.sqrt(np.mean(np.sum(residuals**2, axis=1))))
 
         detection = ChArUcoDetection(
             transformation=T,
-            marker_ids=marker_ids,
+            marker_count=len(marker_ids),
             corner_count=len(charuco_ids),
-            reprojection_error=reprojection_error,
+            reprojection_error_px=reprojection_error_px,
         )
 
         return marked_frame, detection

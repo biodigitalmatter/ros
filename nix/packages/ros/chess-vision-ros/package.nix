@@ -3,6 +3,7 @@
   buildRosPackage,
 
   chess-vision,
+  chess-vision-ros-interfaces,
   cv-bridge,
   geometry-msgs,
   launch-pytest,
@@ -31,6 +32,7 @@ buildRosPackage {
     python3Packages.numpy
     rclpy
     sensor-msgs
+    chess-vision-ros-interfaces
   ];
   passthru.workspacePackages = {
     inherit

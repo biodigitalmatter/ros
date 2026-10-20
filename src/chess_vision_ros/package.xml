@@ -8,6 +8,7 @@
   <license>Apache-2.0</license>
   <url type="repository">https://github.com/biodigitalmatter/ros/</url>
   <exec_depend>chess_vision</exec_depend>
+  <exec_depend>chess_vision_ros_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>

@@ -1,5 +1,8 @@
+from chess_vision_ros_interfaces.msg import CharucoDetection as CharucoDetectionMsg
 from compas.geometry import Rotation, Transformation, Translation
 from geometry_msgs.msg import Pose, Transform
+
+from chess_vision.charuco_tracker import ChArUcoDetection as ChArUcoDetectionPyObj
 
 
 def transformation_from_transform(transform: Transform) -> Transformation:
@@ -40,5 +43,19 @@ def pose_from_transformation(transformation: Transformation) -> Pose:
     msg.orientation.y = y
     msg.orientation.z = z
     msg.orientation.w = w
+
+    return msg
+
+
+def ros_msg_from_charuco_detection(
+    detection: ChArUcoDetectionPyObj,
+) -> CharucoDetectionMsg:
+    msg = CharucoDetectionMsg()
+
+    msg.pose = pose_from_transformation(detection.transformation)
+
+    msg.marker_count = detection.marker_count
+    msg.corner_count = detection.corner_count
+    msg.reprojection_error_px = detection.reprojection_error_px
 
     return msg

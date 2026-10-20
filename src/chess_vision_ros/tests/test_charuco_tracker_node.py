@@ -11,9 +11,11 @@ import launch_pytest
 import launch_ros
 import pytest
 import rclpy
-from geometry_msgs.msg import PoseStamped
+from chess_vision_ros_interfaces.msg import CharucoDetection
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
+from sensor_msgs.msg import Image
 
 
 @launch_pytest.fixture
@@ -59,44 +61,55 @@ def generate_test_description(charuco_rosbag_path: Path, sample_camera_info_path
 
 
 @typing.final
-class MakeTestNode(Node):
-    def __init__(self, name: str = "test_node", min_recv_msgs: int = 10):
+class TrackerOutputSubscriber(Node):
+    def __init__(self, name: str):
         super().__init__(name)
 
-        self.min_recv_msgs = min_recv_msgs
+        self.topics = ["charuco_detection", "charuco_markers"]
 
-        self.msg_event_object = Event()
+        self.all_messages_received = Event()
 
-        self.subscription = self.create_subscription(
-            PoseStamped,
-            "charuco_pose",
-            self.subscriber_callback,
-            10,
-        )
+        self.msg_counts = {name: 0 for name in self.topics}
+
+        self.subscriptions_ = [
+            self.create_subscription(
+                CharucoDetection,
+                "charuco_detection",
+                self.charuco_detection_callback,
+                10,
+            ),
+            self.create_subscription(
+                Image,
+                "charuco_markers",
+                self.charuco_markers_callback,
+                qos_profile_sensor_data,
+            ),
+        ]
 
         self.logger = self.get_logger()
 
-        _ = self.logger.info("started node")
+        self.logger.info("started node")
 
-        self.msg_count = 0
+    def _message_received(self, topic: str) -> None:
+        self.msg_counts[topic] += 1
 
-    def subscriber_callback(self, data: PoseStamped):
-        _ = self.logger.debug(f"{data=}", once=True)
+        if all(self.msg_counts.values()):
+            self.all_messages_received.set()
 
-        _ = self.logger.debug(
-            f"{self.msg_count=}",
-        )
+    def charuco_detection_callback(self, data: CharucoDetection) -> None:
+        self.logger.debug(f"{data=}", once=True)
+        self._message_received("charuco_detection")
 
-        if self.msg_count >= self.min_recv_msgs:
-            self.msg_event_object.set()
-
-        self.msg_count += 1
+    def charuco_markers_callback(self, data: Image) -> None:
+        self.logger.debug(f"{data=}", once=True)
+        self._message_received("charuco_markers")
 
 
 @pytest.fixture
-def ros_node(request):
+def ros_node(request) -> typing.Iterator[TrackerOutputSubscriber]:
     rclpy.init()
-    node = MakeTestNode(f"test_{request.node.name}")
+    node = TrackerOutputSubscriber(f"test_{request.node.name}")
+
     executor = SingleThreadedExecutor()
     executor.add_node(node)
 
@@ -124,5 +137,6 @@ def ros_node(request):
 @pytest.mark.skipif("CI" in os.environ, reason="Does not have bagfile")
 @pytest.mark.filterwarnings("ignore:There is no current event loop")
 def test_check_if_msgs_published(ros_node):
-    msgs_received_flag = ros_node.msg_event_object.wait(timeout=5.0)
-    assert msgs_received_flag, "Did not receive msgs!"
+    assert ros_node.all_messages_received.wait(timeout=10.0), (
+        f"Did not recieve expected messages: {ros_node.msg_counts}"
+    )
