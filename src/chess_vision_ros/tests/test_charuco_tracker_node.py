@@ -12,7 +12,7 @@ import launch_ros
 import pytest
 import rclpy
 from geometry_msgs.msg import PoseStamped
-from launch.events import Shutdown
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 
 
@@ -54,10 +54,6 @@ def generate_test_description(charuco_rosbag_path: Path, sample_camera_info_path
         + [
             bag_play,
             launch_pytest.actions.ReadyToTest(),
-            launch.actions.TimerAction(
-                period=6.0,
-                actions=[launch.actions.EmitEvent(event=Shutdown())],
-            ),
         ]
     )
 
@@ -77,13 +73,6 @@ class MakeTestNode(Node):
             self.subscriber_callback,
             10,
         )
-
-        self.ros_spin_thread = Thread(
-            target=lambda: rclpy.spin(self),
-            # doesnt keep test waiting after timeout
-            daemon=True,
-        )
-        self.ros_spin_thread.start()
 
         self.logger = self.get_logger()
 
@@ -108,11 +97,25 @@ class MakeTestNode(Node):
 def ros_node(request):
     rclpy.init()
     node = MakeTestNode(f"test_{request.node.name}")
+    executor = SingleThreadedExecutor()
+    executor.add_node(node)
+
+    spin_thread = Thread(target=executor.spin, daemon=False)
+
+    spin_thread.start()
 
     try:
         yield node
     finally:
+        executor.shutdown()
+        spin_thread.join(timeout=20.0)
+
+        if spin_thread.is_alive():
+            pytest.fail("ROS executor thread did not stop")
+
+        executor.remove_node(node)
         node.destroy_node()
+
         rclpy.shutdown()
 
 

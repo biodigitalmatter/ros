@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 import pathlib
 import typing
@@ -39,8 +42,14 @@ class DummyCameraInfoPublisher(Node):
         self.pub.publish(self.msg)
 
 
-def main():
-    rclpy.init()
+def main(args: list[str] | None = None):
+    rclpy.init(args=args)
     node = DummyCameraInfoPublisher()
-    rclpy.spin(node)
-    rclpy.shutdown()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
