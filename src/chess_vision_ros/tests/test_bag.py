@@ -1,9 +1,12 @@
+import os
 from pathlib import Path
 
 import pytest
 from sensor_msgs.msg import Image
 
 from chess_vision_ros.bag import BagReader
+
+pytestmark = pytest.mark.skipif("CI" in os.environ, reason="Does not have bagfile")
 
 
 @pytest.fixture
