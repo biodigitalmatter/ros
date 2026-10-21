@@ -268,6 +268,7 @@
           {
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
+              config.allowUnfree = true;
               overlays = [
                 (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
                 inputs.nix-ros-overlay.overlays.default
@@ -280,6 +281,7 @@
               colcon = pkgs.stdenv.mkDerivation {
                 name = "colcon-check";
                 src = inputs.self;
+                inputsFrom = [ rosPkgScope.workspace.env ];
 
                 nativeBuildInputs =
                   with pkgs;
