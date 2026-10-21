@@ -22,6 +22,7 @@
   lemminx,
   moveit-setup-assistant,
   nixd,
+  python-cmake-module,
   python3,
   ros2-utils-tool,
   rqt,
@@ -61,6 +62,7 @@ buildROSWorkspace {
       lemminx
       moveit-setup-assistant
       nixd
+      python-cmake-module
       ros2-utils-tool
       rqt
       rqt-action

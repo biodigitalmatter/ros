@@ -48,7 +48,6 @@ buildRosPackage {
     boost
     c-blosc
     eigen
-    microsoft-gsl
     openvdb.dev
     rcpputils
     tbb.dev
@@ -59,6 +58,7 @@ buildRosPackage {
 
   propagatedBuildInputs = [
     geometry-msgs
+    microsoft-gsl
     openvdb
     rclcpp
     rosidl-default-runtime

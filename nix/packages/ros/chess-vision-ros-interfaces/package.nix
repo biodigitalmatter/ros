@@ -10,6 +10,7 @@
   rosidl-default-generators,
   rosidl-default-runtime,
   std-msgs,
+  python-cmake-module,
 }:
 buildRosPackage {
   pname = "ros-jazzy-chess-vision-ros-interfaces";
@@ -38,6 +39,7 @@ buildRosPackage {
   propagatedBuildInputs = [
     geometry-msgs
     rosidl-default-runtime
+    python-cmake-module
     std-msgs
   ];
 

@@ -322,6 +322,7 @@
           {
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
+              config.allowUnfree = true;
               overlays = [
                 (import "${inputs.nixpkgs-not-upstreamable}/nix/overlay")
                 inputs.nix-ros-overlay.overlays.default
@@ -357,6 +358,11 @@
               colcon = pkgs.stdenv.mkDerivation {
                 name = "colcon-check";
                 src = inputs.self;
+                inputsFrom = [ rosPkgScope.workspace.env ];
+
+                buildInputs = builtins.concatMap (package: package.buildInputs) (
+                  builtins.attrValues rosPkgScope.workspace.devPackages
+                );
 
                 nativeBuildInputs =
                   with pkgs;
@@ -377,20 +383,13 @@
                 doCheck = true;
                 dontWrapQtApps = true;
 
-                buildPhase =
-                  let
-                    inherit (pkgs) lib;
-                  in
-                  ''
-                    runHook preBuild
+                buildPhase = ''
+                  runHook preBuild
 
-                    colcon build --symlink-install \
-                      --cmake-args \
-                        -DBlosc_LIBRARY=${lib.getLib pkgs.c-blosc}/lib/libblosc.so \
-                        -DBlosc_INCLUDE_DIR=${lib.getDev pkgs.c-blosc}/include
+                  colcon build --symlink-install
 
-                    runHook postBuild
-                  '';
+                  runHook postBuild
+                '';
 
                 checkPhase = ''
                   runHook preCheck
