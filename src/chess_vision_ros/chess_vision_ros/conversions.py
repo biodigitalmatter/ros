@@ -47,6 +47,22 @@ def pose_from_transformation(transformation: Transformation) -> Pose:
     return msg
 
 
+def transform_from_pose(pose: Pose) -> Transform:
+    """Should probably be done with `tf2_ros.convert' if ever understand it."""
+    T = Transform()
+
+    T.translation.x = pose.position.x
+    T.translation.y = pose.position.y
+    T.translation.z = pose.position.z
+
+    T.rotation.w = pose.orientation.w
+    T.rotation.x = pose.orientation.x
+    T.rotation.y = pose.orientation.y
+    T.rotation.z = pose.orientation.z
+
+    return T
+
+
 def ros_msg_from_charuco_detection(
     detection: ChArUcoDetectionPyObj,
 ) -> CharucoDetectionMsg:

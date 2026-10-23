@@ -1,10 +1,13 @@
+# SPDX-FileCopyrightText: (C) 2026 Anton Tetov Johansson <anton@tetov.se>
+# SPDX-License-Identifier: Apache-2.0
+
 import glob
 
 from setuptools import find_packages, setup
 
 package_name = "chess_vision_ros"
 
-_ = setup(
+setup(
     name=package_name,
     version="0.1.0",
     packages=find_packages(),
@@ -29,6 +32,7 @@ _ = setup(
             "charuco_tracker_node = chess_vision_ros.charuco_tracker_node:main",
             "aruco_tracker_node = chess_vision_ros.aruco_tracker_node:main",
             "dummy_camera_info_publisher = chess_vision_ros.dummy_camera_info_publisher:main",
+            "detection_tf2_broadcaster = chess_vision_ros.detection_tf2_broadcaster:main",
         ],
     },
 )

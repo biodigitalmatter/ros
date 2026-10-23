@@ -55,10 +55,8 @@ class ChArUcoTrackerNode(Node):
     def __init__(self):
         super().__init__("charuco_tracker")
 
-        _ = self.declare_parameter("board_name", "large")
-        _ = self.declare_parameter("rectified", False)
-        _ = self.declare_parameter("target_frame_id", "charuco")
-        _ = self.declare_parameter("publish_tf", True)
+        self.declare_parameter("board_name", "large")
+        self.declare_parameter("rectified", False)
 
         self._tracker: ChArUcoTracker | None = None
         self._camera_calibration: CameraCalibration | None = None
@@ -139,7 +137,7 @@ class ChArUcoTrackerNode(Node):
                 )
             )
             tracker = self.tracker
-            assert self.tracker is not None
+            assert tracker is not None
 
         self.logger.info("Tracker set up", once=True)
 
@@ -156,12 +154,8 @@ class ChArUcoTrackerNode(Node):
                 f"{detection.corner_count} corners, "
                 f"{detection.reprojection_error_px:.2f} px"
             )
-
             detection_msg = ros_msg_from_charuco_detection(detection)
             detection_msg.header = msg.header
-            detection_msg.child_frame_id = self._get_ros_parameter_str(
-                "target_frame_id"
-            )
 
             self.detection_pub.publish(detection_msg)
 
