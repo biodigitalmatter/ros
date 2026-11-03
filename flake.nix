@@ -264,6 +264,60 @@
           }:
           let
             rosPkgScope = pkgs.rosPackages.${rosDistro};
+
+            # https://github.com/lopsided98/nix-ros-overlay/issues/810
+            # https://github.com/lopsided98/nix-ros-overlay/issues/544
+            # https://github.com/NixOS/nixpkgs/issues/41340
+            # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111527
+            dedupeNixFlags = pkgs.writers.writePython3 "dedupe_nix_flags" { } ''
+              import os
+              import shlex
+              import sys
+
+              name = sys.argv[1]
+              args = shlex.split(os.environ.get(name, ""))
+
+              paired = {
+                  "-isystem",
+                  "-idirafter",
+                  "-include",
+                  "-imacros",
+                  "-L",
+                  "-rpath",
+                  "-rpath-link",
+                  "-Xlinker",
+              }
+
+              seen = set()
+              out = []
+              i = 0
+
+              while i < len(args):
+                  arg = args[i]
+
+                  if arg in paired and i + 1 < len(args):
+                      item = (arg, args[i + 1])
+                      if item not in seen:
+                          seen.add(item)
+                          out.extend(item)
+                      i += 2
+                      continue
+
+                  if arg not in seen:
+                      seen.add(arg)
+                      out.append(arg)
+
+                  i += 1
+
+              print(" ".join(shlex.quote(x) for x in out))
+            '';
+
+            dedupeNixFlagsHook = ''
+              export NIX_CFLAGS_COMPILE="$(${dedupeNixFlags} NIX_CFLAGS_COMPILE)"
+              export NIX_CFLAGS_COMPILE_FOR_TARGET="$(${dedupeNixFlags} NIX_CFLAGS_COMPILE_FOR_TARGET)"
+              export NIX_LDFLAGS="$(${dedupeNixFlags} NIX_LDFLAGS)"
+              export NIX_LDFLAGS_FOR_TARGET="$(${dedupeNixFlags} NIX_LDFLAGS_FOR_TARGET)"
+            '';
           in
           {
             _module.args.pkgs = import inputs.nixpkgs {
@@ -277,6 +331,29 @@
             };
 
             checks = self'.packages // {
+              compiler-flags = pkgs.stdenv.mkDerivation {
+                name = "compiler-flags-check";
+                dontUnpack = true;
+                preferLocalBuild = true;
+                inputsFrom = [ rosPkgScope.workspace.env ];
+
+                buildPhase = ''
+                  runHook preBuild
+
+                  ${dedupeNixFlagsHook}
+
+                  printf 'int main(void) { return 0; }\n' > main.c
+                  $CC main.c -o compiler-flags-check
+                  ./compiler-flags-check
+
+                  runHook postBuild
+                '';
+
+                installPhase = ''
+                  touch $out
+                '';
+              };
+
               colcon = pkgs.stdenv.mkDerivation {
                 name = "colcon-check";
                 src = inputs.self;
@@ -300,13 +377,20 @@
                 doCheck = true;
                 dontWrapQtApps = true;
 
-                buildPhase = ''
-                  runHook preBuild
+                buildPhase =
+                  let
+                    inherit (pkgs) lib;
+                  in
+                  ''
+                    runHook preBuild
 
-                  colcon build --symlink-install
+                    colcon build --symlink-install \
+                      --cmake-args \
+                        -DBlosc_LIBRARY=${lib.getLib pkgs.c-blosc}/lib/libblosc.so \
+                        -DBlosc_INCLUDE_DIR=${lib.getDev pkgs.c-blosc}/include
 
-                  runHook postBuild
-                '';
+                    runHook postBuild
+                  '';
 
                 checkPhase = ''
                   runHook preCheck
@@ -341,52 +425,11 @@
 
               packages = [ config.treefmt.build.wrapper ];
 
-              shellHook =
-                let
-                  # https://github.com/lopsided98/nix-ros-overlay/issues/810
-                  # https://github.com/lopsided98/nix-ros-overlay/issues/544
-                  # https://github.com/NixOS/nixpkgs/issues/41340
-                  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111527
-                  dedupeNixCflags = pkgs.writers.writePython3 "dedupe_nix_cflags" { } ''
-                    import os
-                    import shlex
-                    import sys
+              shellHook = ''
+                ${dedupeNixFlagsHook}
 
-                    name = sys.argv[1]
-                    args = shlex.split(os.environ.get(name, ""))
-
-                    paired = {"-isystem", "-idirafter", "-include", "-imacros"}
-
-                    seen = set()
-                    out = []
-                    i = 0
-
-                    while i < len(args):
-                        arg = args[i]
-
-                        if arg in paired and i + 1 < len(args):
-                            item = (arg, args[i + 1])
-                            if item not in seen:
-                                seen.add(item)
-                                out.extend(item)
-                            i += 2
-                            continue
-
-                        if arg not in seen:
-                            seen.add(arg)
-                            out.append(arg)
-
-                        i += 1
-
-                    print(" ".join(shlex.quote(x) for x in out))
-                  '';
-                in
-                ''
-                  export NIX_CFLAGS_COMPILE="$(${dedupeNixCflags} NIX_CFLAGS_COMPILE)"
-                  export NIX_CFLAGS_COMPILE_FOR_TARGET="$(${dedupeNixCflags} NIX_CFLAGS_COMPILE_FOR_TARGET)"
-
-                  addToSearchPath CMAKE_MODULE_PATH "${pkgs.openvdb.dev}/lib/cmake/OpenVDB"
-                '';
+                addToSearchPath CMAKE_MODULE_PATH "${pkgs.openvdb.dev}/lib/cmake/OpenVDB"
+              '';
 
               NRWS_DOMAIN_ID = "55";
               RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
