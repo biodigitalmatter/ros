@@ -58,7 +58,7 @@ class DetectionTf2BroadCaster(Node):
         self.declare_parameter("child_frame_id", "charuco_detection")
 
         self.subscriber: Subscription = self.create_subscription(
-            CharucoDetectionMsg, "charuco_detections", self.callback, DETECTION_QOS
+            CharucoDetectionMsg, "charuco_detection", self.callback, DETECTION_QOS
         )
 
         self.tf_broadcaster = TransformBroadcaster(self)

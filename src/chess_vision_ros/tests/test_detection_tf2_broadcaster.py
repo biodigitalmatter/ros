@@ -56,14 +56,14 @@ class DetectionTf2BroadcasterTestNode(Node):
 
         self.detection_subscriber = self.create_subscription(
             CharucoDetectionMsg,
-            "charuco_detections",
+            "charuco_detection",
             self.detection_callback,
             10,
         )
 
         self.detection_publisher = self.create_publisher(
             CharucoDetectionMsg,
-            "charuco_detections",
+            "charuco_detection",
             10,
         )
         self.tf_sub = self.create_subscription(TFMessage, "/tf", self.tf_callback, 10)
@@ -111,7 +111,7 @@ class DetectionTf2BroadcasterTestNode(Node):
         deadline = time.monotonic() + timeout_sec
 
         while time.monotonic() < deadline:
-            subscriptions = self.get_subscriptions_info_by_topic("charuco_detections")
+            subscriptions = self.get_subscriptions_info_by_topic("charuco_detection")
             if any(
                 endpoint.node_name == "detection_tf2_broadcaster"
                 for endpoint in subscriptions
@@ -119,7 +119,7 @@ class DetectionTf2BroadcasterTestNode(Node):
                 return
             time.sleep(0.01)
 
-        pytest.fail("Broadcaster did not subscribe to charuco_detections")
+        pytest.fail("Broadcaster did not subscribe to charuco_detection")
 
 
 @pytest.fixture
