@@ -1,0 +1,36 @@
+launch:
+  - arg:
+      name: robot_namespace
+      default: elizabeth
+  - arg:
+      name: camera_name
+      default: extruder_d405
+  - arg:
+      name: board_name
+      default: large
+  - arg:
+      name: target_frame
+      default: charuco_board
+  - arg:
+      name: bag_path
+      default: eye_in_hand_calibration
+  - include:
+      file: $(find-pkg-share chess_vision_ros)/launch/charuco_tracker.launch.yaml
+      arg:
+        - name: robot_namespace
+          value: $(var robot_namespace)
+        - name: camera_name
+          value: $(var camera_name)
+        - name: board_name
+          value: $(var board_name)
+  - node:
+      pkg: chess_vision_ros
+      exec: detection_tf2_broadcaster
+      name: detection_tf2_broadcaster
+      namespace: $(var robot_namespace)/rgbd/$(var camera_name)/color
+      param:
+        - name: child_frame_id
+          value: $(var target_frame)
+  - executable:
+      cmd: >-
+        ros2 bag record --output $(var bag_path) /tf /tf_static /$(var robot_namespace)/rgbd/$(var camera_name)/color/charuco_detection
