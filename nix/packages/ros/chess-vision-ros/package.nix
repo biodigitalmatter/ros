@@ -14,7 +14,11 @@
   python3Packages,
   rclpy,
   ros2bag,
+  rosbag2-py,
+  rosidl-runtime-py,
   sensor-msgs,
+  tf2-msgs,
+  tf2-ros,
 }:
 buildRosPackage {
   pname = "ros-jazzy-chess-vision-ros";
@@ -27,20 +31,24 @@ buildRosPackage {
     chess-vision
     cv-bridge
     geometry-msgs
+    launch-ros
     opencv
     python3Packages.compas
     python3Packages.numpy
     rclpy
+    ros2bag
+    rosbag2-py
+    rosidl-runtime-py
     sensor-msgs
     chess-vision-ros-interfaces
+    tf2-msgs
+    tf2-ros
   ];
   passthru.workspacePackages = {
     inherit
       launch-pytest
-      launch-ros
       launch-testing
       launch-testing-ros
-      ros2bag
       ;
   };
   nativeCheckInputs = [

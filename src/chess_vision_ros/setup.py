@@ -31,6 +31,7 @@ setup(
         "console_scripts": [
             "charuco_tracker_node = chess_vision_ros.charuco_tracker_node:main",
             "aruco_tracker_node = chess_vision_ros.aruco_tracker_node:main",
+            "calibrate_eye_in_hand = chess_vision_ros.calibrate_eye_in_hand:main",
             "dummy_camera_info_publisher = chess_vision_ros.dummy_camera_info_publisher:main",
             "detection_tf2_broadcaster = chess_vision_ros.detection_tf2_broadcaster:main",
         ],
