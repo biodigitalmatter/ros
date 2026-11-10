@@ -19,6 +19,7 @@
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>tf2_msgs</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>python3-click</exec_depend>
   <exec_depend>python3-compas</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-opencv</exec_depend>

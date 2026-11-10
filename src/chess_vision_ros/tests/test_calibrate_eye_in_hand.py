@@ -2,10 +2,11 @@ from datetime import datetime, timezone
 
 import numpy as np
 import pytest
+from click.testing import CliRunner
 from compas.geometry import Rotation, Transformation, Translation
 
 from chess_vision.eye_in_hand import EyeInHandResult, HandEyeMethod
-from chess_vision_ros.calibrate_eye_in_hand import create_parser
+from chess_vision_ros.calibrate_eye_in_hand import main
 from chess_vision_ros.eye_in_hand import (
     EyeInHandCalibration,
     EyeInHandConfig,
@@ -48,11 +49,14 @@ def test_calibration_compas_json_roundtrip() -> None:
     assert loaded.generated_at == generated_at
 
 
-def test_parser_rejects_unknown_method() -> None:
-    parser = create_parser()
+def test_cli_rejects_unknown_method(tmp_path) -> None:
+    result = CliRunner().invoke(
+        main,
+        [str(tmp_path), "--output", "result.json", "--method", "unknown"],
+    )
 
-    with pytest.raises(SystemExit):
-        parser.parse_args(["bag", "--output", "result.yaml", "--method", "unknown"])
+    assert result.exit_code == 2
+    assert "Invalid value for '--method'" in result.output
 
 
 def test_quality_rejects_empty_samples() -> None:

@@ -33,6 +33,7 @@ buildRosPackage {
     geometry-msgs
     launch-ros
     opencv
+    python3Packages.click
     python3Packages.compas
     python3Packages.numpy
     rclpy
