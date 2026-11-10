@@ -4,6 +4,7 @@ import typing
 from collections.abc import Sequence
 
 import cv2 as cv
+from compas.data import Data
 from compas.geometry import Transformation
 
 from chess_vision.geometry import (
@@ -12,11 +13,20 @@ from chess_vision.geometry import (
 )
 
 
-@typing.final
-@dataclasses.dataclass(frozen=True)
-class EyeInHandSample:
+@dataclasses.dataclass
+class EyeInHandSample(Data):
     gripper2base: Transformation
     target2cam: Transformation
+
+    def __post_init__(self) -> None:
+        super().__init__()
+
+    @property
+    def __data__(self) -> dict[str, Transformation]:
+        return {
+            "gripper2base": self.gripper2base,
+            "target2cam": self.target2cam,
+        }
 
 
 class HandEyeMethod(enum.IntEnum):
@@ -27,11 +37,27 @@ class HandEyeMethod(enum.IntEnum):
     DANIILIDIS = cv.CALIB_HAND_EYE_DANIILIDIS
 
 
-@typing.final
-@dataclasses.dataclass(frozen=True)
-class EyeInHandResult:
+@dataclasses.dataclass
+class EyeInHandResult(Data):
     cam2gripper: Transformation
     method: HandEyeMethod
+
+    def __post_init__(self) -> None:
+        super().__init__()
+
+    @property
+    def __data__(self) -> dict[str, Transformation | str]:
+        return {
+            "cam2gripper": self.cam2gripper,
+            "method": self.method.name,
+        }
+
+    @classmethod
+    def __from_data__(cls, data: dict) -> typing.Self:
+        return cls(
+            cam2gripper=data["cam2gripper"],
+            method=HandEyeMethod[data["method"]],
+        )
 
 
 def calibrate_eye_in_hand(

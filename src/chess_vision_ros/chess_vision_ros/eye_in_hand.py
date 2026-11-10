@@ -1,6 +1,7 @@
 import math
 from dataclasses import dataclass
 
+from compas.data import Data
 from compas.geometry import Transformation
 from tf2_ros import ExtrapolationException  # ty:ignore[unresolved-import]
 
@@ -14,8 +15,8 @@ from chess_vision_ros.bag import BagReader
 from chess_vision_ros.tf import BagTransformBuffer
 
 
-@dataclass(frozen=True)
-class EyeInHandConfig:
+@dataclass
+class EyeInHandConfig(Data):
     base_frame: str = "base_link"
     gripper_frame: str = "tool0"
     camera_frame: str = "camera_color_optical_frame"
@@ -24,6 +25,33 @@ class EyeInHandConfig:
 
     min_translation: float = 0.02
     min_rotation: float = math.radians(5)
+
+    def __post_init__(self) -> None:
+        super().__init__()
+
+    @property
+    def __data__(self) -> dict[str, str | float]:
+        return {
+            "base_frame": self.base_frame,
+            "gripper_frame": self.gripper_frame,
+            "camera_frame": self.camera_frame,
+            "target_frame": self.target_frame,
+            "method": self.method.name,
+            "min_translation": self.min_translation,
+            "min_rotation": self.min_rotation,
+        }
+
+    @classmethod
+    def __from_data__(cls, data: dict[str, str | float]) -> "EyeInHandConfig":
+        return cls(
+            base_frame=data["base_frame"],
+            gripper_frame=data["gripper_frame"],
+            camera_frame=data["camera_frame"],
+            target_frame=data["target_frame"],
+            method=HandEyeMethod[data["method"]],
+            min_translation=data["min_translation"],
+            min_rotation=data["min_rotation"],
+        )
 
 
 def _poses_differ_p(
