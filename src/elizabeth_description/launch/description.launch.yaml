@@ -1,6 +1,7 @@
 launch:
   - arg:
       name: rws_ip
+      default: "192.168.125.1"
   - arg:
       name: rws_port
       default: "80"
