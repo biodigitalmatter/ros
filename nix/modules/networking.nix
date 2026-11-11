@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   ...
 }:
 let
@@ -7,6 +8,10 @@ let
 in
 {
   flake.modules.nixos = {
+    environment.systemPackages = with pkgs; [
+      nixos-firewall-tool
+    ];
+
     networking = {
       networking = {
         useDHCP = true;

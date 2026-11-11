@@ -29,7 +29,7 @@
         ros.librealsense2
       ];
 
-      # TODO: Remove after debugging
+      # FIXME: Remove after debugging
       networking.firewall.enable = false;
 
       systemd.services = {

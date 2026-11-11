@@ -14,6 +14,9 @@ launch:
   - arg:
       name: bag_path
       default: eye_in_hand_calibration
+  - arg:
+      name: record_images
+      default: "true"
   - include:
       file: $(find-pkg-share chess_vision_ros)/launch/charuco_tracker.launch.yaml
       arg:
@@ -33,4 +36,4 @@ launch:
           value: $(var target_frame)
   - executable:
       cmd: >-
-        ros2 bag record --output $(var bag_path) /tf /tf_static /$(var robot_namespace)/rgbd/$(var camera_name)/color/charuco_detection
+        ros2 bag record --output $(var bag_path) /tf /tf_static /$(var robot_namespace)/rgbd/$(var camera_name)/color/camera_info $(if $(var record_images) /$(var robot_namespace)/rgbd/$(var camera_name)/color/charuco_markers) /$(var robot_namespace)/rgbd/$(var camera_name)/color/charuco_detection
