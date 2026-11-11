@@ -71,8 +71,7 @@
 
       services.udev = {
         extraRules = ''
-          ACTION=="add", \
-            SUBSYSTEM=="usb", \
+          SUBSYSTEM=="usb", \
             ENV{DEVTYPE}=="usb_device", \
             ATTR{idVendor}=="8086", \
             ATTR{idProduct}=="0b5b", \
@@ -80,8 +79,7 @@
             ENV{SYSTEMD_ALIAS}="/dev/elizabeth/realsense_d405", \
             ENV{SYSTEMD_WANTS}+="elizabeth-perception-realsense@d405.service"
 
-          ACTION=="add", \
-            SUBSYSTEM=="usb", \
+          SUBSYSTEM=="usb", \
             ENV{DEVTYPE}=="usb_device", \
             ATTR{idVendor}=="8086", \
             ATTR{idProduct}=="0b3a", \
