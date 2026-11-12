@@ -36,7 +36,7 @@
   rqt-tf-tree,
   rqt-topic,
 }:
-buildROSWorkspace {
+(buildROSWorkspace.override { manualDomainId = "55"; }) {
   name = "elizabeth jazzy workspace";
   devPackages = {
     inherit

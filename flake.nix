@@ -428,11 +428,16 @@
                 ${dedupeNixFlagsHook}
 
                 addToSearchPath CMAKE_MODULE_PATH "${pkgs.openvdb.dev}/lib/cmake/OpenVDB"
+
+                # set here since they are set elsewhere after normal devShell
+                # env vars
+                export ROS_AUTOMATIC_DISCOVERY_RANGE=SYSTEM_DEFAULT
+                export ROS_DISCOVERY_SERVER=192.168.8.5:11811
               '';
 
-              NRWS_DOMAIN_ID = "55";
               RMW_IMPLEMENTATION = "rmw_fastrtps_cpp";
-              FASTDDS_BUILTIN_TRANSPORTS = "LARGE_DATA";
+              FASTDDS_BUILTIN_TRANSPORTS = "UDPv4";
+              ROS_SUPER_CLIENT = "TRUE";
             };
 
             legacyPackages = self'.packages;
