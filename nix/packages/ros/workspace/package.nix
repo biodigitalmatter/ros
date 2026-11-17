@@ -18,6 +18,7 @@
   # shellPackages
   colcon,
   demo-nodes-cpp,
+  image-view,
   joint-trajectory-controller,
   lemminx,
   moveit-setup-assistant,
@@ -58,6 +59,7 @@
     inherit
       colcon
       demo-nodes-cpp
+      image-view
       joint-trajectory-controller
       lemminx
       moveit-setup-assistant
