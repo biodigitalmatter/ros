@@ -9,6 +9,7 @@ import launch_ros.actions
 import numpy as np
 import pytest
 import rclpy
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 
@@ -48,7 +49,7 @@ def test_filters_16uc1(ros_node) -> None:
         Image,
         "image_rect_filtered",
         lambda msg: received.append(msg),
-        10,
+        qos_profile_sensor_data,
     )
 
     msg = Image()

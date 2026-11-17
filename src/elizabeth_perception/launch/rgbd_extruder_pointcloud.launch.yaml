@@ -30,7 +30,7 @@ launch:
               value: 5
             # fix mismatch between depth_proc and realsense
             - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.reliability
-              value: reliable
+              value: best_effort
             - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/image_rect_raw.subscription.durability
               value: volatile
             - name: qos_overrides./$(var robot_namespace)/rgbd/$(var camera_name)/depth/camera_info.subscription.reliability

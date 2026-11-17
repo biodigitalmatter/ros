@@ -2,6 +2,8 @@
   ros__parameters:
     enable_color: true
     enable_depth: true
+    color_qos: SENSOR_DATA
+    depth_qos: SENSOR_DATA
     enable_infra1: false
     enable_infra2: false
     enable_sync: false

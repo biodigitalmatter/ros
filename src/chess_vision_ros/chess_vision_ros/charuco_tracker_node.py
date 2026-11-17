@@ -10,6 +10,7 @@ from rclpy.qos import (
     QoSHistoryPolicy,
     QoSProfile,
     QoSReliabilityPolicy,
+    qos_profile_sensor_data,
 )
 from rclpy.subscription import Subscription
 from sensor_msgs.msg import CameraInfo, Image
@@ -22,13 +23,6 @@ from chess_vision_ros.conversions import (
 )
 
 CAMERA_INFO_QOS = QoSProfile(
-    reliability=QoSReliabilityPolicy.RELIABLE,
-    durability=QoSDurabilityPolicy.VOLATILE,
-    history=QoSHistoryPolicy.KEEP_LAST,
-    depth=1,
-)
-
-IMAGE_QOS = QoSProfile(
     reliability=QoSReliabilityPolicy.RELIABLE,
     durability=QoSDurabilityPolicy.VOLATILE,
     history=QoSHistoryPolicy.KEEP_LAST,
@@ -68,7 +62,7 @@ class ChArUcoTrackerNode(Node):
         )
 
         self.image_sub: Subscription = self.create_subscription(
-            Image, "image_raw", self.image_callback, IMAGE_QOS
+            Image, "image_raw", self.image_callback, qos_profile_sensor_data
         )
 
         self.detection_pub: Publisher = self.create_publisher(

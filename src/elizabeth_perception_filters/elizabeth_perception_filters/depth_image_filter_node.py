@@ -2,22 +2,10 @@ import typing
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import (
-    QoSDurabilityPolicy,
-    QoSHistoryPolicy,
-    QoSProfile,
-    QoSReliabilityPolicy,
-)
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 from elizabeth_perception_filters.clip_distance import clip_distance
-
-DEPTH_IMAGE_QOS = QoSProfile(
-    reliability=QoSReliabilityPolicy.RELIABLE,
-    durability=QoSDurabilityPolicy.VOLATILE,
-    history=QoSHistoryPolicy.KEEP_LAST,
-    depth=10,
-)
 
 
 @typing.final
@@ -32,13 +20,13 @@ class DepthImageFilterNode(Node):
             Image,
             "image_rect_raw",
             self.callback,
-            DEPTH_IMAGE_QOS,
+            qos_profile_sensor_data,
         )
 
         self.publisher = self.create_publisher(
             Image,
             "image_rect_filtered",
-            DEPTH_IMAGE_QOS,
+            qos_profile_sensor_data,
         )
 
         self.logger = self.get_logger()
